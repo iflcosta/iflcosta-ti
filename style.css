@@ -699,6 +699,10 @@ header.scrolled {
 }
 
 @media (max-width: 768px) {
+    section {
+        padding: 3rem 0; 
+    }
+
     .nav-menu {
         position: fixed;
         top: 80px;
@@ -720,7 +724,13 @@ header.scrolled {
         display: block;
     }
     
-    .hero-text h1 { font-size: 2.5rem; }
+    .hero-text h1 { 
+        font-size: 2.2rem; 
+    }
+
+    .section-header h2 {
+        font-size: 2rem;
+    }
     
     .hero-ctas {
         flex-direction: column;
@@ -749,5 +759,18 @@ header.scrolled {
     
     .stat-card {
         display: none; /* Hide floating stats on mobile for cleaner look */
+    }
+
+    .floating-wa {
+        width: 50px;
+        height: 50px;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        font-size: 1.8rem;
+    }
+
+    .hero-image-wrapper {
+        height: 350px;
+        margin-top: 2rem;
     }
 }
