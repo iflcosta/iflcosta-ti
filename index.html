@@ -3,43 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iago Costa | Suporte de TI & Assistência Especializada</title>
-    <meta name="description" content="Especialista em Suporte de TI, manutenção de hardware, smartphones e montagem de Custom PCs em Bragança Paulista. Atendimento direto e sem intermediários.">
-    
+    <title>Iago Costa | Conserto de Celular, Notebook e Custom PC em Bragança Paulista</title>
+    <meta name="description" content="Especialista em conserto de celulares, manutenção de notebooks, suporte de TI e montagem de Custom PCs em Bragança Paulista. Atendimento direto, orçamento transparente e garantia no serviço.">
+
     <!-- Google Fonts: Inter for a clean, professional, and tech-focused look -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Phosphor Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    
+
     <link rel="stylesheet" href="style.css">
 
     <!-- SEO & Social Media -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://iflcosta-ti.vercel.app/">
-    <meta property="og:title" content="Iago Costa | Suporte de TI & Assistência Especializada">
-    <meta property="og:description" content="Manutenção de computadores, smartphones e suporte de TI em Bragança Paulista. Atendimento direto e rápido.">
-    <meta property="og:image" content="hero-image.webp">
+    <meta property="og:title" content="Iago Costa | Conserto de Celular e Suporte de TI em Bragança Paulista">
+    <meta property="og:description" content="Conserto de celulares, manutenção de notebooks e montagem de Custom PCs em Bragança Paulista. Atendimento direto, garantia no serviço.">
+    <meta property="og:image" content="https://iflcosta-ti.vercel.app/hero-image.webp">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="geo.region" content="BR-SP">
+    <meta name="geo.placename" content="Bragança Paulista">
 
     <link rel="canonical" href="https://iflcosta-ti.vercel.app/" />
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-    <!-- Local Business Schema -->
+    <!-- Local Business Schema — Enhanced -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "LocalBusiness",
-      "name": "Iago Costa - Suporte de TI",
+      "name": "Iago Costa - Suporte de TI Bragança Paulista",
       "image": "https://iflcosta-ti.vercel.app/hero-image.webp",
       "@id": "https://iflcosta-ti.vercel.app/",
       "url": "https://iflcosta-ti.vercel.app/",
       "telephone": "+5511919691542",
+      "priceRange": "$$",
       "address": {
         "@type": "PostalAddress",
         "addressLocality": "Bragança Paulista",
         "addressRegion": "SP",
+        "postalCode": "12900-000",
         "addressCountry": "BR"
       },
       "geo": {
@@ -47,8 +52,22 @@
         "latitude": -22.9516,
         "longitude": -46.5418
       },
-      "priceRange": "$$",
-      "description": "Especialista em Suporte de TI, manutenção de computadores, notebooks e celulares em Bragança Paulista."
+      "areaServed": [
+        { "@type": "City", "name": "Bragança Paulista" },
+        { "@type": "City", "name": "Atibaia" },
+        { "@type": "City", "name": "Itatiba" }
+      ],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Serviços de TI e Reparo",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Conserto de Celular Bragança Paulista" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Manutenção de Notebook" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Montagem de Custom PC Gamer" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Suporte de TI e Redes" } }
+        ]
+      },
+      "description": "Especialista autônomo em suporte de TI, conserto de celulares, manutenção de notebooks e montagem de Custom PCs em Bragança Paulista. Atendimento direto, sem intermediários."
     }
     </script>
 </head>
@@ -61,15 +80,16 @@
                 <span class="logo-name">Iago Costa</span>
                 <span class="logo-tag">IT Specialist</span>
             </div>
-            <nav class="nav-menu">
+            <nav class="nav-menu" id="nav-menu" aria-label="Menu principal">
                 <a href="#hero">Início</a>
                 <a href="#services">Especialidades</a>
+                <a href="#pricing">Preços</a>
                 <a href="#process">Como Funciona</a>
-                <a href="#contact" class="btn btn-outline"><i class="ph ph-whatsapp-logo"></i> Falar Direto Comigo</a>
+                <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20solicitar%20um%20orçamento." target="_blank" rel="noopener noreferrer" class="btn btn-outline"><i class="ph ph-whatsapp-logo"></i> Falar Direto Comigo</a>
             </nav>
-            <div class="mobile-menu-btn">
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-menu">
                 <i class="ph ph-list"></i>
-            </div>
+            </button>
         </div>
     </header>
 
@@ -77,22 +97,22 @@
     <section id="hero" class="hero">
         <div class="container hero-container">
             <div class="hero-text">
-                <div class="badge">Especialista Autônomo &bull; Bragança Paulista</div>
-                <h1>Tecnologia de Alta Performance. <span class="highlight">Direto ao Ponto.</span></h1>
-                <p>Você não vai falar com um atendente. Do conserto rápido do seu smartphone à montagem de um PC Gamer de elite ou otimização da sua rede. Seu equipamento é diagnosticado e resolvido diretamente por mim, com total transparência e garantia.</p>
+                <div class="badge"><i class="ph ph-map-pin"></i> Especialista Autônomo · Bragança Paulista - SP</div>
+                <h1>Conserto de Celular, Notebook e Custom PC. <span class="highlight">Direto com o Especialista.</span></h1>
+                <p>Você não fala com atendente ou balcão de loja. Do conserto do seu smartphone à montagem de um PC Gamer de elite — diagnóstico e solução feitos por mim, com transparência total e garantia no serviço.</p>
                 <div class="hero-ctas">
-                    <a href="https://wa.me/5511919691542" target="_blank" class="btn btn-primary"><i class="ph-fill ph-whatsapp-logo"></i> Solicitar Orçamento Rápido</a>
-                    <a href="#services" class="btn btn-secondary">Ver Especialidades</a>
+                    <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20solicitar%20um%20orçamento." target="_blank" rel="noopener noreferrer" class="btn btn-primary" id="hero-cta-whatsapp"><i class="ph-fill ph-whatsapp-logo"></i> Solicitar Orçamento Rápido</a>
+                    <a href="#services" class="btn btn-secondary" id="hero-cta-services">Ver Especialidades</a>
                 </div>
                 <div class="trust-indicators">
-                    <span><i class="ph ph-check-circle"></i> Peças de Alta Qualidade</span>
-                    <span><i class="ph ph-check-circle"></i> Garantia no Serviço</span>
-                    <span><i class="ph ph-check-circle"></i> Orçamento Transparente</span>
+                    <span><i class="ph-fill ph-check-circle"></i> Peças de Alta Qualidade</span>
+                    <span><i class="ph-fill ph-check-circle"></i> 90 Dias de Garantia</span>
+                    <span><i class="ph-fill ph-check-circle"></i> Orçamento Transparente</span>
                 </div>
             </div>
             <div class="hero-image-wrapper">
                 <div class="image-placeholder">
-                    <img src="hero-image.webp" alt="Hardware de Alta Performance" class="hero-graphic" style="width: 100%; height: 100%; object-fit: cover; border-radius: 28px;">
+                    <img src="hero-image.webp" alt="Especialista em hardware montando computador em Bragança Paulista" class="hero-graphic" loading="eager" style="width: 100%; height: 100%; object-fit: cover; border-radius: 28px;">
                 </div>
                 <div class="glass-card stat-card stat-1">
                     <i class="ph-fill ph-lightning"></i>
@@ -104,8 +124,8 @@
                 <div class="glass-card stat-card stat-2">
                     <i class="ph-fill ph-shield-check"></i>
                     <div>
-                        <strong>Seguro</strong>
-                        <span>Garantia de Qualidade</span>
+                        <strong>90 Dias</strong>
+                        <span>Garantia no Serviço</span>
                     </div>
                 </div>
             </div>
@@ -117,7 +137,7 @@
         <div class="container">
             <div class="section-header">
                 <h2>Suporte em TI: <span class="highlight">Sua Estrutura Funcional</span></h2>
-                <p>Atendimento focado em residências, clínicas e pequenos escritórios que precisam de estabilidade sem depender de contratos amarrados.</p>
+                <p>Atendimento focado em residências, clínicas e pequenos escritórios que precisam de estabilidade — sem contratos amarrados.</p>
             </div>
             <div class="support-grid">
                 <div class="glass-card feature-card">
@@ -143,11 +163,11 @@
     <section id="services" class="services">
         <div class="container">
             <div class="section-header text-center">
-                <h2>Hardware de Ponta & <span class="highlight">Reparos</span></h2>
-                <p>Domínio técnico sobre o coração dos seus equipamentos.</p>
+                <h2>Hardware de Ponta & <span class="highlight">Reparos Especializados</span></h2>
+                <p>Domínio técnico sobre o coração dos seus equipamentos — em Bragança Paulista e região.</p>
             </div>
             <div class="services-wrapper">
-                <div class="glass-card service-card">
+                <div class="glass-card service-card" id="service-smartphones">
                     <div class="service-image">
                         <i class="ph ph-device-mobile"></i>
                     </div>
@@ -156,37 +176,178 @@
                         <p>Substituição de telas (Incell/OLED), baterias, conectores de carga e botões. Conserto rápido com componentes rigorosamente selecionados para durabilidade.</p>
                         <ul class="check-list">
                             <li><i class="ph ph-check"></i> Diagnóstico Exato</li>
-                            <li><i class="ph ph-check"></i> Peças Testadas</li>
+                            <li><i class="ph ph-check"></i> Peças Testadas com Garantia</li>
                         </ul>
+                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Preciso%20consertar%20meu%20celular." target="_blank" rel="noopener noreferrer" class="btn btn-service">Orçar Reparo <i class="ph ph-arrow-right"></i></a>
                     </div>
                 </div>
 
-                <div class="glass-card service-card">
+                <div class="glass-card service-card" id="service-notebooks">
                     <div class="service-image">
                         <i class="ph ph-laptop"></i>
                     </div>
                     <div class="service-content">
                         <h3>Manutenção de Notebooks</h3>
-                        <p>O PC está lento ou aquecendo? Realizo upgrades de SSD e RAM, reparo de carcaça, dobradiças e resfriamento para reviver sua máquina.</p>
+                        <p>PC lento ou aquecendo? Realizo upgrades de SSD e RAM, reparo de carcaça, dobradiças e resfriamento para reviver sua máquina com eficiência.</p>
                         <ul class="check-list">
                             <li><i class="ph ph-check"></i> Mais Velocidade</li>
                             <li><i class="ph ph-check"></i> Mais Vida Útil</li>
                         </ul>
+                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20fazer%20manutenção%20no%20meu%20notebook." target="_blank" rel="noopener noreferrer" class="btn btn-service">Orçar Manutenção <i class="ph ph-arrow-right"></i></a>
                     </div>
                 </div>
 
-                <div class="glass-card service-card highlight-card">
+                <div class="glass-card service-card highlight-card" id="service-custom-pc">
                     <div class="service-image">
                         <i class="ph ph-cpu"></i>
                     </div>
                     <div class="service-content">
                         <h3>Custom PCs & Workstations</h3>
-                        <p>Montagem de computadores sob medida. Seja para extrair o máximo de FPS no seu jogo favorito ou renderizar projetos complexos sem travamentos.</p>
+                        <p>Montagem de computadores sob medida. Seja para extrair o máximo de FPS ou renderizar projetos complexos — sem gargalos, com cable management perfeito.</p>
                         <ul class="check-list">
                             <li><i class="ph ph-check"></i> Cable Management Perfeito</li>
                             <li><i class="ph ph-check"></i> Setup Balanceado (Zero Gargalo)</li>
                         </ul>
+                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20montar%20um%20Custom%20PC." target="_blank" rel="noopener noreferrer" class="btn btn-service-highlight">Montar meu PC <i class="ph ph-arrow-right"></i></a>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Transparência nos <span class="highlight">Preços</span></h2>
+                <p>Sem surpresas. Veja os valores de referência — o orçamento final é aprovado por você antes de qualquer serviço começar.</p>
+            </div>
+            <div class="pricing-grid">
+
+                <div class="glass-card pricing-card" id="pricing-mobile">
+                    <div class="pricing-card-header">
+                        <div class="pricing-icon"><i class="ph ph-device-mobile"></i></div>
+                        <h3>Reparo Mobile</h3>
+                        <p>Celulares & Tablets</p>
+                    </div>
+                    <ul class="pricing-list">
+                        <li>
+                            <span class="pricing-item-name"><i class="ph ph-check"></i> Troca de Tela (Android/iPhone)</span>
+                            <span class="pricing-item-value">R$ 120 – 180<span class="pricing-note"> + peça</span></span>
+                        </li>
+                        <li>
+                            <span class="pricing-item-name"><i class="ph ph-check"></i> Troca de Bateria</span>
+                            <span class="pricing-item-value">R$ 80 – 120<span class="pricing-note"> + peça</span></span>
+                        </li>
+                        <li>
+                            <span class="pricing-item-name"><i class="ph ph-check"></i> Conector de Carga</span>
+                            <span class="pricing-item-value">R$ 100 – 150<span class="pricing-note"> + peça</span></span>
+                        </li>
+                    </ul>
+                    <div class="pricing-footer">
+                        <span class="pricing-guarantee"><i class="ph-fill ph-shield-check"></i> 90 dias de garantia</span>
+                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Preciso%20consertar%20meu%20celular." target="_blank" rel="noopener noreferrer" class="btn btn-pricing">Orçar no WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="glass-card pricing-card pricing-card-featured" id="pricing-hardware">
+                    <div class="pricing-badge-featured">Mais Procurado</div>
+                    <div class="pricing-card-header">
+                        <div class="pricing-icon featured"><i class="ph ph-laptop"></i></div>
+                        <h3>Manutenção & TI</h3>
+                        <p>Notebooks, PCs & Redes</p>
+                    </div>
+                    <ul class="pricing-list">
+                        <li>
+                            <span class="pricing-item-name"><i class="ph ph-check"></i> Formatação Premium (c/ Backup)</span>
+                            <span class="pricing-item-value">R$ 150 – 200</span>
+                        </li>
+                        <li>
+                            <span class="pricing-item-name"><i class="ph ph-check"></i> Limpeza + Pasta Térmica</span>
+                            <span class="pricing-item-value">R$ 150 – 250</span>
+                        </li>
+                        <li>
+                            <span class="pricing-item-name"><i class="ph ph-check"></i> Upgrade SSD/RAM (Mão de Obra)</span>
+                            <span class="pricing-item-value">R$ 80 – 120</span>
+                        </li>
+                        <li>
+                            <span class="pricing-item-name"><i class="ph ph-check"></i> Visita Técnica / Diagnóstico</span>
+                            <span class="pricing-item-value">R$ 80 – 120</span>
+                        </li>
+                        <li>
+                            <span class="pricing-item-name"><i class="ph ph-check"></i> Configuração de Rede Wi-Fi</span>
+                            <span class="pricing-item-value">R$ 120 – 180</span>
+                        </li>
+                    </ul>
+                    <div class="pricing-footer">
+                        <span class="pricing-guarantee"><i class="ph-fill ph-shield-check"></i> 90 dias de garantia</span>
+                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20fazer%20manutenção%20no%20meu%20computador." target="_blank" rel="noopener noreferrer" class="btn btn-pricing-featured">Orçar no WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="glass-card pricing-card" id="pricing-custom-pc">
+                    <div class="pricing-card-header">
+                        <div class="pricing-icon"><i class="ph ph-cpu"></i></div>
+                        <h3>Custom PCs</h3>
+                        <p>Montagem & Workstations</p>
+                    </div>
+                    <ul class="pricing-list">
+                        <li>
+                            <span class="pricing-item-name"><i class="ph ph-check"></i> Montagem PC Office/Básico</span>
+                            <span class="pricing-item-value">R$ 150 – 200</span>
+                        </li>
+                        <li>
+                            <span class="pricing-item-name"><i class="ph ph-check"></i> Montagem PC Gamer/Alta Perf.</span>
+                            <span class="pricing-item-value">R$ 300 – 450</span>
+                        </li>
+                        <li>
+                            <span class="pricing-item-name"><i class="ph ph-check"></i> Hora Técnica (Empresas)</span>
+                            <span class="pricing-item-value">R$ 150/hora</span>
+                        </li>
+                    </ul>
+                    <div class="pricing-footer">
+                        <span class="pricing-guarantee"><i class="ph-fill ph-shield-check"></i> Teste de estresse incluído</span>
+                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20montar%20um%20PC%20Gamer." target="_blank" rel="noopener noreferrer" class="btn btn-pricing">Montar meu PC</a>
+                    </div>
+                </div>
+
+            </div>
+            <p class="pricing-disclaimer"><i class="ph ph-info"></i> Os valores acima são de mão de obra. Peças e componentes são orçados separadamente com total transparência antes da aprovação.</p>
+        </div>
+    </section>
+
+    <!-- Trust & Guarantee Section -->
+    <section id="trust" class="trust-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Por que escolher um <span class="highlight">Especialista Autônomo?</span></h2>
+                <p>Sem passar por balcão, sem estagiário, sem achismo. Seu problema é resolvido com responsabilidade total.</p>
+            </div>
+            <div class="trust-grid">
+                <div class="glass-card trust-card">
+                    <div class="trust-icon"><i class="ph ph-user-circle"></i></div>
+                    <h3>Atendimento Direto</h3>
+                    <p>Você fala diretamente comigo, do primeiro contato até a entrega. Zero intermediários, respostas rápidas e responsabilidade total pelo serviço.</p>
+                </div>
+                <div class="glass-card trust-card">
+                    <div class="trust-icon"><i class="ph-fill ph-shield-check"></i></div>
+                    <h3>90 Dias de Garantia</h3>
+                    <p>Todo serviço executado vem com 90 dias de garantia técnica. Se algo não ficou certo, eu resolvo. Simples assim.</p>
+                </div>
+                <div class="glass-card trust-card">
+                    <div class="trust-icon"><i class="ph ph-receipt"></i></div>
+                    <h3>Orçamento Transparente</h3>
+                    <p>Você aprova o valor antes de qualquer peça ser comprada ou parafuso ser removido. Sem surpresas na conta final.</p>
+                </div>
+                <div class="glass-card trust-card">
+                    <div class="trust-icon"><i class="ph ph-wrench"></i></div>
+                    <h3>Peças de Qualidade</h3>
+                    <p>Trabalho apenas com componentes testados e de procedência. Nada de peça "paralela" que dura 30 dias e te faz voltar ao técnico.</p>
+                </div>
+                <div class="glass-card trust-card">
+                    <div class="trust-icon"><i class="ph ph-buildings"></i></div>
+                    <h3>Infraestrutura Laboratorial</h3>
+                    <p>Para bancada industrial — microsolda BGA, recuperação de placa-mãe — conto com laboratório técnico credenciado em Bragança Paulista. Responsabilidade sempre minha.</p>
                 </div>
             </div>
         </div>
@@ -196,7 +357,7 @@
     <section id="process" class="process">
         <div class="container">
             <div class="section-header">
-                <h2>Resolvendo o Problema em <span class="highlight">3 Passos</span></h2>
+                <h2>Resolvendo seu Problema em <span class="highlight">3 Passos</span></h2>
                 <p>Sem burocracia. O processo é desenhado para economizar o seu tempo.</p>
             </div>
             <div class="process-steps">
@@ -220,9 +381,14 @@
                     <div class="step-number">03</div>
                     <div class="glass-card step-content">
                         <h3>Solução Entregue</h3>
-                        <p>Executo o reparo ou montagem com ferramentas adequadas, testo o equipamento em estresse e entrego funcionando perfeitamente com garantia.</p>
+                        <p>Executo o reparo ou montagem com ferramentas adequadas, testo o equipamento em estresse e entrego funcionando com garantia.</p>
                     </div>
                 </div>
+            </div>
+            <div class="process-cta">
+                <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20solicitar%20um%20orçamento." target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large" id="process-cta-whatsapp">
+                    <i class="ph-fill ph-whatsapp-logo"></i> Iniciar Atendimento Agora
+                </a>
             </div>
         </div>
     </section>
@@ -233,27 +399,37 @@
             <div class="footer-brand">
                 <div class="logo">
                     <span class="logo-name">Iago Costa</span>
-                    <span class="logo-tag">IT Specialist</span>
+                    <span class="logo-tag">IT Specialist · Bragança Paulista</span>
                 </div>
-                <p>Trazendo soluções técnicas de alta performance para a região de Bragança Paulista.</p>
+                <p>Especialista em conserto de celulares, manutenção de notebooks e Custom PCs na região de Bragança Paulista. Atendimento direto, sem intermediários.</p>
+            </div>
+            <div class="footer-services">
+                <h4>Serviços</h4>
+                <ul>
+                    <li><a href="#services">Reparo de Smartphones</a></li>
+                    <li><a href="#services">Manutenção de Notebooks</a></li>
+                    <li><a href="#services">Custom PCs & Workstations</a></li>
+                    <li><a href="#it-support">Suporte de TI e Redes</a></li>
+                </ul>
             </div>
             <div class="footer-contact">
                 <h4>Fale Comigo</h4>
-                <a href="https://wa.me/5511919691542" target="_blank"><i class="ph ph-whatsapp-logo"></i> (11) 91969-1542</a>
-                <a href="https://instagram.com/iflcosta" target="_blank"><i class="ph ph-instagram-logo"></i> @iflcosta</a>
+                <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20solicitar%20um%20orçamento." target="_blank" rel="noopener noreferrer"><i class="ph ph-whatsapp-logo"></i> (11) 91969-1542</a>
+                <a href="https://instagram.com/iflcosta" target="_blank" rel="noopener noreferrer"><i class="ph ph-instagram-logo"></i> @iflcosta</a>
                 <span><i class="ph ph-map-pin"></i> Bragança Paulista - SP</span>
             </div>
         </div>
         <div class="footer-bottom">
             <div class="container">
-                <p>&copy; 2026 Iago Costa. Todos os direitos reservados.</p>
+                <p>&copy; 2026 Iago Costa · Especialista em TI · Bragança Paulista - SP</p>
             </div>
         </div>
     </footer>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/5511919691542" target="_blank" class="floating-wa" aria-label="Falar no WhatsApp">
+    <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20solicitar%20um%20orçamento." target="_blank" rel="noopener noreferrer" class="floating-wa" aria-label="Falar no WhatsApp com Iago Costa">
         <i class="ph-fill ph-whatsapp-logo"></i>
+        <span class="floating-wa-label">Orçamento Rápido</span>
     </a>
 
     <script src="script.js"></script>

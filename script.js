@@ -1,12 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Mobile Menu Toggle
-    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-    const navMenu = document.querySelector('.nav-menu');
-    
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const navMenu = document.getElementById('nav-menu');
+
     mobileMenuBtn.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
+        const isActive = navMenu.classList.toggle('active');
+        mobileMenuBtn.setAttribute('aria-expanded', isActive);
         const icon = mobileMenuBtn.querySelector('i');
-        if (navMenu.classList.contains('active')) {
+        if (isActive) {
             icon.classList.replace('ph-list', 'ph-x');
         } else {
             icon.classList.replace('ph-x', 'ph-list');
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.nav-menu a').forEach(link => {
         link.addEventListener('click', () => {
             navMenu.classList.remove('active');
+            mobileMenuBtn.setAttribute('aria-expanded', 'false');
             const icon = mobileMenuBtn.querySelector('i');
             icon.classList.replace('ph-x', 'ph-list');
         });
@@ -25,33 +27,32 @@ document.addEventListener('DOMContentLoaded', () => {
     // Header Scroll Effect
     const header = document.getElementById('header');
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
-    });
+        header.classList.toggle('scrolled', window.scrollY > 50);
+    }, { passive: true });
 
     // Scroll Animation (Fade Up)
     const observerOptions = {
         root: null,
         rootMargin: '0px',
-        threshold: 0.15
+        threshold: 0.1
     };
 
-    const observer = new IntersectionObserver((entries, observer) => {
+    const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                observer.unobserve(entry.target); // Only animate once
+                obs.unobserve(entry.target);
             }
         });
     }, observerOptions);
 
-    // Apply fade-up to sections and cards
-    const elementsToAnimate = document.querySelectorAll('.section-header, .feature-card, .service-card, .step');
+    // Apply fade-up to sections and cards (including new sections)
+    const elementsToAnimate = document.querySelectorAll(
+        '.section-header, .feature-card, .service-card, .step, .pricing-card, .trust-card'
+    );
     elementsToAnimate.forEach(el => {
         el.classList.add('fade-up');
         observer.observe(el);
     });
 });
+
