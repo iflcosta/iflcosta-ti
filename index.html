@@ -84,6 +84,7 @@
                 <a href="#hero">Início</a>
                 <a href="#services">Especialidades</a>
                 <a href="#pricing">Preços</a>
+                <a href="#quote">Orçamento</a>
                 <a href="#process">Como Funciona</a>
                 <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20solicitar%20um%20orçamento." target="_blank" rel="noopener noreferrer" class="btn btn-outline"><i class="ph ph-whatsapp-logo"></i> Falar Direto Comigo</a>
             </nav>
@@ -389,6 +390,85 @@
                 <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20solicitar%20um%20orçamento." target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large" id="process-cta-whatsapp">
                     <i class="ph-fill ph-whatsapp-logo"></i> Iniciar Atendimento Agora
                 </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quote / Contact Section -->
+    <section id="quote" class="quote-section">
+        <div class="container">
+            <div class="quote-grid">
+                <div class="quote-info">
+                    <div class="badge"><i class="ph ph-note-pencil"></i> Orçamento Sem Compromisso</div>
+                    <h2>Pronto para <span class="highlight">Resolver seu Problema?</span></h2>
+                    <p>Preencha os detalhes técnicos abaixo. Analiso seu caso e respondo com uma estimativa inicial de prazos e valores.</p>
+                    
+                    <div class="quote-benefits">
+                        <div class="benefit-item">
+                            <i class="ph ph-clock-counter-clockwise"></i>
+                            <div>
+                                <strong>Resposta em até 2h</strong>
+                                <span>(Dentro do horário comercial)</span>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="ph ph-shield-check"></i>
+                            <div>
+                                <strong>Análise Especializada</strong>
+                                <span>Sem passar por atendentes</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card quote-form-container">
+                    <form id="budget-form" action="https://formspree.io/f/mkokybdo" method="POST">
+                        <div class="form-group">
+                            <label for="name">Nome Completo</label>
+                            <input type="text" id="name" name="name" placeholder="Ex: João Silva" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="whatsapp">WhatsApp</label>
+                                <input type="tel" id="whatsapp" name="whatsapp" placeholder="(11) 99999-9999" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="service">Categoria</label>
+                                <select id="service" name="service" required>
+                                    <option value="" disabled selected>Selecione...</option>
+                                    <option value="smartphone">Reparo de Smartphone</option>
+                                    <option value="notebook">Manutenção de Notebook</option>
+                                    <option value="custom-pc">Custom PC / Gamer</option>
+                                    <option value="ti-support">Suporte de TI / Redes</option>
+                                    <option value="outro">Outros Serviços</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Detalhes do Aparelho ou Problema</label>
+                            <textarea id="message" name="message" rows="4" placeholder="Descreva o modelo do aparelho e o que está acontecendo..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-full" id="submit-btn">
+                            <span class="btn-text">Enviar Solicitação</span>
+                            <i class="ph ph-paper-plane-right"></i>
+                        </button>
+                        
+                        <p class="form-privacy">
+                            <i class="ph ph-lock"></i> Seus dados estão seguros e serão usados apenas para este orçamento.
+                        </p>
+                    </form>
+                    
+                    <!-- Success Message (Hidden by default) -->
+                    <div id="form-success" class="form-feedback success-feedback" style="display: none;">
+                        <i class="ph-fill ph-check-circle"></i>
+                        <h3>Solicitação Enviada!</h3>
+                        <p>Obrigado pelo contato. Em breve responderei no seu WhatsApp.</p>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Enviar outra</button>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
