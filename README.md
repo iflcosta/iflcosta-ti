@@ -68,7 +68,6 @@ iflcosta-ti/
     ├── tabela_de_precos.md      # Precificação e argumentos de venda
     ├── google_ads_copy.md       # Copies para campanhas no Google Ads
     ├── textos_whatsapp.md       # Scripts de atendimento
-    ├── guia_de_publicacao.md    # Guia de deploy e manutenção
     └── arquitetura_do_ecossistema.md
 ```
 
