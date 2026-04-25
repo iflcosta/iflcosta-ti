@@ -86,3 +86,32 @@ Conserto rápido com peças de qualidade e testes rigorosos na bancada. Não dei
 🔹 Reparo de conectores de carga e botões.
 
 Peças com garantia e montagem vedada. Me mande a marca e o modelo do seu celular para orçamento na hora!
+
+---
+
+## 3. Scripts de Venda e Upsell (Aumentando o Lucro)
+
+### Script A: Upsell de Backup (Antes de qualquer serviço)
+*Use isso quando o cliente aprovar uma formatação ou reparo de hardware.*
+
+"Perfeito, [Nome do Cliente]! Já agendei seu atendimento aqui. Só uma dúvida importante: você tem backup atualizado dos seus arquivos, fotos e documentos? 
+
+Como vamos mexer no sistema/hardware, eu sempre ofereço por segurança o nosso **Serviço de Backup Blindado** por apenas R$ [Valor]. Eu garanto que nada se perca e restauro tudo exatamente como estava depois do serviço. Podemos incluir para sua tranquilidade?"
+
+---
+
+### Script B: Upsell de Limpeza Preventiva (O "Combo" de Notebook)
+*Use isso quando o cliente pedir apenas uma formatação ou upgrade de SSD.*
+
+"Notei aqui que seu notebook tem [X] anos de uso. Como vou abrir a máquina para fazer o [Serviço solicitado], recomendo muito aproveitarmos para fazer a **Limpeza Preventiva com Troca de Pasta Térmica de Prata**. 
+
+Isso evita que o processador superaqueça e queime a placa no futuro. Fazendo junto com o outro serviço, eu consigo te dar um desconto e fazer por apenas R$ [Valor]. Vale muito a pena para proteger seu investimento. Vamos aproveitar?"
+
+---
+
+### Script C: Pós-Venda e Pedido de Indicação
+*Use isso 2 dias após entregar o equipamento consertado.*
+
+"Olá, [Nome do Cliente]! Passando apenas para confirmar se o [Equipamento] está rodando 100% e se ficou satisfeito com o serviço. 
+
+Se puder me ajudar, estou com uma campanha de **Indicação VIP**: se você indicar um amigo que fechar um serviço comigo, você ganha [20% de desconto ou Limpeza Grátis] na sua próxima visita. Se souber de alguém precisando de um especialista, é só passar meu contato! Abraço!"
