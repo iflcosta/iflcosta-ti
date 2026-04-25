@@ -1,49 +1,64 @@
-# Blueprint de Estrutura: Notion para Especialista de TI
+# Comando de Construção: Workspace "Iago Costa TI" no Notion
 
-Este guia foi desenhado para você copiar e colar dentro do seu Notion. A **Notion AI** conseguirá ler estas instruções e te ajudar a montar as tabelas.
-
----
-
-## 1. Banco de Dados: Funil de Vendas (CRM)
-*Este é o coração do seu dia a dia. Use a visualização de **QUADRO (KANBAN)**.*
-
-**Propriedades que você deve criar:**
-1.  **Título:** Nome do Cliente / Equipamento
-2.  **Status (Select):** [Novo Lead, Orçamento Enviado, Na Bancada, Aguardando Peça, Finalizado, Entregue/Pago]
-3.  **Valor (Number):** Formato Real (R$)
-4.  **WhatsApp (URL):** Link para conversa direta
-5.  **Data de Entrada (Date):** Quando o aparelho chegou
-6.  **Tipo de Serviço (Multi-select):** [Celular, Notebook, PC Gamer, Redes, Software]
+**Instrução para a Notion AI:** 
+> "Com base na estrutura abaixo, crie uma página central de Painel de Controle e organize todas as subpáginas e bancos de dados descritos. Use ícones e cores para cada seção e preencha com exemplos reais."
 
 ---
 
-## 2. Banco de Dados: Cadastro de Clientes
-*Aqui você guarda o histórico de quem já passou por você.*
+## 1. PÁGINA CENTRAL: [🏠] PAINEL DE CONTROLE (HOME)
+Página principal com navegação rápida para as áreas do negócio.
 
-**Propriedades que você deve criar:**
-1.  **Nome (Título):** Nome Completo
-2.  **Telefone (Phone):** WhatsApp do Cliente
-3.  **Total Gasto (Rollup/Number):** Soma de todos os serviços realizados (LTV)
-4.  **Data do Último Serviço (Date):** Para você saber quando mandar uma mensagem de pós-venda após 6 meses.
-5.  **Observações Técnicas (Text):** Ex: "Cliente muito exigente", "Gosta de peças originais".
+### Seção A: Operações Diárias
+- **[📊] Funil de Vendas (CRM):** Banco de dados em visualização de QUADRO (Kanban).
+    - *Colunas:* Novo Lead, Orçamento Enviado, Na Bancada, Aguardando Peça, Finalizado, Pago.
+    - *Propriedades:* Nome/Equipamento (Título), Valor (Number), WhatsApp (URL), Data de Entrada (Date).
+- **[👥] Banco de Dados de Clientes:** Tabela com histórico.
+    - *Propriedades:* Nome (Título), Telefone (Phone), Equipamentos (Text), Total Gasto (Number).
+
+### Seção B: Inteligência e Documentação
+- **[🧠] Base de Conhecimento (Wiki Técnica):** Galeria para documentar soluções.
+    - *Propriedades:* Problema (Título), Solução (Text), Tags (Multi-select), Fotos (Files).
+- **[📄] Documentos do Projeto:** Subpágina para guardar os arquivos:
+    - Plano de Negócios 2026
+    - Tabela de Preços Oficial
+    - Scripts de Venda WhatsApp
+    - Checklist de Recebimento
+
+### Seção C: Links Rápidos (Favoritos)
+- [ ] Link: Site Vercel (Página de Vendas)
+- [ ] Link: Google Meu Negócio (Gestão de Fotos e Reviews)
+- [ ] Link: Canva (Criação de Posts)
+- [ ] Link: Registro.br (Gestão de Domínio)
 
 ---
 
-## 3. Banco de Dados: Base de Conhecimento (Wiki)
-*Onde você documenta soluções para a sua IA consultar no futuro.*
+## 2. DETALHAMENTO TÉCNICO DOS BANCOS DE DADOS
 
-**Propriedades que você deve criar:**
-1.  **Problema (Título):** Ex: "Erro de Wi-Fi no iPhone 12"
-2.  **Sintoma (Text):** Como o aparelho se comportava
-3.  **Solução (Text):** O passo a passo técnico do que você fez
-4.  **Dificuldade (Select):** [Fácil, Média, Hard, Ninja]
-5.  **Tags (Multi-select):** [Microsolda, Software, Hardware, Apple, Android]
+### Banco 1: Funil de Vendas
+*Propriedades exatas para criar:*
+1. **Nome/Equipamento** (Título)
+2. **Status** (Select): [Lead, Orçamento, Bancada, Peça, Finalizado, Pago]
+3. **Valor** (Number - Real R$)
+4. **Link WhatsApp** (URL)
+5. **Data** (Date)
+6. **Prioridade** (Select): [🔥 Urgente, ⏳ Normal, ☕ Baixa]
+
+### Banco 2: Clientes
+*Propriedades exatas para criar:*
+1. **Nome Completo** (Título)
+2. **Contato** (Phone)
+3. **Equipamentos Associados** (Text)
+4. **Data de Aniversário** (Date) - *Para fidelização.*
+5. **Tags** (Multi-select): [Empresa, Pessoa Física, VIP]
+
+### Banco 3: Wiki Técnica (O Cérebro)
+*Propriedades exatas para criar:*
+1. **Problema/Erro** (Título)
+2. **Sintoma** (Text)
+3. **Passo a Passo da Solução** (Text)
+4. **Nível de Dificuldade** (Select): [Fácil, Médio, Complexo]
+5. **Fabricante** (Select): [Apple, Samsung, ASUS, Dell, HP, Outro]
 
 ---
 
-### 💡 Como usar com a Notion AI:
-1. Crie uma página nova no Notion.
-2. Copie o texto de uma das seções acima.
-3. Aperte `Espaço` (para chamar a IA) e digite: 
-   *"Crie um banco de dados de exemplo com estas propriedades listadas acima e preencha com 2 linhas de exemplo."*
-4. O Notion vai gerar a tabela para você na hora. Depois você só precisa ajustar os tipos de coluna se ele errar algum.
+**Nota Final:** Ao colar este texto no Notion, selecione tudo e use o comando da IA: *"Transforme isso em uma página de Dashboard completa com bancos de dados funcionais."*
