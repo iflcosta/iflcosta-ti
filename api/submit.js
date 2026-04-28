@@ -12,7 +12,20 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const { name, whatsapp, service, message } = req.body;
+    const { name, whatsapp, service, message, client_type, urgency } = req.body;
+
+    // Mapear urgência para qualificação do Notion
+    const qualificationMap = {
+      'Alta': '🔥 Quente',
+      'Média': '⏳ Médio',
+      'Baixa': '❄️ Frio'
+    };
+
+    // Mapear tipo de cliente para o Notion
+    const typeMap = {
+      'Pessoa Física': 'Pessoa Física',
+      'Empresa/Escritório': 'Empresa/B2B'
+    };
 
     // Formatar o link do WhatsApp
     const cleanPhone = whatsapp.replace(/\D/g, '');
@@ -33,6 +46,16 @@ module.exports = async (req, res) => {
         'Status': {
           select: {
             name: 'Lead',
+          },
+        },
+        'Qualificação': {
+          select: {
+            name: qualificationMap[urgency] || '⏳ Médio',
+          },
+        },
+        'Tipo de Lead': {
+          select: {
+            name: typeMap[client_type] || 'Pessoa Física',
           },
         },
         'Link WhatsApp': {
