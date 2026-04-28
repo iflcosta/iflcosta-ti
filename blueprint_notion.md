@@ -1,64 +1,54 @@
-# Comando de Construção: Workspace "Iago Costa TI" no Notion
+# Blueprint de Estrutura: Notion para Especialista de TI (Versão Final 2.0)
 
-**Instrução para a Notion AI:** 
-> "Com base na estrutura abaixo, crie uma página central de Painel de Controle e organize todas as subpáginas e bancos de dados descritos. Use ícones e cores para cada seção e preencha com exemplos reais."
-
----
-
-## 1. PÁGINA CENTRAL: [🏠] PAINEL DE CONTROLE (HOME)
-Página principal com navegação rápida para as áreas do negócio.
-
-### Seção A: Operações Diárias
-- **[📊] Funil de Vendas (CRM):** Banco de dados em visualização de QUADRO (Kanban).
-    - *Colunas:* Novo Lead, Orçamento Enviado, Na Bancada, Aguardando Peça, Finalizado, Pago.
-    - *Propriedades:* Nome/Equipamento (Título), Valor (Number), WhatsApp (URL), Data de Entrada (Date).
-- **[👥] Banco de Dados de Clientes:** Tabela com histórico.
-    - *Propriedades:* Nome (Título), Telefone (Phone), Equipamentos (Text), Total Gasto (Number).
-
-### Seção B: Inteligência e Documentação
-- **[🧠] Base de Conhecimento (Wiki Técnica):** Galeria para documentar soluções.
-    - *Propriedades:* Problema (Título), Solução (Text), Tags (Multi-select), Fotos (Files).
-- **[📄] Documentos do Projeto:** Subpágina para guardar os arquivos:
-    - Plano de Negócios 2026
-    - Tabela de Preços Oficial
-    - Scripts de Venda WhatsApp
-    - Checklist de Recebimento
-
-### Seção C: Links Rápidos (Favoritos)
-- [ ] Link: Site Vercel (Página de Vendas)
-- [ ] Link: Google Meu Negócio (Gestão de Fotos e Reviews)
-- [ ] Link: Canva (Criação de Posts)
-- [ ] Link: Registro.br (Gestão de Domínio)
+Este guia reflete a estrutura de triagem e qualificação implementada para o lançamento da operação em 04/05/2026.
 
 ---
 
-## 2. DETALHAMENTO TÉCNICO DOS BANCOS DE DADOS
+## 1. BANCO DE DADOS: Funil de Vendas (CRM)
+*Visualização Principal: **QUADRO (KANBAN)***
 
-### Banco 1: Funil de Vendas
-*Propriedades exatas para criar:*
-1. **Nome/Equipamento** (Título)
-2. **Status** (Select): [Lead, Orçamento, Bancada, Peça, Finalizado, Pago]
-3. **Valor** (Number - Real R$)
-4. **Link WhatsApp** (URL)
-5. **Data** (Date)
-6. **Prioridade** (Select): [🔥 Urgente, ⏳ Normal, ☕ Baixa]
+**Propriedades Configuradas:**
+1.  **Nome/Equipamento (Título):** Recebido automaticamente do site.
+2.  **Status (Select):** [Lead, Orçamento, Bancada, Finalizado, Pago, Arquivo]
+3.  **Qualificação (Select):** [🔥 Quente, ⏳ Médio, ❄️ Frio] -> Preenchido via Urgência do site.
+4.  **Tipo de Lead (Select):** [Empresa/B2B, Pessoa Física] -> Preenchido via formulário do site.
+5.  **Valor (Number):** Formato Real (R$).
+6.  **WhatsApp (URL):** Link direto para atendimento.
+7.  **Data (Date):** Data de entrada do lead.
+8.  **Arquivar (Checkbox):** Gatilho para limpeza em massa.
 
-### Banco 2: Clientes
-*Propriedades exatas para criar:*
-1. **Nome Completo** (Título)
-2. **Contato** (Phone)
-3. **Equipamentos Associados** (Text)
-4. **Data de Aniversário** (Date) - *Para fidelização.*
-5. **Tags** (Multi-select): [Empresa, Pessoa Física, VIP]
-
-### Banco 3: Wiki Técnica (O Cérebro)
-*Propriedades exatas para criar:*
-1. **Problema/Erro** (Título)
-2. **Sintoma** (Text)
-3. **Passo a Passo da Solução** (Text)
-4. **Nível de Dificuldade** (Select): [Fácil, Médio, Complexo]
-5. **Fabricante** (Select): [Apple, Samsung, ASUS, Dell, HP, Outro]
+**Visualizações (Views):**
+- **[📋] Triagem de Hoje:** Tabela filtrada por (Status = Lead) + (Data = Hoje) + (Qualificação = Vazia).
+- **[📊] Fluxo de Trabalho:** Quadro Kanban agrupado por Status.
+- **[📁] Arquivo:** Tabela filtrada por (Status = Arquivo).
 
 ---
 
-**Nota Final:** Ao colar este texto no Notion, selecione tudo e use o comando da IA: *"Transforme isso em uma página de Dashboard completa com bancos de dados funcionais."*
+## 2. AUTOMAÇÃO: Botão de Limpeza (Limpar Leads Frios)
+**Configuração do Botão:**
+- **Ação:** Editar páginas no banco 'Funil de Vendas'.
+- **Filtro:** Somente páginas onde `Arquivar` está MARCADO.
+- **Modificação:** Mudar `Status` para "Arquivo" e desmarcar `Arquivar`.
+
+---
+
+## 3. BANCO DE DADOS: Wiki Técnica (O Cérebro da IA)
+*Visualização Principal: **GALERIA***
+
+**Propriedades:**
+1.  **Problema (Título)**
+2.  **Sintoma (Text)**
+3.  **Solução (Text)**
+4.  **Tags (Multi-select):** [Apple, Android, Microsolda, Redes, PC Gamer]
+
+---
+
+## 4. INTEGRAÇÃO COM O SITE (API)
+- **Endpoint:** `/api/submit` (Vercel)
+- **Mapeamento de Urgência:**
+    - Alta -> 🔥 Quente
+    - Média -> ⏳ Médio
+    - Baixa -> ❄️ Frio
+- **Mapeamento de Tipo:**
+    - Pessoa Física -> Pessoa Física
+    - Empresa/Escritório -> Empresa/B2B
