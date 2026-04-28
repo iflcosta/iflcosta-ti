@@ -85,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             
             const formData = new FormData(budgetForm);
+            const data = Object.fromEntries(formData.entries());
             const submitBtnText = submitBtn.querySelector('.btn-text');
             const originalText = submitBtnText.textContent;
             
@@ -93,10 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtnText.textContent = 'Enviando...';
 
             try {
-                const response = await fetch(budgetForm.action, {
+                const response = await fetch('/api/submit', {
                     method: 'POST',
-                    body: formData,
+                    body: JSON.stringify(data),
                     headers: {
+                        'Content-Type': 'application/json',
                         'Accept': 'application/json'
                     }
                 });
