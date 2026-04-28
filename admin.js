@@ -77,6 +77,7 @@ function showPage(pageId) {
 async function initDashboard() {
     if (!iccClient) return;
     fetchLeads(); // Carregar leads inicialmente
+    fetchRepairs(); // Carregar reparos inicialmente
     
     // Buscar Estatísticas em Tempo Real
     const { data: leadsCount } = await iccClient.from('leads').select('*', { count: 'exact' }).eq('status', 'Novo');
@@ -174,4 +175,98 @@ async function fetchRecentActivity() {
     } else {
         feed.innerHTML = '<p style="padding:1rem;">Nenhuma atividade recente.</p>';
     }
+}
+
+// Módulo de Reparos (O.S.)
+function openOSModal() {
+    document.getElementById('os-modal').style.display = 'flex';
+}
+
+function closeOSModal() {
+    document.getElementById('os-modal').style.display = 'none';
+}
+
+async function fetchRepairs() {
+    const tableBody = document.getElementById('repairs-table-body');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando reparos...</td></tr>';
+
+    const { data: repairs, error } = await iccClient
+        .from('repairs')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #ef4444;">Erro ao carregar dados.</td></tr>';
+        return;
+    }
+
+    if (repairs.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhuma O.S. encontrada.</td></tr>';
+        return;
+    }
+
+    tableBody.innerHTML = repairs.map(r => {
+        const profit = (r.price || 0) - (r.part_cost || 0);
+        return `
+            <tr>
+                <td>#${r.id.slice(0,5)}</td>
+                <td>
+                    <div style="font-weight:600;">${r.device_model}</div>
+                    <div style="font-size:0.8rem; color:var(--text-dim);">${r.description || 'Sem descrição'}</div>
+                </td>
+                <td><span class="badge badge-status-${r.status.toLowerCase().replace(' ', '-')}">${r.status}</span></td>
+                <td>R$ ${r.price.toLocaleString('pt-BR')}</td>
+                <td style="color: #22c55e;">R$ ${profit.toLocaleString('pt-BR')}</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn-icon" title="Editar Status" onclick="updateOSStatus('${r.id}')"><i class="ph ph-note-pencil"></i></button>
+                        <button class="btn-icon archive" title="Excluir" onclick="deleteOS('${r.id}')"><i class="ph ph-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Handler do Formulário de O.S.
+const osForm = document.getElementById('os-form');
+if (osForm) {
+    osForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const payload = {
+            device_model: document.getElementById('os-model').value,
+            price: parseFloat(document.getElementById('os-price').value),
+            part_cost: parseFloat(document.getElementById('os-cost').value),
+            description: document.getElementById('os-notes').value,
+            status: 'Em Análise'
+        };
+
+        const { error } = await iccClient.from('repairs').insert([payload]);
+
+        if (error) {
+            alert('Erro ao criar O.S.: ' + error.message);
+        } else {
+            closeOSModal();
+            osForm.reset();
+            fetchRepairs();
+            alert('Ordem de Serviço criada com sucesso!');
+        }
+    });
+}
+
+async function updateOSStatus(id) {
+    const newStatus = prompt('Digite o novo status (Em Análise, Aguardando Peça, Pronto, Entregue):');
+    if (!newStatus) return;
+    
+    const { error } = await iccClient.from('repairs').update({ status: newStatus }).eq('id', id);
+    if (!error) fetchRepairs();
+}
+
+async function deleteOS(id) {
+    if (!confirm('Deseja excluir esta O.S.?')) return;
+    const { error } = await iccClient.from('repairs').delete().eq('id', id);
+    if (!error) fetchRepairs();
 }

@@ -243,7 +243,69 @@
                     </div>
                 </div>
             </div>
-            <div id="page-repairs" style="display:none;"><h2>Ordens de Serviço</h2></div>
+            <div id="page-repairs" style="display:none;">
+                <div class="page-header">
+                    <h2>Ordens de Serviço</h2>
+                    <div class="header-actions">
+                        <button class="btn-primary" onclick="openOSModal()"><i class="ph ph-plus-circle"></i> Nova O.S.</button>
+                        <button class="btn-secondary" onclick="fetchRepairs()"><i class="ph ph-arrows-clockwise"></i> Atualizar</button>
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <div class="table-responsive">
+                        <table class="icc-table">
+                            <thead>
+                                <tr>
+                                    <th>O.S. #</th>
+                                    <th>Aparelho</th>
+                                    <th>Status</th>
+                                    <th>Orçamento</th>
+                                    <th>Lucro Est.</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="repairs-table-body">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Nova O.S. -->
+            <div id="os-modal" class="login-overlay" style="display:none; align-items:center; justify-content:center;">
+                <div class="glass-card login-card" style="max-width: 500px; width: 90%;">
+                    <div class="login-header">
+                        <h3>Nova Ordem de Serviço</h3>
+                        <p>Preencha os dados técnicos do equipamento.</p>
+                    </div>
+                    <form id="os-form">
+                        <div class="form-group">
+                            <label>Modelo do Aparelho</label>
+                            <input type="text" id="os-model" placeholder="Ex: iPhone 13 Pro / Dell G15" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Valor Orçado (R$)</label>
+                                <input type="number" id="os-price" placeholder="0.00" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Custo de Peças (R$)</label>
+                                <input type="number" id="os-cost" placeholder="0.00" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Defeito / Notas</label>
+                            <textarea id="os-notes" placeholder="Descreva o problema e o que será feito..." rows="3"></textarea>
+                        </div>
+                        <div class="login-actions">
+                            <button type="button" class="btn-secondary" onclick="closeOSModal()">Cancelar</button>
+                            <button type="submit" class="btn-primary">Criar O.S.</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <div id="page-inventory" style="display:none;"><h2>Estoque & Vendas</h2></div>
             <div id="page-imports" style="display:none;">
                 <div class="page-header">
