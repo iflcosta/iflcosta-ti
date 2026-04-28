@@ -443,16 +443,28 @@ header.scrolled {
 }
 
 .stat-1 {
-    top: 15%;
+    top: 10%;
     left: 0;
 }
 .stat-1 i { color: var(--accent-secondary); }
 
 .stat-2 {
-    bottom: 20%;
+    bottom: 15%;
     right: 0;
 }
 .stat-2 i { color: var(--accent-primary); }
+
+.stat-3 {
+    top: 25%;
+    right: -20px;
+}
+.stat-3 i { color: #00d2ff; }
+
+.stat-4 {
+    bottom: 30%;
+    left: -20px;
+}
+.stat-4 i { color: #ff9d00; }
 
 /* =========================================
    IT Support Section
