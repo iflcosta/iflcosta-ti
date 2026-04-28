@@ -211,7 +211,34 @@
             </div>
 
             <!-- Outras páginas seriam injetadas aqui via JS -->
-            <div id="page-leads" style="display:none;"><h2>Triagem de Leads</h2></div>
+            <div id="page-leads" style="display:none;">
+                <div class="page-header">
+                    <h2>Triagem de Leads</h2>
+                    <div class="header-actions">
+                        <button class="btn-secondary" onclick="fetchLeads()"><i class="ph ph-arrows-clockwise"></i> Atualizar</button>
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <div class="table-responsive">
+                        <table class="icc-table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Cliente</th>
+                                    <th>Serviço</th>
+                                    <th>Urgência</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leads-table-body">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <div id="page-repairs" style="display:none;"><h2>Ordens de Serviço</h2></div>
             <div id="page-inventory" style="display:none;"><h2>Estoque & Vendas</h2></div>
             <div id="page-imports" style="display:none;">

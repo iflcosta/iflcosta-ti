@@ -76,7 +76,8 @@ function showPage(pageId) {
 // Lógica do Dashboard
 async function initDashboard() {
     if (!iccClient) return;
-
+    fetchLeads(); // Carregar leads inicialmente
+    
     // Buscar Estatísticas em Tempo Real
     const { data: leadsCount } = await iccClient.from('leads').select('*', { count: 'exact' }).eq('status', 'Novo');
     const { data: repairsCount } = await iccClient.from('repairs').select('*', { count: 'exact' }).neq('status', 'Entregue');
@@ -86,6 +87,58 @@ async function initDashboard() {
 
     // Atualizar Feed de Atividade
     fetchRecentActivity();
+}
+
+async function fetchLeads() {
+    const tableBody = document.getElementById('leads-table-body');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando leads...</td></tr>';
+
+    const { data: leads, error } = await iccClient
+        .from('leads')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #ef4444;">Erro ao carregar dados.</td></tr>';
+        return;
+    }
+
+    if (leads.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum lead encontrado.</td></tr>';
+        return;
+    }
+
+    tableBody.innerHTML = leads.map(l => `
+        <tr>
+            <td>${new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
+            <td>
+                <div style="font-weight:600;">${l.name}</div>
+                <div style="font-size:0.8rem; color:var(--text-dim);">${l.client_type || 'Pessoa Física'}</div>
+            </td>
+            <td>${l.service_category}</td>
+            <td><span class="badge badge-urgency-${(l.urgency || 'media').toLowerCase()}">${l.urgency || 'Média'}</span></td>
+            <td>${l.status}</td>
+            <td>
+                <div class="action-btns">
+                    <a href="https://wa.me/55${l.whatsapp.replace(/\D/g,'')}?text=Olá%20${l.name},%20aqui%20é%20o%20Iago%20da%20Iago%20Costa%20TI.%20Recebi%20seu%20contato!" target="_blank" class="btn-icon wa" title="Chamar no WhatsApp"><i class="ph ph-whatsapp-logo"></i></a>
+                    <button class="btn-icon" onclick="convertToCustomer('${l.id}')" title="Converter em Cliente"><i class="ph ph-user-plus"></i></button>
+                    <button class="btn-icon archive" onclick="archiveLead('${l.id}')" title="Arquivar"><i class="ph ph-archive"></i></button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function archiveLead(id) {
+    if (!confirm('Deseja arquivar este lead?')) return;
+    const { error } = await iccClient.from('leads').update({ status: 'Arquivado' }).eq('id', id);
+    if (!error) fetchLeads();
+}
+
+async function convertToCustomer(id) {
+    alert('Funcionalidade de conversão será implementada no Módulo de Clientes.');
 }
 
 async function fetchRecentActivity() {
