@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     .insert([
                         { 
                             name: data.name, 
-                            whatsapp: data.phone, 
+                            whatsapp: data.whatsapp, 
                             service_category: data.service, 
                             message: data.message,
                             urgency: data.urgency,
