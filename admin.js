@@ -89,16 +89,21 @@ async function initDashboard() {
     fetchRecentActivity();
 }
 
-async function fetchLeads() {
+async function fetchLeads(filter = 'Novo') {
     const tableBody = document.getElementById('leads-table-body');
     if (!tableBody) return;
 
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando leads...</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando...</td></tr>';
 
-    const { data: leads, error } = await iccClient
-        .from('leads')
-        .select('*')
-        .order('created_at', { ascending: false });
+    let query = iccClient.from('leads').select('*').order('created_at', { ascending: false });
+    
+    if (filter === 'Novo') {
+        query = query.neq('status', 'Arquivado');
+    } else {
+        query = query.eq('status', 'Arquivado');
+    }
+
+    const { data: leads, error } = await query;
 
     if (error) {
         tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #ef4444;">Erro ao carregar dados.</td></tr>';
