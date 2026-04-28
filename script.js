@@ -1,7 +1,7 @@
 // 🔑 CONFIGURAÇÃO SUPABASE (Sincronizado via MCP)
 const SUPABASE_URL = 'https://pfodcrnisntawxqsywld.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_Vip8SjvB27zSCuDI_MVXKg_Iy2tB0DW';
-const supabase = typeof supabase !== 'undefined' ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+const iccLeadClient = typeof supabase !== 'undefined' ? supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Mobile Menu Toggle
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const formSuccess = document.getElementById('form-success');
     const submitBtn = document.getElementById('submit-btn');
 
-    if (budgetForm && supabase) {
+    if (budgetForm && iccLeadClient) {
         budgetForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 // Inserir lead no Supabase
-                const { error } = await supabase
+                const { error } = await iccLeadClient
                     .from('leads')
                     .insert([
                         { 

@@ -4,12 +4,12 @@
 const SUPABASE_URL = 'https://pfodcrnisntawxqsywld.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_Vip8SjvB27zSCuDI_MVXKg_Iy2tB0DW';
 
-let supabase = null;
+let iccClient = null;
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     if (SUPABASE_URL !== 'SUA_URL_DO_SUPABASE') {
-        supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        iccClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         checkSession();
     } else {
         console.warn('Aguardando chaves do Supabase para conectar...');
@@ -25,12 +25,12 @@ loginForm.addEventListener('submit', async (e) => {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-pass').value;
 
-    if (!supabase) {
+    if (!iccClient) {
         alert('Erro: Supabase não inicializado.');
         return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await iccClient.auth.signInWithPassword({
         email: email,
         password: password,
     });
@@ -44,7 +44,7 @@ loginForm.addEventListener('submit', async (e) => {
 });
 
 async function checkSession() {
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { session } } = await iccClient.auth.getSession();
     if (session) {
         loginOverlay.style.display = 'none';
         initDashboard();
@@ -52,7 +52,7 @@ async function checkSession() {
 }
 
 async function logout() {
-    await supabase.auth.signOut();
+    await iccClient.auth.signOut();
     window.location.reload();
 }
 
@@ -75,11 +75,11 @@ function showPage(pageId) {
 
 // Lógica do Dashboard
 async function initDashboard() {
-    if (!supabase) return;
+    if (!iccClient) return;
 
     // Buscar Estatísticas em Tempo Real
-    const { data: leadsCount } = await supabase.from('leads').select('*', { count: 'exact' }).eq('status', 'Novo');
-    const { data: repairsCount } = await supabase.from('repairs').select('*', { count: 'exact' }).neq('status', 'Entregue');
+    const { data: leadsCount } = await iccClient.from('leads').select('*', { count: 'exact' }).eq('status', 'Novo');
+    const { data: repairsCount } = await iccClient.from('repairs').select('*', { count: 'exact' }).neq('status', 'Entregue');
 
     document.getElementById('stat-leads').innerText = leadsCount ? leadsCount.length : 0;
     document.getElementById('stat-repairs').innerText = repairsCount ? repairsCount.length : 0;
@@ -90,7 +90,7 @@ async function initDashboard() {
 
 async function fetchRecentActivity() {
     const feed = document.getElementById('activity-feed');
-    const { data: leads } = await supabase.from('leads').select('*').order('created_at', { ascending: false }).limit(5);
+    const { data: leads } = await iccClient.from('leads').select('*').order('created_at', { ascending: false }).limit(5);
 
     if (leads && leads.length > 0) {
         feed.innerHTML = leads.map(l => `
