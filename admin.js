@@ -1,8 +1,8 @@
 // ICC v2.0 - Iago Command Center JS Core
 
-// 🔑 CONFIGURAÇÃO SUPABASE (Substitua pelos seus dados!)
-const SUPABASE_URL = 'SUA_URL_DO_SUPABASE';
-const SUPABASE_KEY = 'SUA_ANON_KEY_DO_SUPABASE';
+// 🔑 CONFIGURAÇÃO SUPABASE (Sincronizado via MCP)
+const SUPABASE_URL = 'https://pfodcrnisntawxqsywld.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Vip8SjvB27zSCuDI_MVXKg_Iy2tB0DW';
 
 let supabase = null;
 
