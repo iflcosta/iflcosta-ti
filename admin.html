@@ -3,118 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Controle | Iago Costa TI</title>
+    <title>ICC v2.0 | Iago Command Center</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="admin.css">
+    <style>
+        /* Estilos específicos para a v2 com Sidebar */
+        body { display: block; overflow: hidden; }
+        .app-container { display: flex; height: 100vh; width: 100vw; }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: rgba(10, 15, 30, 0.8);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1rem;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 3rem;
+            padding: 0 1rem;
+        }
+
+        .logo-area i { font-size: 2rem; color: var(--purple-vibrant); }
+        .logo-area h1 { font-size: 1.2rem; font-weight: 800; letter-spacing: -1px; }
+
+        .nav-links { list-style: none; flex: 1; }
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            text-decoration: none;
+            color: var(--text-dim);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: rgba(177, 74, 255, 0.1);
+            color: white;
+        }
+
+        .nav-link.active i { color: var(--purple-vibrant); }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2.5rem;
+            overflow-y: auto;
+            background: var(--bg-dark);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        /* Status Cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            padding: 1.5rem;
+            border-radius: 20px;
+        }
+
+        .stat-card span { font-size: 0.85rem; color: var(--text-dim); display: block; margin-bottom: 0.5rem; }
+        .stat-card h3 { font-size: 1.5rem; font-weight: 700; color: white; }
+        .stat-card .trend { font-size: 0.75rem; margin-top: 0.5rem; display: block; }
+        .trend.up { color: var(--success); }
+
+        /* Tables and Widgets */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .data-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+        }
+
+        .data-card h4 { margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    </style>
 </head>
 <body>
-    <div class="bg-glow"></div>
-    <div class="bg-glow-bottom"></div>
-
-    <!-- Login Screen -->
-    <div id="login-screen" class="login-container">
-        <div class="glass-card">
-            <div class="login-header">
-                <i class="ph ph-shield-check"></i>
-                <h1>Portal de Comando</h1>
-                <p>Identifique-se para acessar o QG Digital</p>
+    <!-- Login Overlay -->
+    <div id="login-overlay" style="position: fixed; inset: 0; z-index: 9999; display: flex; justify-content: center; align-items: center; background: var(--bg-dark);">
+        <div class="login-container" style="width: 400px;">
+            <div class="glass-card">
+                <div class="login-header">
+                    <i class="ph ph-shield-star"></i>
+                    <h1>ICC v2.0</h1>
+                    <p>Entre no Portal de Comando</p>
+                </div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>E-mail</label>
+                        <input type="email" id="login-email" placeholder="iago@exemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Senha</label>
+                        <input type="password" id="login-pass" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-login">Entrar no Sistema</button>
+                </form>
             </div>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="email">E-mail</label>
-                    <div class="input-wrapper">
-                        <i class="ph ph-envelope"></i>
-                        <input type="email" id="email" placeholder="seu@email.com" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="password">Senha de Acesso</label>
-                    <div class="input-wrapper">
-                        <i class="ph ph-lock"></i>
-                        <input type="password" id="password" placeholder="••••••••" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn-login">
-                    Acessar Painel <i class="ph ph-arrow-right"></i>
-                </button>
-            </form>
         </div>
     </div>
 
-    <!-- Dashboard Screen (Hidden) -->
-    <div id="dashboard-screen" class="dashboard-container">
-        <header class="dashboard-header">
-            <div class="user-info">
-                <div class="avatar">IC</div>
-                <div>
-                    <h2>Olá, Iago Costa</h2>
-                    <p style="color: var(--text-dim); font-size: 0.85rem;">Especialista Autônomo · Modo Admin</p>
-                </div>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <i class="ph-fill ph-rocket-launch"></i>
+                <h1>ICC PORTAL</h1>
             </div>
-            <button class="logout-btn" onclick="logout()">Sair do Painel</button>
-        </header>
+            
+            <nav class="nav-links">
+                <li class="nav-item"><a href="#" class="nav-link active" onclick="showPage('dashboard')"><i class="ph ph-squares-four"></i> Dashboard</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('leads')"><i class="ph ph-users-three"></i> Triagem de Leads</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('repairs')"><i class="ph ph-wrench"></i> Ordens de Serviço</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('inventory')"><i class="ph ph-package"></i> Estoque & Vendas</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('imports')"><i class="ph ph-globe-hemisphere-west"></i> Importação B2B</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('wiki')"><i class="ph ph-brain"></i> Wiki IA Copilot</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('settings')"><i class="ph ph-gear"></i> Configurações</a></li>
+            </nav>
 
-        <div class="dashboard-grid">
-            <!-- Coluna 1: Leads e Operação -->
-            <div class="widget">
-                <div class="widget-title">
-                    <i class="ph ph-chart-line-up"></i> MONITOR DE LEADS
+            <div class="sidebar-footer">
+                <button class="logout-btn" style="width: 100%;" onclick="logout()">Encerrar Sessão</button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div id="page-dashboard">
+                <div class="page-header">
+                    <h2>Visão Geral do Negócio</h2>
+                    <div class="date-badge" id="current-date">Abril, 2026</div>
                 </div>
-                <div id="leads-list">
-                    <p style="color: var(--text-dim); font-size: 0.9rem; text-align: center; padding: 2rem;">
-                        Carregando leads do Notion...
-                    </p>
+
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <span>Faturamento Mensal</span>
+                        <h3 id="stat-revenue">R$ 0,00</h3>
+                        <span class="trend up"><i class="ph ph-trend-up"></i> +12% vs mês anterior</span>
+                    </div>
+                    <div class="stat-card">
+                        <span>Leads em Aberto</span>
+                        <h3 id="stat-leads">0</h3>
+                    </div>
+                    <div class="stat-card">
+                        <span>Reparos na Bancada</span>
+                        <h3 id="stat-repairs">0</h3>
+                    </div>
+                    <div class="stat-card">
+                        <span>Lucro Estimado</span>
+                        <h3 id="stat-profit" style="color: var(--success);">R$ 0,00</h3>
+                    </div>
                 </div>
-                <a href="#" class="link-btn" style="margin-top: 1rem; flex-direction: row; font-size: 0.85rem;" onclick="openNotion('crm')">
-                    <i class="ph ph-arrow-square-out"></i> Abrir CRM Completo no Notion
-                </a>
+
+                <div class="content-grid">
+                    <div class="data-card">
+                        <h4><i class="ph ph-clock-counter-clockwise"></i> Atividade Recente</h4>
+                        <div id="activity-feed" style="color: var(--text-dim); text-align: center; padding: 3rem;">
+                            Conectando ao banco de dados...
+                        </div>
+                    </div>
+                    <div class="data-card">
+                        <h4><i class="ph ph-lightning"></i> Atalhos Rápidos</h4>
+                        <div class="links-grid" style="grid-template-columns: 1fr; gap: 0.8rem;">
+                            <a href="#" class="link-btn" style="flex-direction: row; justify-content: flex-start; gap: 1rem;">
+                                <i class="ph ph-plus-circle" style="color: var(--purple-vibrant);"></i> Nova O.S. Manual
+                            </a>
+                            <a href="https://business.google.com/" target="_blank" class="link-btn" style="flex-direction: row; justify-content: flex-start; gap: 1rem;">
+                                <i class="ph ph-google-logo"></i> Gerenciar Perfil Google
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Coluna 2: Marketing e Links -->
-            <div class="widget">
-                <div class="widget-title">
-                    <i class="ph ph-megaphone"></i> MARKETING & ECOSSISTEMA
+            <!-- Outras páginas seriam injetadas aqui via JS -->
+            <div id="page-leads" style="display:none;"><h2>Triagem de Leads</h2></div>
+            <div id="page-repairs" style="display:none;"><h2>Ordens de Serviço</h2></div>
+            <div id="page-inventory" style="display:none;"><h2>Estoque & Vendas</h2></div>
+            <div id="page-imports" style="display:none;">
+                <div class="page-header">
+                    <h2>Gestão de Importação B2B</h2>
+                    <button class="btn-login" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="openNewImportModal()">+ Nova Ordem de Compra</button>
                 </div>
-                <div class="links-grid">
-                    <a href="https://business.google.com/" target="_blank" class="link-btn">
-                        <i class="ph ph-google-logo"></i>
-                        <span>Google Meu Negócio</span>
-                    </a>
-                    <a href="https://canva.com/" target="_blank" class="link-btn">
-                        <i class="ph ph-palette"></i>
-                        <span>Canva</span>
-                    </a>
-                    <a href="https://ideogram.ai/" target="_blank" class="link-btn">
-                        <i class="ph ph-sparkle"></i>
-                        <span>Ideogram AI</span>
-                    </a>
-                    <a href="https://vercel.com/" target="_blank" class="link-btn">
-                        <i class="ph ph-triangle"></i>
-                        <span>Vercel Deploy</span>
-                    </a>
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <span>Pedidos em Trânsito</span>
+                        <h3 id="stat-imports-transit">0</h3>
+                    </div>
+                    <div class="stat-card">
+                        <span>Investimento do Mês</span>
+                        <h3 id="stat-imports-investment">R$ 0,00</h3>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Coluna 3: Conhecimento e Docs -->
-            <div class="widget">
-                <div class="widget-title">
-                    <i class="ph ph-books"></i> CONHECIMENTO & DOCS
-                </div>
-                <div class="links-grid" style="grid-template-columns: 1fr;">
-                    <a href="#" class="link-btn" style="flex-direction: row; justify-content: flex-start;" onclick="openNotion('wiki')">
-                        <i class="ph ph-brain"></i>
-                        <span>Wiki Técnica (Soluções)</span>
-                    </a>
-                    <a href="#" class="link-btn" style="flex-direction: row; justify-content: flex-start;" onclick="openNotion('docs')">
-                        <i class="ph ph-file-text"></i>
-                        <span>Documentação do Projeto</span>
-                    </a>
+                <div class="data-card">
+                    <h4><i class="ph ph-truck"></i> Rastreio de Lotes Internacionais</h4>
+                    <div id="imports-list" style="text-align: center; padding: 2rem; color: var(--text-dim);">
+                        Conecte o Supabase para gerenciar suas importações.
+                    </div>
                 </div>
             </div>
-        </div>
+            <div id="page-wiki" style="display:none;"><h2>Wiki IA Copilot</h2></div>
+        </main>
     </div>
 
     <script src="admin.js"></script>

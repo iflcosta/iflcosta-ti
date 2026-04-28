@@ -242,21 +242,22 @@ input:focus {
     font-size: 1.5rem;
 }
 
-.link-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--purple-vibrant);
-    transform: translateY(-3px);
+/* Dashboard & Layout Styles */
+.sidebar-footer {
+    margin-top: auto;
+    padding-top: 2rem;
+    border-top: 1px solid var(--glass-border);
 }
 
-.logout-btn {
-    background: transparent;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #ef4444;
+.date-badge {
+    background: rgba(177, 74, 255, 0.1);
+    color: var(--purple-vibrant);
     padding: 0.5rem 1rem;
-    border-radius: 8px;
-    cursor: pointer;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
 }
 
-.logout-btn:hover {
-    background: rgba(239, 68, 68, 0.1);
+.data-card h4 i {
+    color: var(--purple-vibrant);
 }
