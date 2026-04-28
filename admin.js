@@ -143,19 +143,30 @@ async function convertToCustomer(id) {
 
 async function fetchRecentActivity() {
     const feed = document.getElementById('activity-feed');
-    const { data: leads } = await iccClient.from('leads').select('*').order('created_at', { ascending: false }).limit(5);
+    if (!feed) return;
+
+    const { data: leads, error } = await iccClient
+        .from('leads')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+    if (error) {
+        feed.innerHTML = '<p style="padding:1rem;">Erro ao carregar atividades.</p>';
+        return;
+    }
 
     if (leads && leads.length > 0) {
         feed.innerHTML = leads.map(l => `
-            <div style="padding: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <strong style="display:block;">${l.name}</strong>
-                    <span style="font-size: 0.8rem; color: var(--text-dim);">${l.service_category}</span>
+            <div class="activity-item">
+                <div class="activity-icon"><i class="ph ph-user-plus"></i></div>
+                <div class="activity-info">
+                    <p><strong>Novo Lead:</strong> ${l.name} solicitou orçamento para ${l.service_category}</p>
+                    <span style="font-size: 0.7rem; color: var(--text-dim);">${new Date(l.created_at).toLocaleTimeString('pt-BR')}</span>
                 </div>
-                <span style="color: var(--purple-vibrant); font-size: 0.75rem; background: rgba(177,74,255,0.1); padding: 4px 8px; border-radius: 4px;">Novo Lead</span>
             </div>
         `).join('');
     } else {
-        feed.innerHTML = '<p>Nenhuma atividade recente.</p>';
+        feed.innerHTML = '<p style="padding:1rem;">Nenhuma atividade recente.</p>';
     }
 }
