@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Autenticação
+// Autenticação Real via Supabase
 const loginForm = document.getElementById('login-form');
 const loginOverlay = document.getElementById('login-overlay');
 
@@ -25,25 +25,34 @@ loginForm.addEventListener('submit', async (e) => {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-pass').value;
 
-    // Nota: Por enquanto usamos login fixo até você configurar o Auth no Supabase
-    if (email === 'contato@iflcosta.com.br' && password === 'admin123') {
-        localStorage.setItem('icc_session', 'true');
+    if (!supabase) {
+        alert('Erro: Supabase não inicializado.');
+        return;
+    }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+    });
+
+    if (error) {
+        alert('Erro no login: ' + error.message);
+    } else {
         loginOverlay.style.display = 'none';
         initDashboard();
-    } else {
-        alert('Acesso negado.');
     }
 });
 
-function checkSession() {
-    if (localStorage.getItem('icc_session') === 'true') {
+async function checkSession() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
         loginOverlay.style.display = 'none';
         initDashboard();
     }
 }
 
-function logout() {
-    localStorage.removeItem('icc_session');
+async function logout() {
+    await supabase.auth.signOut();
     window.location.reload();
 }
 
