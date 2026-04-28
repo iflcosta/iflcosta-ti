@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle | Iago Costa TI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="bg-glow"></div>
+    <div class="bg-glow-bottom"></div>
+
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="glass-card">
+            <div class="login-header">
+                <i class="ph ph-shield-check"></i>
+                <h1>Portal de Comando</h1>
+                <p>Identifique-se para acessar o QG Digital</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <div class="input-wrapper">
+                        <i class="ph ph-envelope"></i>
+                        <input type="email" id="email" placeholder="seu@email.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha de Acesso</label>
+                    <div class="input-wrapper">
+                        <i class="ph ph-lock"></i>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-login">
+                    Acessar Painel <i class="ph ph-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen (Hidden) -->
+    <div id="dashboard-screen" class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="user-info">
+                <div class="avatar">IC</div>
+                <div>
+                    <h2>Olá, Iago Costa</h2>
+                    <p style="color: var(--text-dim); font-size: 0.85rem;">Especialista Autônomo · Modo Admin</p>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Sair do Painel</button>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Coluna 1: Leads e Operação -->
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="ph ph-chart-line-up"></i> MONITOR DE LEADS
+                </div>
+                <div id="leads-list">
+                    <p style="color: var(--text-dim); font-size: 0.9rem; text-align: center; padding: 2rem;">
+                        Carregando leads do Notion...
+                    </p>
+                </div>
+                <a href="#" class="link-btn" style="margin-top: 1rem; flex-direction: row; font-size: 0.85rem;" onclick="openNotion('crm')">
+                    <i class="ph ph-arrow-square-out"></i> Abrir CRM Completo no Notion
+                </a>
+            </div>
+
+            <!-- Coluna 2: Marketing e Links -->
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="ph ph-megaphone"></i> MARKETING & ECOSSISTEMA
+                </div>
+                <div class="links-grid">
+                    <a href="https://business.google.com/" target="_blank" class="link-btn">
+                        <i class="ph ph-google-logo"></i>
+                        <span>Google Meu Negócio</span>
+                    </a>
+                    <a href="https://canva.com/" target="_blank" class="link-btn">
+                        <i class="ph ph-palette"></i>
+                        <span>Canva</span>
+                    </a>
+                    <a href="https://ideogram.ai/" target="_blank" class="link-btn">
+                        <i class="ph ph-sparkle"></i>
+                        <span>Ideogram AI</span>
+                    </a>
+                    <a href="https://vercel.com/" target="_blank" class="link-btn">
+                        <i class="ph ph-triangle"></i>
+                        <span>Vercel Deploy</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Coluna 3: Conhecimento e Docs -->
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="ph ph-books"></i> CONHECIMENTO & DOCS
+                </div>
+                <div class="links-grid" style="grid-template-columns: 1fr;">
+                    <a href="#" class="link-btn" style="flex-direction: row; justify-content: flex-start;" onclick="openNotion('wiki')">
+                        <i class="ph ph-brain"></i>
+                        <span>Wiki Técnica (Soluções)</span>
+                    </a>
+                    <a href="#" class="link-btn" style="flex-direction: row; justify-content: flex-start;" onclick="openNotion('docs')">
+                        <i class="ph ph-file-text"></i>
+                        <span>Documentação do Projeto</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
