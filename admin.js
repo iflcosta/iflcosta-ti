@@ -357,3 +357,132 @@ async function deleteProduct(id) {
 async function editProduct(id) {
     alert('Edição rápida de produto será implementada na próxima versão.');
 }
+
+// ==========================================
+// Módulo Wiki IA Copilot
+// ==========================================
+let embedder = null;
+
+async function getEmbedder() {
+    if (!embedder) {
+        const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0');
+        embedder = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+    }
+    return embedder;
+}
+
+function openWikiModal() {
+    document.getElementById('wiki-modal').style.display = 'flex';
+}
+
+function closeWikiModal() {
+    document.getElementById('wiki-modal').style.display = 'none';
+}
+
+const wikiForm = document.getElementById('wiki-form');
+if (wikiForm) {
+    wikiForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-save-wiki');
+        btn.innerText = 'Processando IA...';
+        btn.disabled = true;
+
+        const title = document.getElementById('wiki-title').value;
+        const category = document.getElementById('wiki-category').value;
+        const content = document.getElementById('wiki-content').value;
+
+        try {
+            const textToEmbed = `Problema: ${title}. Solução: ${content}`;
+            const extractor = await getEmbedder();
+            const output = await extractor(textToEmbed, { pooling: 'mean', normalize: true });
+            const embedding = Array.from(output.data);
+
+            const { error } = await iccClient.from('wiki').insert([{
+                title,
+                category,
+                content,
+                embedding
+            }]);
+
+            if (error) throw error;
+
+            alert('Conhecimento salvo no cérebro digital!');
+            closeWikiModal();
+            wikiForm.reset();
+        } catch (err) {
+            console.error(err);
+            alert('Erro ao salvar no Wiki: ' + err.message);
+        } finally {
+            btn.innerText = 'Salvar no Cérebro Digital';
+            btn.disabled = false;
+        }
+    });
+}
+
+const chatForm = document.getElementById('chat-form');
+if (chatForm) {
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const input = document.getElementById('chat-input');
+        const query = input.value;
+        if (!query) return;
+
+        const history = document.getElementById('chat-history');
+        
+        history.innerHTML += `
+            <div style="margin-bottom: 1.5rem; text-align: right;">
+                <strong style="color: var(--text-main);">Você:</strong>
+                <p style="color: var(--text-dim);">${query}</p>
+            </div>
+        `;
+        input.value = '';
+
+        const typingId = 'typing-' + Date.now();
+        history.innerHTML += `
+            <div id="${typingId}" style="margin-bottom: 1.5rem; background: rgba(177, 74, 255, 0.05); padding: 1rem; border-radius: 12px; border-left: 3px solid var(--purple-vibrant);">
+                <strong style="color: var(--purple-vibrant); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;"><i class="ph ph-robot"></i> Copilot:</strong>
+                <p>Analisando sua base de conhecimento vetorial...</p>
+            </div>
+        `;
+        history.scrollTop = history.scrollHeight;
+
+        try {
+            const extractor = await getEmbedder();
+            const output = await extractor(query, { pooling: 'mean', normalize: true });
+            const query_embedding = Array.from(output.data);
+
+            const { data: matches, error } = await iccClient.rpc('match_wiki_articles', {
+                query_embedding: query_embedding,
+                match_threshold: 0.3,
+                match_count: 3
+            });
+
+            if (error) throw error;
+
+            let responseHTML = '';
+            if (!matches || matches.length === 0) {
+                responseHTML = `<p>Ainda não encontrei nenhuma solução parecida no seu histórico para esse caso específico. Deseja criar um novo registro após consertar?</p>`;
+            } else {
+                responseHTML = `<p>Achei algumas anotações que podem te ajudar!</p><div style="margin-top: 1rem; display:flex; flex-direction:column; gap:0.5rem;">`;
+                matches.forEach(m => {
+                    responseHTML += `
+                    <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border);">
+                        <strong style="color: white; display:block; margin-bottom:0.3rem;">🎯 ${m.title} <span style="opacity:0.5; font-size:0.8rem; font-weight:normal;">(Similaridade: ${Math.round(m.similarity * 100)}%)</span></strong>
+                        <p style="font-size:0.9rem; color: var(--text-dim);">${m.content}</p>
+                    </div>`;
+                });
+                responseHTML += `</div><p style="margin-top:1rem; font-size:0.85rem; opacity:0.7;"><em>(Na próxima atualização conectaremos o motor Groq Llama 3 para conversar sobre esses dados!)</em></p>`;
+            }
+
+            document.getElementById(typingId).innerHTML = `
+                <strong style="color: var(--purple-vibrant); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;"><i class="ph ph-robot"></i> Copilot:</strong>
+                ${responseHTML}
+            `;
+            history.scrollTop = history.scrollHeight;
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById(typingId).innerHTML = `<p style="color: var(--danger);">Erro na análise: ${err.message}</p>`;
+        }
+    });
+}

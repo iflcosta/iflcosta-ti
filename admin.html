@@ -379,7 +379,63 @@
                     </form>
                 </div>
             </div>
-            <div id="page-wiki" style="display:none;"><h2>Wiki IA Copilot</h2></div>
+            <div id="page-wiki" style="display:none;">
+                <div class="page-header">
+                    <h2>Wiki IA Copilot 🧠</h2>
+                    <button class="btn-primary" onclick="openWikiModal()"><i class="ph ph-plus-circle"></i> Novo Artigo Técnico</button>
+                </div>
+
+                <!-- Interface do Chat -->
+                <div class="data-card" style="display: flex; flex-direction: column; height: 60vh;">
+                    <div id="chat-history" style="flex: 1; overflow-y: auto; margin-bottom: 1rem; padding-right: 1rem;">
+                        <div style="margin-bottom: 1.5rem; background: rgba(177, 74, 255, 0.05); padding: 1rem; border-radius: 12px; border-left: 3px solid var(--purple-vibrant);">
+                            <strong style="color: var(--purple-vibrant); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;"><i class="ph ph-robot"></i> Copilot:</strong>
+                            <p>Olá Iago! Sou o seu cérebro digital. Me conte o sintoma do aparelho e eu buscarei nas suas anotações antigas a melhor solução.</p>
+                        </div>
+                    </div>
+                    
+                    <form id="chat-form" style="display: flex; gap: 1rem; margin-top: auto; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+                        <input type="text" id="chat-input" placeholder="Ex: Placa do Dell G15 em curto e não liga a tela..." required style="flex: 1;">
+                        <button type="submit" class="btn-primary" id="chat-btn"><i class="ph ph-paper-plane-right"></i> Perguntar</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal Novo Artigo Wiki -->
+            <div id="wiki-modal" class="login-overlay" style="display:none; align-items:center; justify-content:center;">
+                <div class="glass-card login-card" style="max-width: 600px; width: 90%;">
+                    <div class="login-header">
+                        <h3>Salvar Conhecimento Técnico</h3>
+                        <p>A IA aprenderá isso para te ajudar no futuro.</p>
+                    </div>
+                    <form id="wiki-form">
+                        <div class="form-group">
+                            <label>Título / Sintoma Principal</label>
+                            <input type="text" id="wiki-title" placeholder="Ex: Curto na linha 3.3v - Dell G15" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Categoria</label>
+                                <select id="wiki-category">
+                                    <option value="Placa-Mãe">Placa-Mãe</option>
+                                    <option value="Software">Software</option>
+                                    <option value="Hardware">Hardware Diversos</option>
+                                    <option value="Celular">Celular</option>
+                                    <option value="Redes">Redes</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Solução Aplicada (Passo a Passo)</label>
+                            <textarea id="wiki-content" placeholder="Descreva exatamente como você consertou. A IA lerá isso no futuro..." rows="5" required></textarea>
+                        </div>
+                        <div class="login-actions">
+                            <button type="button" class="btn-secondary" onclick="closeWikiModal()">Cancelar</button>
+                            <button type="submit" class="btn-primary" id="btn-save-wiki">Salvar no Cérebro Digital</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <div id="page-settings" style="display:none;">
                 <div class="page-header">
                     <h2>Configurações do Sistema</h2>
