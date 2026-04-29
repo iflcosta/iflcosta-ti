@@ -440,8 +440,20 @@
                 <div class="page-header">
                     <h2>Configurações do Sistema</h2>
                 </div>
-                <div class="data-card">
-                    <p style="color: var(--text-dim);">Configurações da conta, integração n8n e credenciais da API serão gerenciadas aqui.</p>
+                
+                <div class="content-grid" style="grid-template-columns: 1fr; max-width: 600px;">
+                    <div class="data-card">
+                        <h4 style="margin-bottom: 0.5rem;"><i class="ph ph-cpu"></i> Inteligência Artificial (Groq)</h4>
+                        <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.5rem;">
+                            Insira sua chave API gratuita da Groq para ativar o chat conversacional do Wiki. A chave fica salva apenas no seu navegador atual. <a href="https://console.groq.com/keys" target="_blank" style="color: var(--purple-vibrant);">Pegue a sua aqui</a>.
+                        </p>
+                        
+                        <div class="form-group">
+                            <label>Groq API Key</label>
+                            <input type="password" id="groq-api-key" placeholder="gsk_...">
+                        </div>
+                        <button class="btn-primary" onclick="saveSettings()">Salvar Configurações</button>
+                    </div>
                 </div>
             </div>
         </main>

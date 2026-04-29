@@ -59,7 +59,7 @@ async function logout() {
 // Navegação entre Páginas
 function showPage(pageId) {
     // Esconder todas
-    const pages = ['dashboard', 'leads', 'repairs', 'inventory', 'imports', 'wiki'];
+    const pages = ['dashboard', 'leads', 'repairs', 'inventory', 'wiki', 'settings'];
     pages.forEach(p => {
         const el = document.getElementById('page-' + p);
         if (el) el.style.display = 'none';
@@ -79,6 +79,11 @@ async function initDashboard() {
     fetchLeads(); // Carregar leads inicialmente
     fetchRepairs(); // Carregar reparos inicialmente
     fetchProducts(); // Carregar estoque inicialmente
+
+    // Carregar chave Groq se existir
+    const savedKey = localStorage.getItem('icc_groq_key');
+    const keyInput = document.getElementById('groq-api-key');
+    if (savedKey && keyInput) keyInput.value = savedKey;
     
     // Buscar Estatísticas em Tempo Real
     const { data: leadsCount } = await iccClient.from('leads').select('*', { count: 'exact' }).eq('status', 'Novo');
@@ -359,6 +364,15 @@ async function editProduct(id) {
 }
 
 // ==========================================
+// Módulo de Configurações
+// ==========================================
+function saveSettings() {
+    const key = document.getElementById('groq-api-key').value;
+    localStorage.setItem('icc_groq_key', key);
+    alert('Configurações salvas no seu navegador!');
+}
+
+// ==========================================
 // Módulo Wiki IA Copilot
 // ==========================================
 let embedder = null;
@@ -468,15 +482,56 @@ if (chatForm) {
             if (!matches || matches.length === 0) {
                 responseHTML = `<p>Ainda não encontrei nenhuma solução parecida no seu histórico para esse caso específico. Deseja criar um novo registro após consertar?</p>`;
             } else {
-                responseHTML = `<p>Achei algumas anotações que podem te ajudar!</p><div style="margin-top: 1rem; display:flex; flex-direction:column; gap:0.5rem;">`;
-                matches.forEach(m => {
-                    responseHTML += `
-                    <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border);">
-                        <strong style="color: white; display:block; margin-bottom:0.3rem;">🎯 ${m.title} <span style="opacity:0.5; font-size:0.8rem; font-weight:normal;">(Similaridade: ${Math.round(m.similarity * 100)}%)</span></strong>
-                        <p style="font-size:0.9rem; color: var(--text-dim);">${m.content}</p>
-                    </div>`;
-                });
-                responseHTML += `</div><p style="margin-top:1rem; font-size:0.85rem; opacity:0.7;"><em>(Na próxima atualização conectaremos o motor Groq Llama 3 para conversar sobre esses dados!)</em></p>`;
+                const apiKey = localStorage.getItem('icc_groq_key');
+                
+                if (!apiKey) {
+                    // Sem chave: Mostra apenas a busca vetorial (Modo Offline IA)
+                    responseHTML = `<p>Achei algumas anotações que podem te ajudar!</p><div style="margin-top: 1rem; display:flex; flex-direction:column; gap:0.5rem;">`;
+                    matches.forEach(m => {
+                        responseHTML += `
+                        <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; border: 1px solid var(--glass-border);">
+                            <strong style="color: white; display:block; margin-bottom:0.3rem;">🎯 ${m.title} <span style="opacity:0.5; font-size:0.8rem; font-weight:normal;">(Similaridade: ${Math.round(m.similarity * 100)}%)</span></strong>
+                            <p style="font-size:0.9rem; color: var(--text-dim);">${m.content}</p>
+                        </div>`;
+                    });
+                    responseHTML += `</div><p style="margin-top:1rem; font-size:0.85rem; color: var(--warning);"><em>Para conversar comigo sobre isso, adicione sua chave Groq na aba Configurações.</em></p>`;
+                } else {
+                    // Com chave: Aciona Llama 3 via Groq
+                    document.getElementById(typingId).innerHTML = `
+                        <strong style="color: var(--purple-vibrant); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;"><i class="ph ph-robot"></i> Copilot:</strong>
+                        <p>Processando resposta com Llama 3...</p>
+                    `;
+
+                    const contextText = matches.map(m => `Problema: ${m.title}\nSolução que eu dei: ${m.content}`).join('\n---\n');
+                    
+                    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${apiKey}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            model: "llama3-8b-8192",
+                            messages: [
+                                {
+                                    role: "system",
+                                    content: `Você é um assistente técnico especialista de TI integrado ao painel do Iago. Use as anotações antigas do Iago para ajudar a responder a pergunta dele. Seja direto, técnico e aja como um colega de laboratório.\n\nAnotações Recuperadas do Histórico do Iago:\n${contextText}`
+                                },
+                                { role: "user", content: query }
+                            ],
+                            temperature: 0.5,
+                            max_tokens: 500
+                        })
+                    });
+
+                    if (!groqRes.ok) throw new Error('Erro na API Groq. Verifique sua chave.');
+                    const groqData = await groqRes.json();
+                    
+                    // Formata o texto para pular linha bonitinho
+                    const finalAnswer = groqData.choices[0].message.content.replace(/\n/g, '<br>');
+
+                    responseHTML = `<div style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5;">${finalAnswer}</div>`;
+                }
             }
 
             document.getElementById(typingId).innerHTML = `
