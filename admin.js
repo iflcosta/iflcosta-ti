@@ -479,13 +479,13 @@ if (chatForm) {
             if (error) throw error;
 
             let responseHTML = '';
-            if (!matches || matches.length === 0) {
-                responseHTML = `<p>Ainda não encontrei nenhuma solução parecida no seu histórico para esse caso específico. Deseja criar um novo registro após consertar?</p>`;
-            } else {
-                const apiKey = localStorage.getItem('icc_groq_key');
-                
-                if (!apiKey) {
-                    // Sem chave: Mostra apenas a busca vetorial (Modo Offline IA)
+            const apiKey = localStorage.getItem('icc_groq_key');
+
+            // Se não tem chave API, mostra só as anotações cruas
+            if (!apiKey) {
+                if (!matches || matches.length === 0) {
+                    responseHTML = `<p>Ainda não encontrei nenhuma solução parecida no seu histórico para esse caso específico. Deseja criar um novo registro após consertar?</p><p style="margin-top:1rem; font-size:0.85rem; color: var(--warning);"><em>Adicione sua chave Groq nas Configurações para eu tentar ajudar usando inteligência artificial externa!</em></p>`;
+                } else {
                     responseHTML = `<p>Achei algumas anotações que podem te ajudar!</p><div style="margin-top: 1rem; display:flex; flex-direction:column; gap:0.5rem;">`;
                     matches.forEach(m => {
                         responseHTML += `
@@ -495,43 +495,53 @@ if (chatForm) {
                         </div>`;
                     });
                     responseHTML += `</div><p style="margin-top:1rem; font-size:0.85rem; color: var(--warning);"><em>Para conversar comigo sobre isso, adicione sua chave Groq na aba Configurações.</em></p>`;
-                } else {
-                    // Com chave: Aciona Llama 3 via Groq
-                    document.getElementById(typingId).innerHTML = `
-                        <strong style="color: var(--purple-vibrant); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;"><i class="ph ph-robot"></i> Copilot:</strong>
-                        <p>Processando resposta com Llama 3...</p>
-                    `;
-
-                    const contextText = matches.map(m => `Problema: ${m.title}\nSolução que eu dei: ${m.content}`).join('\n---\n');
-                    
-                    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                        method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${apiKey}`,
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            model: "llama3-8b-8192",
-                            messages: [
-                                {
-                                    role: "system",
-                                    content: `Você é um assistente técnico especialista de TI integrado ao painel do Iago. Use as anotações antigas do Iago para ajudar a responder a pergunta dele. Seja direto, técnico e aja como um colega de laboratório.\n\nAnotações Recuperadas do Histórico do Iago:\n${contextText}`
-                                },
-                                { role: "user", content: query }
-                            ],
-                            temperature: 0.5,
-                            max_tokens: 500
-                        })
-                    });
-
-                    if (!groqRes.ok) throw new Error('Erro na API Groq. Verifique sua chave.');
-                    const groqData = await groqRes.json();
-                    
-                    // Formata o texto para pular linha bonitinho
-                    const finalAnswer = groqData.choices[0].message.content.replace(/\n/g, '<br>');
-
-                    responseHTML = `<div style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5;">${finalAnswer}</div>`;
                 }
+            } else {
+                // TEM CHAVE API: Chama a IA da Groq
+                document.getElementById(typingId).innerHTML = `
+                    <strong style="color: var(--purple-vibrant); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;"><i class="ph ph-robot"></i> Copilot:</strong>
+                    <p>Processando resposta com Llama 3...</p>
+                `;
+
+                let systemPrompt = "";
+                if (matches && matches.length > 0) {
+                    const contextText = matches.map(m => `Problema: ${m.title}\nSolução que eu dei: ${m.content}`).join('\n---\n');
+                    systemPrompt = `Você é um assistente técnico de TI integrado ao painel do Iago. O Iago fez uma pergunta. Use as anotações passadas dele abaixo como base principal para responder. Se a anotação não resolver, dê sua própria dica técnica avançada.\n\nAnotações Recuperadas do Iago:\n${contextText}`;
+                } else {
+                    systemPrompt = `Você é um assistente técnico de TI integrado ao painel do Iago. O Iago fez uma pergunta sobre a qual ele ainda não tem anotações no banco de dados. Responda diretamente e tecnicamente para ajudá-lo a resolver o problema de TI.`;
+                }
+                
+                const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: "llama3-8b-8192",
+                        messages: [
+                            { role: "system", content: systemPrompt },
+                            { role: "user", content: query }
+                        ],
+                        temperature: 0.5,
+                        max_tokens: 500
+                    })
+                });
+
+                if (!groqRes.ok) {
+                    const errData = await groqRes.json().catch(() => ({}));
+                    throw new Error(`Erro da Groq: ${errData.error?.message || groqRes.statusText}. Tem certeza que a chave está correta?`);
+                }
+                
+                const groqData = await groqRes.json();
+                const finalAnswer = groqData.choices[0].message.content.replace(/\n/g, '<br>');
+
+                // Se usou contexto, mostra que achou no histórico
+                let prefixHTML = (matches && matches.length > 0) 
+                    ? `<span class="badge" style="margin-bottom:1rem; display:inline-block; background:rgba(177, 74, 255, 0.2); color:white; border:none;"><i class="ph ph-books"></i> Usei ${matches.length} anotação(ões) do seu histórico!</span><br>`
+                    : ``;
+
+                responseHTML = `<div>${prefixHTML}<div style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5;">${finalAnswer}</div></div>`;
             }
 
             document.getElementById(typingId).innerHTML = `
@@ -542,7 +552,7 @@ if (chatForm) {
 
         } catch (err) {
             console.error(err);
-            document.getElementById(typingId).innerHTML = `<p style="color: var(--danger);">Erro na análise: ${err.message}</p>`;
+            document.getElementById(typingId).innerHTML = `<p style="color: var(--danger);"><i class="ph ph-warning-circle"></i> ${err.message}</p>`;
         }
     });
 }
