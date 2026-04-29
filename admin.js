@@ -423,8 +423,44 @@ function saveSettings() {
 }
 
 // ==========================================
-// Módulo Wiki IA Copilot
+// Módulo de Feedback da IA (RLHF)
 // ==========================================
+window.feedbackUp = async function(btnId, matchedIdsStr, query, answer) {
+    const btn = document.getElementById(btnId);
+    if(btn) btn.innerHTML = '<i class="ph ph-check"></i> Anotado!';
+    
+    try {
+        const matchedIds = JSON.parse(decodeURIComponent(matchedIdsStr));
+        
+        if (matchedIds && matchedIds.length > 0) {
+            // Se usou contexto antigo, aumenta a pontuação para ele subir nas buscas
+            await iccClient.rpc('increment_wiki_score', { wiki_ids: matchedIds });
+        } else {
+            // Se não tinha contexto, salva a solução do Llama como uma anotação nova automaticamente
+            const extractor = await getEmbedder();
+            const textToEmbed = `Problema: ${decodeURIComponent(query)}. Solução: ${decodeURIComponent(answer)}`;
+            const output = await extractor(textToEmbed, { pooling: 'mean', normalize: true });
+            const embedding = Array.from(output.data);
+            
+            await iccClient.from('wiki').insert([{
+                title: decodeURIComponent(query),
+                category: 'IA Gerado',
+                content: decodeURIComponent(answer),
+                embedding: embedding,
+                success_score: 1
+            }]);
+        }
+    } catch(e) { console.error('Erro no feedback:', e); }
+};
+
+window.feedbackDown = function(query) {
+    alert('Entendi! O que resolveu de verdade então?');
+    openWikiModal();
+    document.getElementById('wiki-title').value = decodeURIComponent(query);
+    document.getElementById('wiki-category').value = 'Hardware Diversos';
+    document.getElementById('wiki-content').focus();
+};
+
 let embedder = null;
 
 async function getEmbedder() {
@@ -591,10 +627,25 @@ if (chatForm) {
                     ? `<span class="badge" style="margin-bottom:1rem; display:inline-block; background:rgba(177, 74, 255, 0.2); color:white; border:none;"><i class="ph ph-books"></i> Usei ${matches.length} anotação(ões) do seu histórico!</span><br>`
                     : ``;
 
-                responseHTML = `<div>${prefixHTML}<div style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5;">${finalAnswer}</div></div>`;
+                const matchedIds = matches ? matches.map(m => m.id) : [];
+                const encodedIds = encodeURIComponent(JSON.stringify(matchedIds));
+                const encodedQuery = encodeURIComponent(query);
+                const encodedAnswer = encodeURIComponent(finalAnswer.replace(/<br>/g, '\n').substring(0, 500) + "..."); // Save up to 500 chars to avoid huge URLs
+
+                const btnId = 'btn-up-' + Date.now();
+                const feedbackBtns = `
+                    <div style="margin-top: 1rem; display: flex; gap: 0.5rem; align-items: center; border-top: 1px solid var(--glass-border); padding-top: 0.5rem;">
+                        <span style="font-size: 0.8rem; color: var(--text-dim);">A resposta foi útil?</span>
+                        <button id="${btnId}" onclick="feedbackUp('${btnId}', '${encodedIds}', '${encodedQuery}', '${encodedAnswer}')" style="background: rgba(16, 185, 129, 0.1); color: var(--success); border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;"><i class="ph ph-thumbs-up"></i> Resolveu</button>
+                        <button onclick="feedbackDown('${encodedQuery}')" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); border: none; padding: 0.3rem 0.6rem; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 0.3rem;"><i class="ph ph-thumbs-down"></i> Não Resolveu</button>
+                    </div>
+                `;
+
+                responseHTML = `<div>${prefixHTML}<div style="color: var(--text-main); font-size: 0.95rem; line-height: 1.5;">${finalAnswer}</div>${feedbackBtns}</div>`;
             }
 
             document.getElementById(typingId).innerHTML = `
+
                 <strong style="color: var(--purple-vibrant); display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;"><i class="ph ph-robot"></i> Copilot:</strong>
                 ${responseHTML}
             `;
