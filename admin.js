@@ -365,11 +365,16 @@ let embedder = null;
 
 async function getEmbedder() {
     if (!embedder) {
-        const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0');
+        const { pipeline, env } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0');
+        // Configura para não buscar o modelo no seu próprio site (causava o 404)
+        env.allowLocalModels = false;
+        env.useBrowserCache = true; // Salva o modelo no navegador para os próximos acessos serem rápidos
+        
         embedder = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
     }
     return embedder;
 }
+
 
 function openWikiModal() {
     document.getElementById('wiki-modal').style.display = 'flex';
