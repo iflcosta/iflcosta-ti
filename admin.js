@@ -92,6 +92,56 @@ async function initDashboard() {
     document.getElementById('stat-leads').innerText = leadsCount ? leadsCount.length : 0;
     document.getElementById('stat-repairs').innerText = repairsCount ? repairsCount.length : 0;
 
+    // Faturamento Mensal Inteligente
+    const now = new Date();
+    const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    const lastMonthStr = now.getMonth() === 0 
+        ? `${now.getFullYear() - 1}-12` 
+        : `${now.getFullYear()}-${String(now.getMonth()).padStart(2, '0')}`;
+
+    const { data: deliveredRepairs } = await iccClient.from('repairs').select('price_total, exit_date').eq('status', 'Entregue');
+    
+    let currentRevenue = 0;
+    let lastRevenue = 0;
+
+    if (deliveredRepairs) {
+        deliveredRepairs.forEach(r => {
+            if (!r.exit_date) return;
+            const val = parseFloat(r.price_total) || 0;
+            if (r.exit_date.startsWith(currentMonthStr)) {
+                currentRevenue += val;
+            } else if (r.exit_date.startsWith(lastMonthStr)) {
+                lastRevenue += val;
+            }
+        });
+    }
+
+    document.getElementById('stat-revenue').innerText = currentRevenue.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    
+    const trendEl = document.getElementById('stat-revenue-trend');
+    if (lastRevenue === 0) {
+        if (currentRevenue > 0) {
+            trendEl.innerHTML = `<i class="ph ph-trend-up"></i> +100% vs mês anterior`;
+            trendEl.style.color = 'var(--success)';
+            trendEl.style.background = 'rgba(16, 185, 129, 0.1)';
+        } else {
+            trendEl.innerHTML = `Sem dados do mês anterior`;
+            trendEl.style.color = 'var(--text-dim)';
+            trendEl.style.background = 'rgba(255, 255, 255, 0.05)';
+        }
+    } else {
+        const diff = ((currentRevenue - lastRevenue) / lastRevenue) * 100;
+        if (diff >= 0) {
+            trendEl.innerHTML = `<i class="ph ph-trend-up"></i> +${diff.toFixed(1)}% vs mês anterior`;
+            trendEl.style.color = 'var(--success)';
+            trendEl.style.background = 'rgba(16, 185, 129, 0.1)';
+        } else {
+            trendEl.innerHTML = `<i class="ph ph-trend-down"></i> ${diff.toFixed(1)}% vs mês anterior`;
+            trendEl.style.color = 'var(--danger)';
+            trendEl.style.background = 'rgba(239, 68, 68, 0.1)';
+        }
+    }
+
     // Atualizar Feed de Atividade
     fetchRecentActivity();
 }
