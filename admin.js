@@ -78,6 +78,7 @@ async function initDashboard() {
     if (!iccClient) return;
     fetchLeads(); // Carregar leads inicialmente
     fetchRepairs(); // Carregar reparos inicialmente
+    fetchProducts(); // Carregar estoque inicialmente
     
     // Buscar Estatísticas em Tempo Real
     const { data: leadsCount } = await iccClient.from('leads').select('*', { count: 'exact' }).eq('status', 'Novo');
@@ -265,8 +266,94 @@ async function updateOSStatus(id) {
     if (!error) fetchRepairs();
 }
 
-async function deleteOS(id) {
-    if (!confirm('Deseja excluir esta O.S.?')) return;
-    const { error } = await iccClient.from('repairs').delete().eq('id', id);
-    if (!error) fetchRepairs();
+// Módulo de Inventário (Estoque)
+function openProductModal() {
+    document.getElementById('product-modal').style.display = 'flex';
+}
+
+function closeProductModal() {
+    document.getElementById('product-modal').style.display = 'none';
+}
+
+async function fetchProducts() {
+    const tableBody = document.getElementById('inventory-table-body');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando estoque...</td></tr>';
+
+    const { data: products, error } = await iccClient
+        .from('products')
+        .select('*')
+        .eq('is_active', true)
+        .order('name', { ascending: true });
+
+    if (error) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color: #ef4444;">Erro ao carregar dados.</td></tr>';
+        return;
+    }
+
+    if (products.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhum produto em estoque.</td></tr>';
+        return;
+    }
+
+    tableBody.innerHTML = products.map(p => {
+        const stockClass = p.stock_quantity <= 2 ? 'color: #ef4444; font-weight: 800;' : '';
+        return `
+            <tr>
+                <td>
+                    <div style="font-weight:600;">${p.name}</div>
+                    <div style="font-size:0.75rem; color:var(--text-dim);">${p.description || ''}</div>
+                </td>
+                <td><span class="badge">${p.category}</span></td>
+                <td><span style="${stockClass}">${p.stock_quantity} un</span></td>
+                <td>R$ ${p.cost_price?.toLocaleString('pt-BR')}</td>
+                <td>R$ ${p.price?.toLocaleString('pt-BR')}</td>
+                <td>
+                    <div class="action-btns">
+                        <button class="btn-icon" title="Editar" onclick="editProduct('${p.id}')"><i class="ph ph-note-pencil"></i></button>
+                        <button class="btn-icon archive" title="Remover" onclick="deleteProduct('${p.id}')"><i class="ph ph-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Handler do Formulário de Produto
+const productForm = document.getElementById('product-form');
+if (productForm) {
+    productForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const payload = {
+            name: document.getElementById('prod-name').value,
+            category: document.getElementById('prod-category').value,
+            stock_quantity: parseInt(document.getElementById('prod-stock').value),
+            cost_price: parseFloat(document.getElementById('prod-cost').value),
+            price: parseFloat(document.getElementById('prod-price').value),
+            is_active: true
+        };
+
+        const { error } = await iccClient.from('products').insert([payload]);
+
+        if (error) {
+            alert('Erro ao salvar produto: ' + error.message);
+        } else {
+            closeProductModal();
+            productForm.reset();
+            fetchProducts();
+            alert('Produto cadastrado com sucesso!');
+        }
+    });
+}
+
+async function deleteProduct(id) {
+    if (!confirm('Deseja remover este produto do estoque ativo?')) return;
+    const { error } = await iccClient.from('products').update({ is_active: false }).eq('id', id);
+    if (!error) fetchProducts();
+}
+
+async function editProduct(id) {
+    alert('Edição rápida de produto será implementada na próxima versão.');
 }

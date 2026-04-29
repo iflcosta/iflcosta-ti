@@ -306,7 +306,80 @@
                     </form>
                 </div>
             </div>
-            <div id="page-inventory" style="display:none;"><h2>Estoque & Vendas</h2></div>
+            <div id="page-inventory" style="display:none;">
+                <div class="page-header">
+                    <h2>Estoque & Inventário</h2>
+                    <div class="header-actions">
+                        <button class="btn-primary" onclick="openProductModal()"><i class="ph ph-plus-circle"></i> Novo Produto</button>
+                        <button class="btn-secondary" onclick="fetchProducts()"><i class="ph ph-arrows-clockwise"></i> Atualizar</button>
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <div class="table-responsive">
+                        <table class="icc-table">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Categoria</th>
+                                    <th>Estoque</th>
+                                    <th>Custo</th>
+                                    <th>Venda</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-table-body">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Novo Produto -->
+            <div id="product-modal" class="login-overlay" style="display:none; align-items:center; justify-content:center;">
+                <div class="glass-card login-card" style="max-width: 500px; width: 90%;">
+                    <div class="login-header">
+                        <h3>Cadastrar Produto</h3>
+                        <p>Adicione itens ao seu estoque técnico.</p>
+                    </div>
+                    <form id="product-form">
+                        <div class="form-group">
+                            <label>Nome do Produto</label>
+                            <input type="text" id="prod-name" placeholder="Ex: SSD 480GB Sata" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Categoria</label>
+                                <select id="prod-category">
+                                    <option value="Peças Celular">Peças Celular</option>
+                                    <option value="Hardware PC">Hardware PC</option>
+                                    <option value="Acessórios">Acessórios</option>
+                                    <option value="Outros">Outros</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Qtd. Inicial</label>
+                                <input type="number" id="prod-stock" value="0" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Preço Custo (R$)</label>
+                                <input type="number" id="prod-cost" placeholder="0.00" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Preço Venda (R$)</label>
+                                <input type="number" id="prod-price" placeholder="0.00" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="login-actions">
+                            <button type="button" class="btn-secondary" onclick="closeProductModal()">Cancelar</button>
+                            <button type="submit" class="btn-primary">Salvar Produto</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
             <div id="page-imports" style="display:none;">
                 <div class="page-header">
                     <h2>Gestão de Importação B2B</h2>
