@@ -151,7 +151,6 @@
                 <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('leads')"><i class="ph ph-users-three"></i> Triagem de Leads</a></li>
                 <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('repairs')"><i class="ph ph-wrench"></i> Ordens de Serviço</a></li>
                 <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('inventory')"><i class="ph ph-package"></i> Estoque & Vendas</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('imports')"><i class="ph ph-globe-hemisphere-west"></i> Importação B2B</a></li>
                 <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('wiki')"><i class="ph ph-brain"></i> Wiki IA Copilot</a></li>
                 <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('settings')"><i class="ph ph-gear"></i> Configurações</a></li>
             </nav>
@@ -380,29 +379,15 @@
                     </form>
                 </div>
             </div>
-            <div id="page-imports" style="display:none;">
+            <div id="page-wiki" style="display:none;"><h2>Wiki IA Copilot</h2></div>
+            <div id="page-settings" style="display:none;">
                 <div class="page-header">
-                    <h2>Gestão de Importação B2B</h2>
-                    <button class="btn-login" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="openNewImportModal()">+ Nova Ordem de Compra</button>
-                </div>
-                <div class="stats-row">
-                    <div class="stat-card">
-                        <span>Pedidos em Trânsito</span>
-                        <h3 id="stat-imports-transit">0</h3>
-                    </div>
-                    <div class="stat-card">
-                        <span>Investimento do Mês</span>
-                        <h3 id="stat-imports-investment">R$ 0,00</h3>
-                    </div>
+                    <h2>Configurações do Sistema</h2>
                 </div>
                 <div class="data-card">
-                    <h4><i class="ph ph-truck"></i> Rastreio de Lotes Internacionais</h4>
-                    <div id="imports-list" style="text-align: center; padding: 2rem; color: var(--text-dim);">
-                        Conecte o Supabase para gerenciar suas importações.
-                    </div>
+                    <p style="color: var(--text-dim);">Configurações da conta, integração n8n e credenciais da API serão gerenciadas aqui.</p>
                 </div>
             </div>
-            <div id="page-wiki" style="display:none;"><h2>Wiki IA Copilot</h2></div>
         </main>
     </div>
 
