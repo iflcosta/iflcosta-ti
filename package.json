@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Landing Page for IT Support Business",
   "main": "index.html",
-  "dependencies": {
-    "@notionhq/client": "^2.2.15"
-  }
+  "scripts": {
+    "test": "node tests/validation.test.js"
+  },
+  "dependencies": {}
 }

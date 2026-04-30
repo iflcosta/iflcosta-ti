@@ -149,6 +149,7 @@
             <nav class="nav-links">
                 <li class="nav-item"><a href="#" class="nav-link active" onclick="showPage('dashboard')"><i class="ph ph-squares-four"></i> Dashboard</a></li>
                 <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('leads')"><i class="ph ph-users-three"></i> Triagem de Leads</a></li>
+                <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('customers')"><i class="ph ph-address-book"></i> Clientes</a></li>
                 <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('repairs')"><i class="ph ph-wrench"></i> Ordens de Serviço</a></li>
                 <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('inventory')"><i class="ph ph-package"></i> Estoque & Vendas</a></li>
                 <li class="nav-item"><a href="#" class="nav-link" onclick="showPage('wiki')"><i class="ph ph-brain"></i> Wiki IA Copilot</a></li>
@@ -210,6 +211,96 @@
             </div>
 
             <!-- Outras páginas seriam injetadas aqui via JS -->
+            <!-- Página de Clientes -->
+            <div id="page-customers" style="display:none;">
+                <div class="page-header">
+                    <h2>Clientes</h2>
+                    <div class="header-actions">
+                        <div style="position:relative;">
+                            <i class="ph ph-magnifying-glass" style="position:absolute; left:0.8rem; top:50%; transform:translateY(-50%); color:var(--text-dim);"></i>
+                            <input type="text" id="customer-search" placeholder="Buscar por nome ou WhatsApp..."
+                                oninput="searchCustomers(this.value)"
+                                style="padding:0.6rem 1rem 0.6rem 2.4rem; background:var(--glass); border:1px solid var(--glass-border); border-radius:10px; color:white; width:260px;">
+                        </div>
+                        <button class="btn-primary" onclick="openCustomerModal()"><i class="ph ph-plus-circle"></i> Novo Cliente</button>
+                        <button class="btn-secondary" onclick="fetchCustomers()"><i class="ph ph-arrows-clockwise"></i> Atualizar</button>
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <div class="table-responsive">
+                        <table class="icc-table">
+                            <thead>
+                                <tr>
+                                    <th>Cliente</th>
+                                    <th>WhatsApp</th>
+                                    <th>Tipo</th>
+                                    <th>Total de O.S.</th>
+                                    <th>Última O.S.</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customers-table-body"></tbody>
+                        </table>
+                    </div>
+                    <div id="customers-pagination"></div>
+                </div>
+            </div>
+
+            <!-- Modal Novo Cliente -->
+            <div id="customer-modal" class="login-overlay" style="display:none; align-items:center; justify-content:center;">
+                <div class="glass-card login-card" style="max-width:500px; width:90%;">
+                    <div class="login-header">
+                        <h3 id="customer-modal-title">Novo Cliente</h3>
+                        <p>Cadastre um cliente para vincular às O.S.</p>
+                    </div>
+                    <form id="customer-form">
+                        <input type="hidden" id="customer-id">
+                        <div class="form-group">
+                            <label>Nome Completo</label>
+                            <input type="text" id="cust-name" placeholder="Ex: João Silva" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>WhatsApp</label>
+                                <input type="tel" id="cust-whatsapp" placeholder="11999999999" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo</label>
+                                <select id="cust-type">
+                                    <option value="Pessoa Física">Pessoa Física</option>
+                                    <option value="Empresa/Escritório">Empresa / Escritório</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Observações</label>
+                            <textarea id="cust-notes" rows="2" placeholder="Ex: Cliente VIP, prefere buscar no local..."></textarea>
+                        </div>
+                        <div class="login-actions">
+                            <button type="button" class="btn-secondary" onclick="closeCustomerModal()">Cancelar</button>
+                            <button type="submit" class="btn-primary" id="btn-save-customer">Salvar Cliente</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Modal Histórico do Cliente -->
+            <div id="customer-history-modal" class="login-overlay" style="display:none; align-items:center; justify-content:center;">
+                <div class="glass-card login-card" style="max-width:680px; width:95%;">
+                    <div class="login-header" style="margin-bottom:1rem;">
+                        <h3 id="history-customer-name">Histórico do Cliente</h3>
+                        <p id="history-customer-info" style="color:var(--text-dim); font-size:0.85rem;"></p>
+                    </div>
+                    <div id="customer-history-body" style="max-height:400px; overflow-y:auto;">
+                        <p style="text-align:center; color:var(--text-dim);">Carregando...</p>
+                    </div>
+                    <div style="margin-top:1.5rem; text-align:right;">
+                        <button class="btn-secondary" onclick="closeHistoryModal()">Fechar</button>
+                    </div>
+                </div>
+            </div>
+
             <div id="page-leads" style="display:none;">
                 <div class="page-header">
                     <h2>Triagem de Leads</h2>
@@ -240,6 +331,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="leads-pagination"></div>
                 </div>
             </div>
             <div id="page-repairs" style="display:none;">
@@ -269,6 +361,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="repairs-pagination"></div>
                 </div>
             </div>
 
@@ -332,6 +425,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <div id="inventory-pagination"></div>
                 </div>
             </div>
 
@@ -444,21 +538,21 @@
                 <div class="content-grid" style="grid-template-columns: 1fr; max-width: 600px;">
                     <div class="data-card">
                         <h4 style="margin-bottom: 0.5rem;"><i class="ph ph-cpu"></i> Inteligência Artificial (Groq)</h4>
-                        <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.5rem;">
-                            Insira sua chave API gratuita da Groq para ativar o chat conversacional do Wiki. A chave fica salva apenas no seu navegador atual. <a href="https://console.groq.com/keys" target="_blank" style="color: var(--purple-vibrant);">Pegue a sua aqui</a>.
+                        <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1rem;">
+                            O Copilot IA usa a chave da Groq via variável de ambiente no servidor, mantendo-a segura e fora do navegador.
+                            Para ativar, adicione <code style="background:rgba(177,74,255,0.15); padding:0.1rem 0.4rem; border-radius:4px;">GROQ_API_KEY</code> nas variáveis de ambiente do seu projeto no Vercel.
                         </p>
-                        
-                        <div class="form-group">
-                            <label>Groq API Key</label>
-                            <input type="password" id="groq-api-key" placeholder="gsk_...">
+                        <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                            <a href="https://console.groq.com/keys" target="_blank" class="btn-secondary"><i class="ph ph-key"></i> Obter chave Groq</a>
+                            <a href="https://vercel.com/docs/projects/environment-variables" target="_blank" class="btn-secondary"><i class="ph ph-arrow-square-out"></i> Como configurar no Vercel</a>
                         </div>
-                        <button class="btn-primary" onclick="saveSettings()">Salvar Configurações</button>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
+    <script src="config.js"></script>
     <script src="admin.js"></script>
 </body>
 </html>
