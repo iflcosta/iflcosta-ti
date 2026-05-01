@@ -86,7 +86,7 @@ function toggleMobileMenu() {
 async function initDashboard() {
   if (!iccClient) return;
 
-  // Garante que o Dashboard fica visivelc e ativo
+  // Garante que o Dashboard fica visivel e ativo
   document.getElementById('page-dashboard').style.display = 'block';
   const firstNav = document.querySelector('.nav-link');
   if (firstNav) firstNav.classList.add('active');
@@ -114,30 +114,23 @@ async function initDashboard() {
   document.getElementById('stat-leads').innerText = leadsCount ? leadsCount.length : 0;
   document.getElementById('stat-repairs').innerText = repairsCount ? repairsCount.length : 0;
 
-  const now = new Date();
-  const currentMonthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-  const lastMonthStr = now.getMonth() === 0
-    ? `${now.getFullYear() - 1}-12`
-    : `${now.getFullYear()}-${String(now.getMonth()).padStart(2, '0')}`;
+  const yr = now.getFullYear();
+  const mo = now.getMonth() + 1;
+  const currentMonthStr = yr + '-' + String(mo).padStart(2, '0');
+  const lastMonthStr = mo === 1 ? (yr - 1) + '-12' : yr + '-' + String(mo - 1).padStart(2, '0');
 
   const { data: deliveredRepairs } = await iccClient
     .from('repairs').select('price, part_cost, exit_date').eq('status', 'Entregue');
 
-  let currentRevenue = 0;
-  let lastRevenue = 0;
-  let currentCost = 0;
+  let currentRevenue = 0; let lastRevenue = 0; let currentCost = 0;
 
   if (deliveredRepairs) {
     deliveredRepairs.forEach(r => {
       if (!r.exit_date) return;
       const val = parseFloat(r.price) || 0;
       const cost = parseFloat(r.part_cost) || 0;
-      if (r.exit_date.startsWith(currentMonthStr)) {
-        currentRevenue += val;
-        currentCost += cost;
-      } else if (r.exit_date.startsWith(lastMonthStr)) {
-        lastRevenue += val;
-      }
+      if (r.exit_date.startsWith(currentMonthStr)) { currentRevenue += val; currentCost += cost; }
+      else if (r.exit_date.startsWith(lastMonthStr)) { lastRevenue += val; }
     });
   }
 
@@ -152,15 +145,11 @@ async function initDashboard() {
 
   const trendEl = document.getElementById('stat-revenue-trend');
   if (lastRevenue === 0) {
-    trendEl.innerHTML = currentRevenue > 0
-      ? `<i class="ph ph-trend-up"></i> +100% vs mês anterior`
-      : `Sem dados do mês anterior`;
+    trendEl.innerText = currentRevenue > 0 ? '+100% vs mes anterior' : 'Sem dados do mes anterior';
     trendEl.style.color = currentRevenue > 0 ? 'var(--success)' : 'var(--text-dim)';
   } else {
     const diff = ((currentRevenue - lastRevenue) / lastRevenue) * 100;
-    trendEl.innerHTML = diff >= 0
-      ? `<i class="ph ph-trend-up"></i> +${diff.toFixed(1)}% vs mês anterior`
-      : `<i class="ph ph-trend-down"></i> ${diff.toFixed(1)}% vs mês anterior`;
+    trendEl.innerText = (diff >= 0 ? '+' : '') + diff.toFixed(1) + '% vs mes anterior';
     trendEl.style.color = diff >= 0 ? 'var(--success)' : 'var(--danger)';
   }
 
