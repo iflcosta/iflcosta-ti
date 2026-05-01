@@ -54,23 +54,32 @@ async function logout() {
   window.location.reload();
 }
 
-// Navegação
-function showPage(pageId) {
+// Navegação (adaptada para o Header)
+function showPage(pageId, el) {
   const pages = ['dashboard', 'leads', 'customers', 'repairs', 'inventory', 'wiki', 'settings'];
   pages.forEach(p => {
-    const el = document.getElementById('page-' + p);
-    if (el) el.style.display = 'none';
+    const pageEl = document.getElementById('page-' + p);
+    if (pageEl) pageEl.style.display = 'none';
   });
-  document.getElementById('page-' + pageId).style.display = 'block';
-  document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-  event.currentTarget.classList.add('active');
 
-  // Carrega dados ao navegar para a página
+  const target = document.getElementById('page-' + pageId);
+  if (target) target.style.display = pageId === 'wiki' ? 'flex' : 'block';
+
+  // Atualiza estado ativo no header
+  document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => link.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  // Carrega dados ao navegar
   if (pageId === 'customers') fetchCustomers(0);
   if (pageId === 'leads')     fetchLeads(document.getElementById('lead-filter')?.value || 'Novo', 0);
   if (pageId === 'repairs')   fetchRepairs(0);
   if (pageId === 'inventory') fetchProducts(0);
-  if (pageId === 'copilot')   restoreCopilotUI();
+  if (pageId === 'wiki')      initCopilotSidebar();
+}
+
+function toggleMobileMenu() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+  document.getElementById('mobile-overlay').classList.toggle('open');
 }
 
 // Dashboard
@@ -857,10 +866,334 @@ if (wikiForm) {
   });
 }
 
-// Variável global para manter a memória da conversa — persistida no localStorage
-const CHAT_HISTORY_KEY = 'icc_copilot_history';
-const CHAT_UI_KEY = 'icc_copilot_ui';
-let chatConversationHistory = JSON.parse(localStorage.getItem(CHAT_HISTORY_KEY) || '[]');
+// ==========================================================
+// COPILOT MULTI-SESSÃO
+// ==========================================================
+const ICC_SESSIONS_KEY = 'icc_sessions';
+const ICC_CURRENT_KEY  = 'icc_current_session';
+
+function getSessions() {
+  return JSON.parse(localStorage.getItem(ICC_SESSIONS_KEY) || '[]');
+}
+function saveSessions(sessions) {
+  localStorage.setItem(ICC_SESSIONS_KEY, JSON.stringify(sessions));
+}
+function getCurrentId() {
+  return localStorage.getItem(ICC_CURRENT_KEY) || null;
+}
+function setCurrentId(id) {
+  localStorage.setItem(ICC_CURRENT_KEY, id);
+}
+
+function generateId() {
+  return 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+}
+
+function generateTitle(text) {
+  return text.trim().slice(0, 38) + (text.trim().length > 38 ? '...' : '');
+}
+
+function createNewSession(autoLoad = true) {
+  const sessions = getSessions();
+  if (sessions.length >= 20) {
+    // Remove a mais antiga
+    sessions.sort((a, b) => a.createdAt - b.createdAt);
+    sessions.shift();
+  }
+  const newSession = {
+    id: generateId(),
+    title: 'Nova Conversa',
+    history: [],
+    uiHtml: '',
+    createdAt: Date.now()
+  };
+  sessions.push(newSession);
+  saveSessions(sessions);
+  setCurrentId(newSession.id);
+  if (autoLoad) {
+    renderSessionList();
+    renderChatUI(newSession);
+  }
+  return newSession;
+}
+
+function loadSession(id) {
+  const sessions = getSessions();
+  const session = sessions.find(s => s.id === id);
+  if (!session) return;
+  setCurrentId(id);
+  renderSessionList();
+  renderChatUI(session);
+}
+
+function deleteSession(id) {
+  let sessions = getSessions();
+  sessions = sessions.filter(s => s.id !== id);
+  saveSessions(sessions);
+
+  // Se era a atual, carrega outra
+  if (getCurrentId() === id) {
+    if (sessions.length > 0) {
+      setCurrentId(sessions[sessions.length - 1].id);
+      renderChatUI(sessions[sessions.length - 1]);
+    } else {
+      localStorage.removeItem(ICC_CURRENT_KEY);
+      const historyEl = document.getElementById('chat-history');
+      if (historyEl) historyEl.innerHTML = '<div class="copilot-welcome"><i class="ph ph-robot"></i><p>Crie uma nova conversa para começar.</p></div>';
+    }
+  }
+  renderSessionList();
+}
+
+function updateSessionData(id, historyArr, uiHtml, title) {
+  const sessions = getSessions();
+  const idx = sessions.findIndex(s => s.id === id);
+  if (idx === -1) return;
+  sessions[idx].history = historyArr;
+  sessions[idx].uiHtml  = uiHtml;
+  if (title) sessions[idx].title = title;
+  saveSessions(sessions);
+}
+
+function renderSessionList() {
+  const sessions = getSessions();
+  const currentId = getCurrentId();
+  const listEl = document.getElementById('session-list');
+  if (!listEl) return;
+
+  if (sessions.length === 0) {
+    listEl.innerHTML = '<div style="padding:1rem;color:var(--text-dim);font-size:0.8rem;text-align:center;">Nenhuma conversa ainda.</div>';
+    return;
+  }
+
+  // Ordena do mais recente para o mais antigo
+  const sorted = [...sessions].sort((a, b) => b.createdAt - a.createdAt);
+
+  listEl.innerHTML = sorted.map(s => {
+    const isActive = s.id === currentId;
+    const time = new Date(s.createdAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const date = new Date(s.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+    const dateStr = new Date(s.createdAt).toDateString() === new Date().toDateString() ? time : date;
+    return `
+      <div class="session-item ${isActive ? 'active' : ''}" onclick="loadSession('${s.id}')">
+        <div class="session-info">
+          <div class="session-title">${escapeHtml(s.title)}</div>
+          <div class="session-time">${dateStr}</div>
+        </div>
+        <button class="session-delete" onclick="event.stopPropagation(); deleteSession('${s.id}')" title="Apagar conversa">
+          <i class="ph ph-trash"></i>
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderChatUI(session) {
+  const historyEl = document.getElementById('chat-history');
+  if (!historyEl) return;
+  if (session.uiHtml) {
+    historyEl.innerHTML = session.uiHtml;
+  } else {
+    historyEl.innerHTML = `
+      <div class="copilot-welcome">
+        <i class="ph ph-robot"></i>
+        <p>Olá! Sou o seu Copilot de TI. Me conte o problema e eu buscarei nas suas anotações a melhor solução.</p>
+      </div>
+    `;
+  }
+  historyEl.scrollTop = historyEl.scrollHeight;
+}
+
+function initCopilotSidebar() {
+  const sessions = getSessions();
+  let currentId = getCurrentId();
+
+  // Se não há sessões, cria uma automaticamente
+  if (sessions.length === 0) {
+    createNewSession(true);
+    return;
+  }
+
+  // Se não há sessão atual válida, carrega a mais recente
+  if (!currentId || !sessions.find(s => s.id === currentId)) {
+    const latest = sessions.sort((a, b) => b.createdAt - a.createdAt)[0];
+    setCurrentId(latest.id);
+    currentId = latest.id;
+  }
+
+  renderSessionList();
+  const current = sessions.find(s => s.id === currentId);
+  if (current) renderChatUI(current);
+}
+
+// Referência à história atual da sessão ativa (alias para o sistema de chat)
+function getCurrentHistory() {
+  const sessions = getSessions();
+  const current = sessions.find(s => s.id === getCurrentId());
+  return current ? current.history : [];
+}
+
+// ── Chat Form ──
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+
+if (chatForm && chatInput) {
+  chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      chatForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
+  });
+
+  chatInput.addEventListener('input', function() {
+    this.style.height = '45px';
+    this.style.height = Math.min(this.scrollHeight, 180) + 'px';
+  });
+
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const input = document.getElementById('chat-input');
+    const query = input.value.trim();
+    if (!query) return;
+
+    // Garante que há uma sessão ativa
+    if (!getCurrentId() || getSessions().length === 0) createNewSession(false);
+
+    const historyEl = document.getElementById('chat-history');
+
+    // Remove welcome msg se ainda existir
+    const welcome = historyEl.querySelector('.copilot-welcome');
+    if (welcome) welcome.remove();
+
+    // Mensagem do usuário
+    const userDiv = document.createElement('div');
+    userDiv.className = 'chat-msg-user';
+    userDiv.innerHTML = `<div>${escapeHtml(query).replace(/\n/g, '<br>')}</div>`;
+    historyEl.appendChild(userDiv);
+
+    input.value = '';
+    input.style.height = '45px';
+
+    // Placeholder IA
+    const typingId = 'typing-' + Date.now();
+    const aiDiv = document.createElement('div');
+    aiDiv.id = typingId;
+    aiDiv.className = 'chat-msg-ai';
+    aiDiv.innerHTML = `
+      <div class="chat-msg-ai-header"><i class="ph ph-robot"></i> Copilot</div>
+      <div class="markdown-body" id="content-${typingId}"><span style="color:var(--text-dim)">Analisando sua base vetorial...</span></div>
+    `;
+    historyEl.appendChild(aiDiv);
+    historyEl.scrollTop = historyEl.scrollHeight;
+
+    const chatBtn = document.getElementById('chat-btn');
+    chatBtn.disabled = true;
+
+    try {
+      const extractor = await getEmbedder();
+      const output = await extractor(query, { pooling: 'mean', normalize: true });
+      const query_embedding = Array.from(output.data);
+
+      const { data: matches } = await iccClient.rpc('match_wiki_articles', {
+        query_embedding, match_threshold: 0.3, match_count: 3,
+      });
+
+      const { count: leadsCount } = await iccClient.from('leads').select('*', { count: 'exact', head: true }).neq('status', 'Arquivado');
+      const { count: repairsCount } = await iccClient.from('repairs').select('*', { count: 'exact', head: true }).neq('status', 'Entregue');
+
+      let systemPrompt = `Você é o Copilot de TI integrado ao ICC do Iago Costa. God Mode ativado: ajude com diagnósticos avançados de hardware/software e entenda o negócio.\n`;
+      systemPrompt += `CONTEXTO AO VIVO: ${leadsCount || 0} leads em aberto, ${repairsCount || 0} equipamentos na bancada.\n\n`;
+      if (matches && matches.length > 0) {
+        const ctx = matches.map(m => `Problema: ${m.title}\nSolução: ${m.content}`).join('\n---\n');
+        systemPrompt += `WIKI:\n${ctx}\n\nUse as anotações acima. Responda em Markdown.`;
+      } else {
+        systemPrompt += `Nenhuma anotação encontrada. Responda com seu conhecimento de TI em Markdown.`;
+      }
+
+      const currentHistory = getCurrentHistory();
+      const messagesPayload = [
+        { role: 'system', content: systemPrompt },
+        ...currentHistory,
+        { role: 'user', content: query }
+      ];
+
+      const contentBox = document.getElementById('content-' + typingId);
+      contentBox.innerHTML = '';
+
+      const { data: { session } } = await iccClient.auth.getSession();
+      const jwtToken = session ? session.access_token : '';
+
+      const groqRes = await fetch('/api/groq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${jwtToken}` },
+        body: JSON.stringify({ messages: messagesPayload, temperature: 0.5, max_tokens: 1024, stream: true }),
+      });
+
+      if (!groqRes.ok) {
+        const err = await groqRes.json().catch(() => ({}));
+        throw new Error(err.error || `Erro ${groqRes.status}`);
+      }
+
+      const reader = groqRes.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let finalAnswer = '';
+      const renderMarkdown = (t) => window.marked ? window.marked.parse(t) : escapeHtml(t).replace(/\n/g, '<br>');
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const lines = decoder.decode(value, { stream: true }).split('\n');
+        for (const line of lines) {
+          if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+            try {
+              const tok = JSON.parse(line.slice(6)).choices[0]?.delta?.content || '';
+              finalAnswer += tok;
+              contentBox.innerHTML = renderMarkdown(finalAnswer);
+              historyEl.scrollTop = historyEl.scrollHeight;
+            } catch (_) {}
+          }
+        }
+      }
+
+      // Feedback buttons
+      const matchedIds = matches ? matches.map(m => m.id) : [];
+      const encodedIds = encodeURIComponent(JSON.stringify(matchedIds));
+      const encodedQuery = encodeURIComponent(query);
+      const encodedAnswer = encodeURIComponent(finalAnswer.substring(0, 500));
+      const btnId = 'btn-up-' + Date.now();
+
+      const prefixHTML = (matches && matches.length > 0)
+        ? `<span class="badge" style="margin-bottom:0.75rem;display:inline-block;background:rgba(177,74,255,0.2);color:white;border:none;"><i class="ph ph-books"></i> Usei ${matches.length} anotação(es) da Wiki</span><br>`
+        : '';
+
+      const feedbackHTML = `
+        <div style="margin-top:0.75rem;display:flex;gap:0.5rem;align-items:center;border-top:1px solid var(--glass-border);padding-top:0.5rem;">
+          <span style="font-size:0.78rem;color:var(--text-dim);">Foi útil?</span>
+          <button id="${btnId}" onclick="feedbackUp('${btnId}','${encodedIds}','${encodedQuery}','${encodedAnswer}')" style="background:rgba(16,185,129,0.1);color:var(--success);border:none;padding:0.25rem 0.6rem;border-radius:4px;cursor:pointer;font-size:0.8rem;"><i class="ph ph-thumbs-up"></i> Resolveu</button>
+          <button onclick="feedbackDown('${encodedQuery}')" style="background:rgba(239,68,68,0.1);color:var(--danger);border:none;padding:0.25rem 0.6rem;border-radius:4px;cursor:pointer;font-size:0.8rem;"><i class="ph ph-thumbs-down"></i> Não</button>
+        </div>`;
+
+      contentBox.innerHTML = prefixHTML + renderMarkdown(finalAnswer) + feedbackHTML;
+      historyEl.scrollTop = historyEl.scrollHeight;
+
+      // Persiste na sessão atual
+      const newHistory = [...currentHistory, { role: 'user', content: query }, { role: 'assistant', content: finalAnswer }];
+      const slicedHistory = newHistory.length > 10 ? newHistory.slice(-10) : newHistory;
+      const isFirstMsg = currentHistory.length === 0;
+      const newTitle = isFirstMsg ? generateTitle(query) : null;
+      updateSessionData(getCurrentId(), slicedHistory, historyEl.innerHTML, newTitle);
+      if (newTitle) renderSessionList();
+
+    } catch (e) {
+      console.error('Copilot Error:', e);
+      document.getElementById('content-' + typingId).innerHTML = `<span style="color:var(--danger);font-size:0.9rem;">Erro: ${e.message}</span>`;
+    } finally {
+      chatBtn.disabled = false;
+      chatBtn.innerHTML = '<i class="ph ph-paper-plane-right"></i>';
+    }
+  });
+}
+
 
 // Função para limpar o histórico do Copilot
 function clearCopilotHistory() {
