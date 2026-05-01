@@ -99,11 +99,11 @@ function updateCalcResult() {
   let hasCombo = false;
   let hasFreeCleaning = false;
 
-  // Lógica de Limpeza Gratuita VIP
+  // Lógica de Limpeza Gratuita VIP (Apenas para serviços que exigem abrir a máquina)
   if (chosen.length > 1 && chosen.find(s => s.id === 'limpeza')) {
-    const coreServices = ['formatacao', 'upgrade', 'basico', 'gamer'];
-    const hasCoreService = chosen.some(s => coreServices.includes(s.id));
-    if (hasCoreService) {
+    const hardwareServices = ['upgrade', 'basico', 'gamer'];
+    const hasHardwareService = chosen.some(s => hardwareServices.includes(s.id));
+    if (hasHardwareService) {
       hasFreeCleaning = true;
       // Remove a limpeza do cálculo de preços, pois será gratuita
       const cleaningIndex = chosen.findIndex(s => s.id === 'limpeza');
