@@ -251,9 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
           name: data.name,
           whatsapp: cleanPhone,
           service_category: data.service,
-          message: data.message,
-          urgency: data.urgency,
-          client_type: data.client_type,
+          message: data.message
         }]);
 
         if (error) throw error;
