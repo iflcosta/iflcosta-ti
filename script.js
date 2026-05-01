@@ -12,7 +12,6 @@ const CALC_DATA = {
     { id: 'tela',      label: 'Troca de Tela (Android/iPhone)', min: 120, max: 180, note: '+ peça' },
     { id: 'bateria',   label: 'Troca de Bateria',               min: 80,  max: 120, note: '+ peça' },
     { id: 'conector',  label: 'Conector de Carga',              min: 100, max: 150, note: '+ peça' },
-    { id: 'limpeza_cel', label: 'Limpeza Técnica / Desoxidação',    min: 120, max: 180 },
     { id: 'camera',    label: 'Reparo de Câmera / Lente',       min: 80,  max: 150, note: '+ peça' },
     { id: 'software',  label: 'Restauração de Sistema / Software', min: 80,  max: 120 },
     { id: 'placa_cel', label: 'Reparo de Placa / Microsolda',      min: 150, max: 250, note: '+ peça' },
