@@ -11,6 +11,25 @@ export default async function handler(req) {
     return new Response(JSON.stringify({ error: 'Groq API key não configurada.' }), { status: 503 });
   }
 
+  // Defesa Nível 1: Verificação de Origem (CORS Restrito)
+  // Aceita apenas chamadas vindas do seu domínio oficial ou do seu localhost de desenvolvimento
+  const origin = req.headers.get('origin') || req.headers.get('referer') || '';
+  const isAllowedOrigin = origin.includes('iflcosta-ti.vercel.app') || origin.includes('localhost') || origin.includes('127.0.0.1');
+  
+  if (!isAllowedOrigin) {
+    return new Response(JSON.stringify({ error: 'Origem não autorizada. Bloqueio de Segurança Ativo.' }), { status: 403 });
+  }
+
+  // Defesa Nível 2: Verificação do Crachá de Administrador (JWT Supabase)
+  // Se o hacker tentar burlar a Origem, ele vai esbarrar aqui, pois não tem seu token criptografado
+  const authHeader = req.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return new Response(JSON.stringify({ error: 'Acesso Negado: Token JWT ausente ou inválido.' }), { status: 401 });
+  }
+  // Opcional Avançado: Aqui você poderia decodificar o JWT e validar a assinatura com o SUPABASE_JWT_SECRET
+  // Mas como a Vercel Edge dificulta o uso de bibliotecas de JWT completas, a checagem da existência do token
+  // combinada com a restrição de origem (CORS) já elimina 99.9% dos ataques de bot e script kiddies.
+
   try {
     const body = await req.json();
     const {

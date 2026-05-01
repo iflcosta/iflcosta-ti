@@ -911,10 +911,17 @@ if (chatForm && chatInput) {
         <div class="markdown-body" id="content-${typingId}"></div>
       `;
 
-      // 4. Chamada de Streaming (Efeito Máquina de Escrever)
+      // 4. Capturar o Token Seguro da Sessão Atual
+      const { data: { session } } = await iccClient.auth.getSession();
+      const jwtToken = session ? session.access_token : '';
+
+      // 5. Chamada de Streaming Segura (Com Crachá JWT)
       const groqRes = await fetch('/api/groq', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwtToken}`
+        },
         body: JSON.stringify({
           messages: messagesPayload,
           temperature: 0.5,
