@@ -15,6 +15,7 @@ const CALC_DATA = {
     { id: 'limpeza_cel', label: 'Limpeza Técnica / Desoxidação',    min: 120, max: 180 },
     { id: 'camera',    label: 'Reparo de Câmera / Lente',       min: 80,  max: 150, note: '+ peça' },
     { id: 'software',  label: 'Restauração de Sistema / Software', min: 80,  max: 120 },
+    { id: 'placa_cel', label: 'Reparo de Placa / Microsolda',      min: 150, max: 250, note: '+ peça' },
   ],
   notebook: [
     { id: 'formatacao', label: 'Formatação Premium (c/ Backup)',   min: 150, max: 200 },
