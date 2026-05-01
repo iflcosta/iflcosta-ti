@@ -77,6 +77,33 @@ function toggleCalcService(id) {
   }
   renderCalcServices();
   updateCalcResult();
+  updateFreeCleaningHint();
+}
+
+function updateFreeCleaningHint() {
+  const hint = document.getElementById('free-cleaning-hint');
+  if (!hint) return;
+
+  const services = CALC_DATA[calcState.cat] || [];
+  const chosen = services.filter(s => calcState.selected.has(s.id));
+  const hardwareServices = ['upgrade', 'basico', 'gamer'];
+  const hasHardware = chosen.some(s => hardwareServices.includes(s.id));
+  const hasLimpeza = calcState.selected.has('limpeza');
+
+  const content = hint.querySelector('.hint-content span');
+
+  if (hasHardware && !hasLimpeza) {
+    content.innerHTML = '<strong>Presente VIP:</strong> Você ganhou uma Limpeza + Pasta Térmica grátis! Clique para adicionar.';
+    hint.style.display = 'flex';
+    requestAnimationFrame(() => hint.classList.add('hint-visible'));
+  } else if (chosen.length === 1 && !hasLimpeza) {
+    content.innerHTML = '<strong>Combo Econômico:</strong> Adicione um 2º serviço e ganhe 50% de desconto nele!';
+    hint.style.display = 'flex';
+    requestAnimationFrame(() => hint.classList.add('hint-visible'));
+  } else {
+    hint.classList.remove('hint-visible');
+    setTimeout(() => { if (!hint.classList.contains('hint-visible')) hint.style.display = 'none'; }, 300);
+  }
 }
 
 function updateCalcResult() {
@@ -149,8 +176,14 @@ function updateCalcResult() {
   resultEl.classList.add('has-value');
 
   if (waBtn) {
-    const labels = chosen.map(s => s.label).join(' + ');
-    const msg = encodeURIComponent(`Olá, Iago! Fiz uma simulação para: ${labels}. Estimativa Mão de Obra: ${rangeText}.`);
+    const serviceList = chosen.map(s => `• ${s.label}`).join('%0A');
+    const totalText = totalMin === totalMax ? `R$ ${totalMin}` : `R$ ${totalMin} – ${totalMax}`;
+    
+    let promoInfo = '';
+    if (hasFreeCleaning) promoInfo += `%0A🎁 Cortesia: Limpeza VIP Inclusa!`;
+    if (hasCombo) promoInfo += `%0A🏷️ Desconto: 50% no adicional aplicado!`;
+
+    const msg = encodeURIComponent(`Olá, Iago! 👋%0A%0AFiz uma simulação no site e gostaria de um orçamento para:%0A${serviceList}%0A%0AEstimativa de Mão de Obra: ${totalText}${promoInfo}%0A%0AConsegue me atender?`).replace(/%250A/g, '%0A');
     waBtn.href = `https://wa.me/${waPhone}?text=${msg}`;
     waBtn.style.display = 'inline-flex';
   }
