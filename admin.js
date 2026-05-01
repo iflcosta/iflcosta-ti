@@ -930,7 +930,10 @@ if (chatForm && chatInput) {
         }),
       });
 
-      if (!groqRes.ok) throw new Error(`Erro ${groqRes.status} da Groq`);
+      if (!groqRes.ok) {
+        const errorData = await groqRes.json().catch(() => ({}));
+        throw new Error(errorData.error || `Erro ${groqRes.status} no servidor`);
+      }
 
       const reader = groqRes.body.getReader();
       const decoder = new TextDecoder('utf-8');
@@ -990,7 +993,7 @@ if (chatForm && chatInput) {
 
     } catch (e) {
       console.error('Erro no Copilot:', e);
-      document.getElementById('content-' + typingId).innerHTML = '<span style="color:var(--danger);">Erro de comunicação com a IA. Verifique as credenciais da API.</span>';
+      document.getElementById('content-' + typingId).innerHTML = `<span style="color:var(--danger); font-size:0.9rem;">Erro: ${e.message}</span>`;
     } finally {
       document.getElementById('chat-btn').disabled = false;
       document.getElementById('chat-btn').innerHTML = '<i class="ph ph-paper-plane-right"></i> Perguntar';
