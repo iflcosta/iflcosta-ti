@@ -1,51 +1,53 @@
-// Proxy seguro para a API da Groq.
-// A chave GROQ_API_KEY fica apenas no servidor (Vercel env vars), nunca no browser.
+// Proxy seguro para a API da Groq rodando na Edge Network (Vercel) para suportar Streaming em tempo real.
+export const config = { runtime: 'edge' };
 
-const GROQ_API_KEY = process.env.GROQ_API_KEY;
-
-module.exports = async (req, res) => {
+export default async function handler(req) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
   }
 
+  const GROQ_API_KEY = process.env.GROQ_API_KEY;
   if (!GROQ_API_KEY) {
-    return res.status(503).json({
-      error: 'Groq API key não configurada. Adicione GROQ_API_KEY nas variáveis de ambiente do Vercel.',
-    });
-  }
-
-  const {
-    messages,
-    model = 'llama-3.3-70b-versatile',
-    temperature = 0.5,
-    max_tokens = 500,
-  } = req.body || {};
-
-  if (!messages || !Array.isArray(messages) || messages.length === 0) {
-    return res.status(400).json({ error: 'Campo "messages" é obrigatório e deve ser um array.' });
+    return new Response(JSON.stringify({ error: 'Groq API key não configurada.' }), { status: 503 });
   }
 
   try {
+    const body = await req.json();
+    const {
+      messages,
+      model = 'llama-3.3-70b-versatile',
+      temperature = 0.5,
+      max_tokens = 1000,
+      stream = true, // Forçando streaming
+    } = body;
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return new Response(JSON.stringify({ error: 'Campo "messages" é obrigatório.' }), { status: 400 });
+    }
+
     const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${GROQ_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ model, messages, temperature, max_tokens }),
+      body: JSON.stringify({ model, messages, temperature, max_tokens, stream }),
     });
 
-    const data = await groqRes.json();
-
     if (!groqRes.ok) {
-      return res.status(groqRes.status).json({
-        error: data.error?.message || 'Groq retornou um erro.',
-      });
+      const errorText = await groqRes.text();
+      return new Response(errorText, { status: groqRes.status });
     }
 
-    return res.status(200).json(data);
+    // Retorna o stream puro para o frontend processar (Efeito Máquina de Escrever)
+    return new Response(groqRes.body, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    });
   } catch (error) {
-    console.error('Groq proxy error:', error);
-    return res.status(500).json({ error: 'Erro interno ao contatar a Groq.' });
+    return new Response(JSON.stringify({ error: 'Erro interno ao contatar a Groq: ' + error.message }), { status: 500 });
   }
-};
+}

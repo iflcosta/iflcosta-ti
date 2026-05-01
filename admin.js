@@ -822,9 +822,9 @@ if (wikiForm) {
   });
 }
 
-// ==========================================
-// Chat Wiki — usa proxy /api/groq (chave no servidor)
-// ==========================================
+// Variável global para manter a memória da conversa atual (Multi-turn chat)
+let chatConversationHistory = [];
+
 const chatForm = document.getElementById('chat-form');
 if (chatForm) {
   chatForm.addEventListener('submit', async (e) => {
@@ -846,69 +846,108 @@ if (chatForm) {
     history.innerHTML += `
       <div id="${typingId}" style="margin-bottom:1.5rem; background:rgba(177,74,255,0.05); padding:1rem; border-radius:12px; border-left:3px solid var(--purple-vibrant);">
         <strong style="color:var(--purple-vibrant); display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;"><i class="ph ph-robot"></i> Copilot:</strong>
-        <p>Analisando sua base de conhecimento vetorial...</p>
+        <p>Analisando sua base vetorial e o estado da sua loja...</p>
       </div>
     `;
     history.scrollTop = history.scrollHeight;
 
     try {
+      // 1. Busca Semântica na Wiki
       const extractor = await getEmbedder();
       const output = await extractor(query, { pooling: 'mean', normalize: true });
       const query_embedding = Array.from(output.data);
 
-      const { data: matches, error } = await iccClient.rpc('match_wiki_articles', {
+      const { data: matches } = await iccClient.rpc('match_wiki_articles', {
         query_embedding,
         match_threshold: 0.3,
         match_count: 3,
       });
 
-      if (error) throw error;
+      // 2. Coleta de Contexto ao Vivo ("God Mode")
+      const { count: leadsCount } = await iccClient.from('leads').select('*', { count: 'exact', head: true }).neq('status', 'Arquivado');
+      const { count: repairsCount } = await iccClient.from('repairs').select('*', { count: 'exact', head: true }).neq('status', 'Entregue');
+
+      // 3. Montagem do System Prompt
+      let systemPrompt = `Você é o Copilot de TI integrado ao painel de administração (ICC) do Iago Costa. Seu papel é atuar em God Mode: ajude com diagnósticos avançados de hardware/software, mas também entenda o negócio.\n`;
+      systemPrompt += `CONTEXTO AO VIVO DA LOJA: No momento, há ${leadsCount || 0} leads em aberto e ${repairsCount || 0} equipamentos na bancada aguardando reparo.\n\n`;
+
+      if (matches && matches.length > 0) {
+        const contextText = matches.map(m => `Problema Passado: ${m.title}\nSolução Aplicada: ${m.content}`).join('\n---\n');
+        systemPrompt += `ANOTAÇÕES RECUPERADAS DA WIKI:\n${contextText}\n\nSempre tente usar as anotações acima primeiro. Se não resolver, dê sua própria dica sênior. Responda formatando em Markdown (com negritos e tabelas se necessário).`;
+      } else {
+        systemPrompt += `Nenhuma anotação técnica encontrada na wiki sobre este problema. Responda diretamente baseando-se no seu vasto conhecimento de TI, formatando em Markdown.`;
+      }
+
+      const messagesPayload = [
+        { role: 'system', content: systemPrompt },
+        ...chatConversationHistory,
+        { role: 'user', content: query }
+      ];
 
       document.getElementById(typingId).innerHTML = `
         <strong style="color:var(--purple-vibrant); display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;"><i class="ph ph-robot"></i> Copilot:</strong>
-        <p>Consultando IA...</p>
+        <div class="markdown-body" id="content-${typingId}"></div>
       `;
 
-      let systemPrompt = '';
-      if (matches && matches.length > 0) {
-        const contextText = matches.map(m => `Problema: ${m.title}\nSolução que eu dei: ${m.content}`).join('\n---\n');
-        systemPrompt = `Você é um assistente técnico de TI integrado ao painel do Iago. Use as anotações passadas dele abaixo como base principal para responder. Se a anotação não resolver, dê sua própria dica técnica avançada.\n\nAnotações Recuperadas:\n${contextText}`;
-      } else {
-        systemPrompt = `Você é um assistente técnico de TI integrado ao painel do Iago. Ele ainda não tem anotações sobre esse assunto. Responda diretamente e tecnicamente.`;
-      }
-
-      // Chama o proxy seguro — a chave Groq fica no servidor
+      // 4. Chamada de Streaming (Efeito Máquina de Escrever)
       const groqRes = await fetch('/api/groq', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: query },
-          ],
+          messages: messagesPayload,
           temperature: 0.5,
-          max_tokens: 500,
+          max_tokens: 1000,
+          stream: true
         }),
       });
 
-      if (!groqRes.ok) {
-        const errData = await groqRes.json().catch(() => ({}));
-        throw new Error(errData.error || `Erro ${groqRes.status} ao contatar o Copilot`);
+      if (!groqRes.ok) throw new Error(`Erro ${groqRes.status} da Groq`);
+
+      const reader = groqRes.body.getReader();
+      const decoder = new TextDecoder('utf-8');
+      let finalAnswer = '';
+      const contentBox = document.getElementById('content-' + typingId);
+
+      // Função segura de parse Markdown (usando marked.js se disponível)
+      const renderMarkdown = (text) => {
+        return window.marked ? window.marked.parse(text) : escapeHtml(text).replace(/\n/g, '<br>');
+      };
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunkText = decoder.decode(value, { stream: true });
+        const lines = chunkText.split('\n');
+        for (const line of lines) {
+          if (line.startsWith('data: ') && line !== 'data: [DONE]') {
+            try {
+              const parsed = JSON.parse(line.slice(6));
+              const token = parsed.choices[0]?.delta?.content || '';
+              finalAnswer += token;
+              contentBox.innerHTML = renderMarkdown(finalAnswer);
+              history.scrollTop = history.scrollHeight;
+            } catch (e) { /* Ignore incomplete JSON chunks */ }
+          }
+        }
       }
 
-      const groqData = await groqRes.json();
-      const finalAnswer = groqData.choices[0].message.content.replace(/\n/g, '<br>');
+      // 5. Salvar na Memória e Exibir Botões de Feedback
+      chatConversationHistory.push({ role: 'user', content: query });
+      chatConversationHistory.push({ role: 'assistant', content: finalAnswer });
+      // Mantém apenas o histórico recente para economizar tokens
+      if (chatConversationHistory.length > 10) chatConversationHistory = chatConversationHistory.slice(-10);
+
+      const matchedIds = matches ? matches.map(m => m.id) : [];
+      const encodedIds = encodeURIComponent(JSON.stringify(matchedIds));
+      const encodedQuery = encodeURIComponent(query);
+      const encodedAnswer = encodeURIComponent(finalAnswer.substring(0, 500));
+      const btnId = 'btn-up-' + Date.now();
 
       let prefixHTML = (matches && matches.length > 0)
         ? `<span class="badge" style="margin-bottom:1rem; display:inline-block; background:rgba(177,74,255,0.2); color:white; border:none;"><i class="ph ph-books"></i> Usei ${matches.length} anotação(ões) do seu histórico!</span><br>`
         : '';
 
-      const matchedIds = matches ? matches.map(m => m.id) : [];
-      const encodedIds = encodeURIComponent(JSON.stringify(matchedIds));
-      const encodedQuery = encodeURIComponent(query);
-      const encodedAnswer = encodeURIComponent(finalAnswer.replace(/<br>/g, '\n').substring(0, 500));
-
-      const btnId = 'btn-up-' + Date.now();
       const feedbackBtns = `
         <div style="margin-top:1rem; display:flex; gap:0.5rem; align-items:center; border-top:1px solid var(--glass-border); padding-top:0.5rem;">
           <span style="font-size:0.8rem; color:var(--text-dim);">A resposta foi útil?</span>
@@ -917,18 +956,5 @@ if (chatForm) {
         </div>
       `;
 
-      document.getElementById(typingId).innerHTML = `
-        <strong style="color:var(--purple-vibrant); display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;"><i class="ph ph-robot"></i> Copilot:</strong>
-        <div>${prefixHTML}<div style="color:var(--text-main); font-size:0.95rem; line-height:1.5;">${finalAnswer}</div>${feedbackBtns}</div>
-      `;
+      contentBox.innerHTML = prefixHTML + renderMarkdown(finalAnswer) + feedbackBtns;
       history.scrollTop = history.scrollHeight;
-
-    } catch (err) {
-      console.error(err);
-      document.getElementById(typingId).innerHTML = `
-        <strong style="color:var(--purple-vibrant); display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;"><i class="ph ph-robot"></i> Copilot:</strong>
-        <p style="color:var(--danger);"><i class="ph ph-warning-circle"></i> ${escapeHtml(err.message)}</p>
-      `;
-    }
-  });
-}
