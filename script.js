@@ -289,12 +289,25 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        const { error } = await iccLeadClient.from('leads').insert([{
+        // Enviar para o n8n (Automação WhatsApp)
+        const leadData = {
           name: data.name,
           whatsapp: cleanPhone,
           service_category: data.service,
           message: data.message
-        }]);
+        };
+
+        try {
+          fetch('http://143.20.0.198:5678/webhook/lead-capture', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(leadData)
+          });
+        } catch (e) {
+          console.error('Erro n8n:', e);
+        }
+
+        const { error } = await iccLeadClient.from('leads').insert([leadData]);
 
         if (error) throw error;
 
