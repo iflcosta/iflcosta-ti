@@ -112,7 +112,9 @@ function updateCalcResult() {
   if (!resultEl) return;
 
   const services = CALC_DATA[calcState.cat] || [];
-  const chosen = services.filter(s => calcState.selected.has(s.id));
+  const chosen = services
+    .filter(s => calcState.selected.has(s.id))
+    .map(s => ({ ...s })); // Clona para não alterar o CALC_DATA original
 
   if (!chosen.length) {
     resultEl.textContent = 'Selecione um serviço';
@@ -126,28 +128,29 @@ function updateCalcResult() {
   let hasCombo = false;
   let hasFreeCleaning = false;
 
-  // Lógica de Limpeza Gratuita VIP (Apenas para serviços que exigem abrir a máquina)
-  if (chosen.length > 1 && chosen.find(s => s.id === 'limpeza')) {
+  // Lógica de Limpeza Gratuita VIP
+  const cleaningService = chosen.find(s => s.id === 'limpeza');
+  if (chosen.length > 1 && cleaningService) {
     const hardwareServices = ['upgrade', 'basico', 'gamer'];
     const hasHardwareService = chosen.some(s => hardwareServices.includes(s.id));
     if (hasHardwareService) {
       hasFreeCleaning = true;
-      // Remove a limpeza do cálculo de preços, pois será gratuita
-      const cleaningIndex = chosen.findIndex(s => s.id === 'limpeza');
-      chosen.splice(cleaningIndex, 1);
+      // Em vez de remover, zeramos o valor para o cálculo
+      cleaningService.min = 0;
+      cleaningService.max = 0;
     }
   }
 
   if (chosen.length > 1) {
     hasCombo = true;
-    // Ordena do mais caro para o mais barato (baseado no valor máximo)
+    // Ordena do mais caro para o mais barato
     const sorted = [...chosen].sort((a, b) => b.max - a.max);
     
     // O mais caro é cobrado 100%
     totalMin += sorted[0].min;
     totalMax += sorted[0].max;
 
-    // Os adicionais têm 50% de desconto na mão de obra
+    // Os adicionais têm 50% de desconto (se não forem o serviço gratuito)
     for (let i = 1; i < sorted.length; i++) {
       totalMin += Math.round(sorted[i].min * 0.5);
       totalMax += Math.round(sorted[i].max * 0.5);
