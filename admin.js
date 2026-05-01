@@ -85,9 +85,22 @@ function toggleMobileMenu() {
 // Dashboard
 async function initDashboard() {
   if (!iccClient) return;
-  
-  // Pre-load da Inteligência Artificial em background (PWA Performance)
-  getEmbedder().then(() => console.log('Copilot AI Brain: Carregado na memória e pronto para uso instantâneo.')).catch(e => console.error('Erro pre-load IA:', e));
+
+  // Garante que o Dashboard fica visivelc e ativo
+  document.getElementById('page-dashboard').style.display = 'block';
+  const firstNav = document.querySelector('.nav-link');
+  if (firstNav) firstNav.classList.add('active');
+
+  // Preenche a badge de data
+  const now = new Date();
+  const dateEl = document.getElementById('current-date');
+  if (dateEl) {
+    dateEl.textContent = now.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })
+      .replace(/^./, s => s.toUpperCase());
+  }
+
+  // Pre-load da IA em background
+  getEmbedder().then(() => console.log('Copilot AI Brain: Pronto.')).catch(e => console.error('Erro pre-load IA:', e));
 
   fetchLeads();
   fetchRepairs();
