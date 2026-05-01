@@ -15,7 +15,7 @@ const CALC_DATA = {
   ],
   notebook: [
     { id: 'formatacao', label: 'Formatação Premium (c/ Backup)',   min: 150, max: 200 },
-    { id: 'limpeza',    label: 'Limpeza + Pasta Térmica',          min: 150, max: 250 },
+    { id: 'limpeza',    label: 'Limpeza Fina + Pasta Térmica',     min: 100, max: 150 },
     { id: 'upgrade',    label: 'Upgrade SSD/RAM (Mão de Obra)',    min: 80,  max: 120 },
     { id: 'visita',     label: 'Visita Técnica / Diagnóstico',     min: 80,  max: 120 },
     { id: 'rede',       label: 'Configuração de Rede Wi-Fi',       min: 120, max: 180 },
@@ -97,6 +97,19 @@ function updateCalcResult() {
   let totalMin = 0;
   let totalMax = 0;
   let hasCombo = false;
+  let hasFreeCleaning = false;
+
+  // Lógica de Limpeza Gratuita VIP
+  if (chosen.length > 1 && chosen.find(s => s.id === 'limpeza')) {
+    const coreServices = ['formatacao', 'upgrade', 'basico', 'gamer'];
+    const hasCoreService = chosen.some(s => coreServices.includes(s.id));
+    if (hasCoreService) {
+      hasFreeCleaning = true;
+      // Remove a limpeza do cálculo de preços, pois será gratuita
+      const cleaningIndex = chosen.findIndex(s => s.id === 'limpeza');
+      chosen.splice(cleaningIndex, 1);
+    }
+  }
 
   if (chosen.length > 1) {
     hasCombo = true;
@@ -112,16 +125,23 @@ function updateCalcResult() {
       totalMin += Math.round(sorted[i].min * 0.5);
       totalMax += Math.round(sorted[i].max * 0.5);
     }
-  } else {
+  } else if (chosen.length === 1) {
     totalMin = chosen[0].min;
     totalMax = chosen[0].max;
   }
 
   const rangeText = totalMin === totalMax ? `R$ ${totalMin}` : `R$ ${totalMin} – ${totalMax}`;
 
-  // Se tiver combo, injeta um badge visual informando o desconto
+  let badges = '';
+  if (hasFreeCleaning) {
+    badges += `<br><span style="font-size: 0.8rem; background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); padding: 2px 8px; border-radius: 6px; display: inline-block; margin-top: 8px; margin-right: 5px;"><i class="ph-fill ph-sparkle"></i> Limpeza VIP Inclusa (Cortesia)</span>`;
+  }
   if (hasCombo) {
-    resultEl.innerHTML = `${rangeText} <br><span style="font-size: 0.8rem; background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); padding: 2px 8px; border-radius: 6px; display: inline-block; margin-top: 8px;"><i class="ph-fill ph-tag"></i> Combo: 50% OFF em serviços adicionais</span>`;
+    badges += `<br><span style="font-size: 0.8rem; background: rgba(177, 74, 255, 0.1); color: var(--purple-vibrant); border: 1px solid var(--purple-vibrant); padding: 2px 8px; border-radius: 6px; display: inline-block; margin-top: 8px;"><i class="ph-fill ph-tag"></i> Combo: 50% OFF no adicional</span>`;
+  }
+
+  if (badges !== '') {
+    resultEl.innerHTML = `${rangeText} ${badges}`;
   } else {
     resultEl.textContent = rangeText;
   }
