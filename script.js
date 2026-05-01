@@ -18,6 +18,7 @@ const CALC_DATA = {
     { id: 'limpeza',    label: 'Limpeza Fina + Pasta Térmica',     min: 100, max: 150 },
     { id: 'upgrade',    label: 'Upgrade SSD/RAM (Mão de Obra)',    min: 80,  max: 120 },
     { id: 'visita',     label: 'Visita Técnica / Diagnóstico',     min: 60,  max: 120 },
+    { id: 'manutencao', label: 'Reparo / Troca de Peça (Teclado, Tela, etc)', min: 120, max: 200, note: '+ peça' },
     { id: 'rede',       label: 'Configuração de Rede Wi-Fi',       min: 120, max: 180 },
   ],
   'custom-pc': [
@@ -86,7 +87,7 @@ function updateFreeCleaningHint() {
 
   const services = CALC_DATA[calcState.cat] || [];
   const chosen = services.filter(s => calcState.selected.has(s.id));
-  const hardwareServices = ['upgrade', 'basico', 'gamer'];
+  const hardwareServices = ['upgrade', 'basico', 'gamer', 'manutencao'];
   const hasHardware = chosen.some(s => hardwareServices.includes(s.id));
   const hasLimpeza = calcState.selected.has('limpeza');
 
@@ -131,7 +132,7 @@ function updateCalcResult() {
   // Lógica de Limpeza Gratuita VIP
   const cleaningService = chosen.find(s => s.id === 'limpeza');
   if (chosen.length > 1 && cleaningService) {
-    const hardwareServices = ['upgrade', 'basico', 'gamer'];
+    const hardwareServices = ['upgrade', 'basico', 'gamer', 'manutencao'];
     const hasHardwareService = chosen.some(s => hardwareServices.includes(s.id));
     if (hasHardwareService) {
       hasFreeCleaning = true;
