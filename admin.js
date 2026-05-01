@@ -298,47 +298,87 @@ async function openOSModal() {
 
 function closeOSModal() { document.getElementById('os-modal').style.display = 'none'; }
 
+// Mapa de prioridade para ordenação e estilo
+const PRIORITY_ORDER = { 'Urgente': 1, 'Alta': 2, 'Normal': 3, 'Baixa': 4 };
+const PRIORITY_STYLE = {
+  'Urgente': 'background:rgba(239,68,68,0.15);color:#f87171;border-color:rgba(239,68,68,0.3);',
+  'Alta':    'background:rgba(245,158,11,0.15);color:#fbbf24;border-color:rgba(245,158,11,0.3);',
+  'Normal':  'background:rgba(16,185,129,0.15);color:#34d399;border-color:rgba(16,185,129,0.3);',
+  'Baixa':   'background:rgba(160,171,184,0.1);color:#a0abb8;border-color:rgba(160,171,184,0.2);',
+};
+
 async function fetchRepairs(page = 0) {
   repairsPage = page;
   const tableBody = document.getElementById('repairs-table-body');
   if (!tableBody) return;
 
-  tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Carregando reparos...</td></tr>';
+  tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Carregando reparos...</td></tr>';
 
   const from = page * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
   const { data: repairs, error, count } = await iccClient
-    .from('repairs').select('*', { count: 'exact' })
-    .order('created_at', { ascending: false })
+    .from('repairs').select('*, customers(name)', { count: 'exact' })
+    .neq('status', 'Entregue')
     .range(from, to);
 
   if (error) {
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#ef4444;">Erro ao carregar dados.</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#ef4444;">Erro ao carregar dados.</td></tr>';
     return;
   }
 
   if (!repairs || repairs.length === 0) {
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Nenhuma O.S. encontrada.</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Nenhuma O.S. ativa.</td></tr>';
     renderPagination('repairs-pagination', page, count, fetchRepairs);
     return;
   }
 
+  // Ordena: prioridade primeiro, depois prazo (mais próximo primeiro, null por último)
+  repairs.sort((a, b) => {
+    const pa = PRIORITY_ORDER[a.priority] ?? 3;
+    const pb = PRIORITY_ORDER[b.priority] ?? 3;
+    if (pa !== pb) return pa - pb;
+    if (!a.deadline_date && !b.deadline_date) return 0;
+    if (!a.deadline_date) return 1;
+    if (!b.deadline_date) return -1;
+    return new Date(a.deadline_date) - new Date(b.deadline_date);
+  });
+
+  const today = new Date(); today.setHours(0,0,0,0);
+
   tableBody.innerHTML = repairs.map(r => {
     const profit = (r.price || 0) - (r.part_cost || 0);
+    const priority = r.priority || 'Normal';
+    const pStyle = PRIORITY_STYLE[priority] || PRIORITY_STYLE['Normal'];
+
+    // Deadline badge
+    let deadlineBadge = '';
+    if (r.deadline_date) {
+      const dl = new Date(r.deadline_date + 'T00:00:00');
+      const diff = Math.round((dl - today) / 86400000);
+      const dlStr = dl.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
+      if (diff < 0)      deadlineBadge = `<span style="font-size:0.72rem;color:#f87171;">⚠ Atrasado (${dlStr})</span>`;
+      else if (diff === 0) deadlineBadge = `<span style="font-size:0.72rem;color:#fbbf24;">⏰ Hoje (${dlStr})</span>`;
+      else if (diff <= 2)  deadlineBadge = `<span style="font-size:0.72rem;color:#fbbf24;">📅 ${dlStr}</span>`;
+      else                 deadlineBadge = `<span style="font-size:0.72rem;color:var(--text-dim);">📅 ${dlStr}</span>`;
+    }
+
+    const customerName = r.customers?.name || '—';
+
     return `
       <tr>
-        <td>#${r.id.slice(0, 5)}</td>
+        <td><span class="badge" style="${pStyle}">${priority}</span></td>
         <td>
           <div style="font-weight:600;">${escapeHtml(r.device_model)}</div>
-          <div style="font-size:0.8rem; color:var(--text-dim);">${escapeHtml(r.description || 'Sem descrição')}</div>
+          <div style="font-size:0.78rem;color:var(--text-dim);">${escapeHtml(customerName)}</div>
         </td>
-        <td><span class="badge badge-status-${r.status.toLowerCase().replace(' ', '-')}">${r.status}</span></td>
-        <td>R$ ${r.price.toLocaleString('pt-BR')}</td>
-        <td style="color:#22c55e;">R$ ${profit.toLocaleString('pt-BR')}</td>
+        <td style="font-size:0.85rem;">${escapeHtml(r.description || '—')}</td>
+        <td><span class="badge badge-status-${r.status.toLowerCase().replace(/ /g,'-')}">${r.status}</span></td>
+        <td>${deadlineBadge || '<span style="color:var(--text-dim);font-size:0.8rem;">—</span>'}</td>
+        <td>R$ ${(r.price||0).toLocaleString('pt-BR')}</td>
         <td>
           <div class="action-btns">
-            <button class="btn-icon" title="Editar Status" onclick="updateOSStatus('${r.id}')"><i class="ph ph-note-pencil"></i></button>
+            <button class="btn-icon" title="Editar" onclick="updateOSStatus('${r.id}')"><i class="ph ph-note-pencil"></i></button>
             <button class="btn-icon archive" title="Excluir" onclick="deleteOS('${r.id}')"><i class="ph ph-trash"></i></button>
           </div>
         </td>
@@ -356,9 +396,11 @@ if (osForm) {
     const payload = {
       customer_id: document.getElementById('os-customer').value,
       device_model: document.getElementById('os-model').value,
-      price: parseFloat(document.getElementById('os-price').value),
-      part_cost: parseFloat(document.getElementById('os-cost').value),
+      price: parseFloat(document.getElementById('os-price').value) || 0,
+      part_cost: parseFloat(document.getElementById('os-cost').value) || 0,
       description: document.getElementById('os-notes').value,
+      priority: document.getElementById('os-priority').value || 'Normal',
+      deadline_date: document.getElementById('os-deadline').value || null,
       status: 'Em Análise',
     };
     const { error } = await iccClient.from('repairs').insert([payload]);
@@ -374,7 +416,6 @@ if (osForm) {
 }
 
 function updateOSStatus(id) {
-  // Remove modal anterior se existir
   const old = document.getElementById('os-status-modal');
   if (old) old.remove();
 
@@ -382,20 +423,35 @@ function updateOSStatus(id) {
   modal.id = 'os-status-modal';
   modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;';
   modal.innerHTML = `
-    <div class="glass-card" style="max-width:360px;width:90%;padding:2rem;">
-      <h3 style="margin-bottom:1.5rem;font-size:1.1rem;"><i class="ph ph-git-branch"></i> Atualizar Status da O.S.</h3>
+    <div class="glass-card" style="max-width:400px;width:90%;padding:2rem;">
+      <h3 style="margin-bottom:1.5rem;font-size:1.1rem;"><i class="ph ph-git-branch"></i> Atualizar O.S.</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select id="os-new-status">
+            <option value="Em Análise">Em Análise</option>
+            <option value="Aguardando Peça">Aguardando Peça</option>
+            <option value="Pronto">Pronto para Retirada</option>
+            <option value="Entregue">Entregue ao Cliente ✓</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Prioridade</label>
+          <select id="os-new-priority">
+            <option value="Urgente">🔴 Urgente</option>
+            <option value="Alta">🟡 Alta</option>
+            <option value="Normal" selected>🟢 Normal</option>
+            <option value="Baixa">⚫ Baixa</option>
+          </select>
+        </div>
+      </div>
       <div class="form-group">
-        <label>Novo Status</label>
-        <select id="os-new-status">
-          <option value="Em Análise">Em Análise</option>
-          <option value="Aguardando Peça">Aguardando Peça</option>
-          <option value="Pronto">Pronto para Retirada</option>
-          <option value="Entregue">Entregue ao Cliente ✓</option>
-        </select>
+        <label>Prazo de Entrega (opcional)</label>
+        <input type="date" id="os-new-deadline" style="color-scheme:dark;">
       </div>
       <div class="login-actions">
         <button class="btn-secondary" onclick="document.getElementById('os-status-modal').remove()">Cancelar</button>
-        <button class="btn-primary" onclick="confirmOSStatus('${id}')">Salvar Status</button>
+        <button class="btn-primary" onclick="confirmOSStatus('${id}')">Salvar</button>
       </div>
     </div>
   `;
@@ -404,12 +460,18 @@ function updateOSStatus(id) {
 
 async function confirmOSStatus(id) {
   const newStatus = document.getElementById('os-new-status').value;
-  const payload = { status: newStatus };
+  const newPriority = document.getElementById('os-new-priority').value;
+  const newDeadline = document.getElementById('os-new-deadline').value;
+  const payload = {
+    status: newStatus,
+    priority: newPriority,
+    deadline_date: newDeadline || null,
+  };
   if (newStatus === 'Entregue') payload.exit_date = new Date().toISOString().split('T')[0];
   const { error } = await iccClient.from('repairs').update(payload).eq('id', id);
   document.getElementById('os-status-modal').remove();
   if (!error) fetchRepairs(repairsPage);
-  else alert('Erro ao atualizar status: ' + error.message);
+  else alert('Erro ao atualizar: ' + error.message);
 }
 
 async function deleteOS(id) {
