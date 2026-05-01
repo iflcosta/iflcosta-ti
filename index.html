@@ -91,6 +91,7 @@
                 <a href="#hero">Início</a>
                 <a href="#services">Especialidades</a>
                 <a href="#pricing">Preços</a>
+                <a href="#calculator">Calculadora</a>
                 <a href="#process">Como Funciona</a>
                 <a href="#quote">Orçamento</a>
                 <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20solicitar%20um%20orçamento." target="_blank" rel="noopener noreferrer" class="btn btn-outline"><i class="ph ph-whatsapp-logo"></i> Falar Direto Comigo</a>
@@ -105,7 +106,10 @@
     <section id="hero" class="hero">
         <div class="container hero-container">
             <div class="hero-text">
-                <div class="badge"><i class="ph ph-map-pin"></i> Especialista Autônomo · Bragança Paulista - SP</div>
+                <div class="hero-badges">
+                    <div class="badge badge-available"><span class="availability-dot"></span> Disponível para Atendimento</div>
+                    <div class="badge"><i class="ph ph-map-pin"></i> Especialista Autônomo · Bragança Paulista - SP</div>
+                </div>
                 <h1>Conserto de Celular, Notebook e Custom PC. <span class="highlight">Direto com o Especialista.</span></h1>
                 <p>Você não fala com atendente ou balcão de loja. Do conserto do seu smartphone à montagem de um PC Gamer de elite — diagnóstico e solução feitos por mim, com transparência total e garantia no serviço.</p>
                 <div class="hero-ctas">
@@ -343,6 +347,32 @@
         </div>
     </section>
 
+    <!-- Budget Calculator -->
+    <section id="calculator" class="calculator-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Simule seu <span class="highlight">Orçamento</span></h2>
+                <p>Selecione os serviços e veja uma estimativa de mão de obra. Valores finais são confirmados após diagnóstico.</p>
+            </div>
+            <div class="calc-card">
+                <div class="calc-category-selector" id="calc-categories">
+                    <button class="calc-cat-btn active" data-cat="smartphone"><i class="ph ph-device-mobile"></i> Celular / Tablet</button>
+                    <button class="calc-cat-btn" data-cat="notebook"><i class="ph ph-laptop"></i> Notebook / PC</button>
+                    <button class="calc-cat-btn" data-cat="custom-pc"><i class="ph ph-cpu"></i> Custom PC</button>
+                </div>
+                <div class="calc-services" id="calc-services"></div>
+                <div class="calc-result">
+                    <div>
+                        <div class="calc-result-label">Estimativa de Mão de Obra</div>
+                        <div class="calc-result-value" id="calc-result-value">Selecione um serviço</div>
+                    </div>
+                    <a href="#" id="calc-wa-btn" class="btn btn-primary" style="display:none"><i class="ph-fill ph-whatsapp-logo"></i> Solicitar Orçamento</a>
+                </div>
+                <p class="calc-disclaimer"><i class="ph ph-info"></i> Estimativa de mão de obra. Peças e componentes são orçados à parte com total transparência.</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Trust & Guarantee Section -->
     <section id="trust" class="trust-section">
         <div class="container">
@@ -375,6 +405,51 @@
                     <div class="trust-icon"><i class="ph ph-buildings"></i></div>
                     <h3>Infraestrutura Laboratorial</h3>
                     <p>Para bancada industrial — microsolda BGA, recuperação de placa-mãe — conto com laboratório técnico credenciado em Bragança Paulista. Responsabilidade sempre minha.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>O que dizem os <span class="highlight">Clientes</span></h2>
+                <p>Atendimentos reais. Resultados reais.</p>
+            </div>
+            <div class="testimonials-grid">
+                <div class="glass-card testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Levei meu notebook que não ligava mais. O Iago identificou o problema em menos de 1 hora, foi super transparente no orçamento e resolveu no mesmo dia. Recomendo demais!"</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">M</div>
+                        <div class="testimonial-author-info">
+                            <strong>Mariana S.</strong>
+                            <span>Manutenção de Notebook · Bragança Paulista</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Montou meu PC gamer do zero, explicou cada peça e por que escolheu cada uma. O gabinete ficou show, cable management perfeito. Performance melhorou muito!"</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">R</div>
+                        <div class="testimonial-author-info">
+                            <strong>Rafael T.</strong>
+                            <span>Custom PC Gamer · Atibaia</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Trocou a tela do meu iPhone rapidamente, com peça de qualidade. Preço justo, garantia de 90 dias. Já indiquei para vários amigos que também ficaram satisfeitos."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">A</div>
+                        <div class="testimonial-author-info">
+                            <strong>Ana L.</strong>
+                            <span>Conserto de iPhone · Bragança Paulista</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

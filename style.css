@@ -332,8 +332,17 @@ header.scrolled {
     align-items: center;
 }
 
+.hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
 .badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     padding: 0.5rem 1rem;
     background: rgba(26, 50, 115, 0.3);
     color: var(--text-primary);
@@ -341,7 +350,26 @@ header.scrolled {
     border-radius: 50px;
     font-size: 0.875rem;
     font-weight: 600;
-    margin-bottom: 1.5rem;
+}
+
+.badge-available {
+    background: rgba(16, 185, 129, 0.12);
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+.availability-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    display: inline-block;
+    flex-shrink: 0;
+    animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
 }
 
 .hero-text h1 {
@@ -1374,12 +1402,266 @@ header.scrolled {
     .form-row {
         grid-template-columns: 1fr;
     }
-    
+
     .quote-form-container {
         padding: 2rem 1.5rem;
     }
-    
+
     .quote-info h2 {
         font-size: 2.2rem;
+    }
+}
+
+/* =========================================
+   Calculator Section
+   ========================================= */
+.calculator-section {
+    background: var(--bg-secondary);
+}
+
+.calc-card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+    backdrop-filter: blur(12px);
+}
+
+.calc-category-selector {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.calc-cat-btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 0.75rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-family: var(--font-main);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.calc-cat-btn:hover {
+    border-color: rgba(177, 74, 255, 0.4);
+    color: var(--text-primary);
+}
+
+.calc-cat-btn.active {
+    background: rgba(177, 74, 255, 0.15);
+    border-color: rgba(177, 74, 255, 0.5);
+    color: var(--text-primary);
+}
+
+.calc-services {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.calc-service-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.calc-service-item:hover {
+    border-color: rgba(177, 74, 255, 0.3);
+    background: rgba(177, 74, 255, 0.05);
+}
+
+.calc-service-item.selected {
+    background: rgba(177, 74, 255, 0.1);
+    border-color: rgba(177, 74, 255, 0.5);
+}
+
+.calc-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--glass-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: var(--transition-fast);
+    font-size: 0.7rem;
+    color: transparent;
+}
+
+.calc-service-item.selected .calc-checkbox {
+    background: var(--accent-secondary);
+    border-color: var(--accent-secondary);
+    color: white;
+}
+
+.calc-service-label {
+    flex: 1;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.calc-service-price {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    text-align: right;
+}
+
+.calc-service-note {
+    font-size: 0.75rem;
+    font-weight: 400;
+    display: block;
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+.calc-result {
+    background: rgba(26, 50, 115, 0.2);
+    border: 1px solid rgba(26, 50, 115, 0.4);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.calc-result-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.calc-result-value {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    transition: color var(--transition-fast);
+}
+
+.calc-result-value.has-value {
+    background: linear-gradient(90deg, #4a80ff, var(--accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.calc-disclaimer {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: center;
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+@media (max-width: 600px) {
+    .calc-category-selector {
+        flex-direction: column;
+    }
+
+    .calc-result {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .calc-card {
+        padding: 1.5rem;
+    }
+}
+
+/* =========================================
+   Testimonials Section
+   ========================================= */
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.testimonial-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem;
+}
+
+.testimonial-stars {
+    color: #f59e0b;
+    font-size: 1rem;
+    letter-spacing: 2px;
+}
+
+.testimonial-text {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    flex: 1;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--glass-border);
+}
+
+.testimonial-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.testimonial-author-info strong {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.testimonial-author-info span {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 900px) {
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+        margin: 0 auto;
     }
 }

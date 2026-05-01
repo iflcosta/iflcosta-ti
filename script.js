@@ -7,6 +7,108 @@ const iccLeadClient = typeof supabase !== 'undefined'
   ? supabase.createClient(supabaseUrl, supabaseKey)
   : null;
 
+const CALC_DATA = {
+  smartphone: [
+    { id: 'tela',      label: 'Troca de Tela (Android/iPhone)', min: 120, max: 180, note: '+ peça' },
+    { id: 'bateria',   label: 'Troca de Bateria',               min: 80,  max: 120, note: '+ peça' },
+    { id: 'conector',  label: 'Conector de Carga',              min: 100, max: 150, note: '+ peça' },
+  ],
+  notebook: [
+    { id: 'formatacao', label: 'Formatação Premium (c/ Backup)',   min: 150, max: 200 },
+    { id: 'limpeza',    label: 'Limpeza + Pasta Térmica',          min: 150, max: 250 },
+    { id: 'upgrade',    label: 'Upgrade SSD/RAM (Mão de Obra)',    min: 80,  max: 120 },
+    { id: 'visita',     label: 'Visita Técnica / Diagnóstico',     min: 80,  max: 120 },
+    { id: 'rede',       label: 'Configuração de Rede Wi-Fi',       min: 120, max: 180 },
+  ],
+  'custom-pc': [
+    { id: 'basico', label: 'Montagem PC Office/Básico',           min: 150, max: 200 },
+    { id: 'gamer',  label: 'Montagem PC Gamer/Alta Performance',  min: 300, max: 450 },
+    { id: 'hora',   label: 'Hora Técnica (Empresas)',             min: 150, max: 150, note: '/hora' },
+  ],
+};
+
+let calcState = { cat: 'smartphone', selected: new Set() };
+
+function initCalculator() {
+  const catBtns = document.querySelectorAll('.calc-cat-btn');
+  if (!catBtns.length) return;
+
+  catBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      catBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      calcState.cat = btn.dataset.cat;
+      calcState.selected = new Set();
+      renderCalcServices();
+      updateCalcResult();
+    });
+  });
+
+  renderCalcServices();
+  updateCalcResult();
+}
+
+function renderCalcServices() {
+  const container = document.getElementById('calc-services');
+  if (!container) return;
+  const services = CALC_DATA[calcState.cat] || [];
+
+  container.innerHTML = services.map(s => `
+    <div class="calc-service-item${calcState.selected.has(s.id) ? ' selected' : ''}" data-id="${s.id}">
+      <div class="calc-checkbox">${calcState.selected.has(s.id) ? '✓' : ''}</div>
+      <span class="calc-service-label">${s.label}</span>
+      <div class="calc-service-price">
+        R$ ${s.min}${s.min !== s.max ? ' – ' + s.max : ''}
+        ${s.note ? `<span class="calc-service-note">${s.note}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.calc-service-item').forEach(el => {
+    el.addEventListener('click', () => toggleCalcService(el.dataset.id));
+  });
+}
+
+function toggleCalcService(id) {
+  if (calcState.selected.has(id)) {
+    calcState.selected.delete(id);
+  } else {
+    calcState.selected.add(id);
+  }
+  renderCalcServices();
+  updateCalcResult();
+}
+
+function updateCalcResult() {
+  const resultEl = document.getElementById('calc-result-value');
+  const waBtn = document.getElementById('calc-wa-btn');
+  if (!resultEl) return;
+
+  const services = CALC_DATA[calcState.cat] || [];
+  const chosen = services.filter(s => calcState.selected.has(s.id));
+
+  if (!chosen.length) {
+    resultEl.textContent = 'Selecione um serviço';
+    resultEl.classList.remove('has-value');
+    if (waBtn) waBtn.style.display = 'none';
+    return;
+  }
+
+  const totalMin = chosen.reduce((acc, s) => acc + s.min, 0);
+  const totalMax = chosen.reduce((acc, s) => acc + s.max, 0);
+  const rangeText = totalMin === totalMax ? `R$ ${totalMin}` : `R$ ${totalMin} – ${totalMax}`;
+
+  resultEl.textContent = rangeText;
+  resultEl.classList.add('has-value');
+
+  if (waBtn) {
+    const labels = chosen.map(s => s.label).join(', ');
+    const msg = encodeURIComponent(`Olá, Iago! Quero um orçamento para: ${labels}. Estimativa: ${rangeText}.`);
+    waBtn.href = `https://wa.me/${waPhone}?text=${msg}`;
+    waBtn.style.display = 'inline-flex';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Atualiza todos os links do WhatsApp usando o número central do config.js
   document.querySelectorAll('a[href*="wa.me/"]').forEach(link => {
@@ -35,6 +137,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (target) target.scrollIntoView({ behavior: 'smooth' });
     });
   });
+
+  // Budget Calculator
+  initCalculator();
 
   // Máscara de telefone
   const phoneInput = document.getElementById('whatsapp');
