@@ -17,7 +17,7 @@ const CALC_DATA = {
     { id: 'formatacao', label: 'Formatação Premium (c/ Backup)',   min: 150, max: 200 },
     { id: 'limpeza',    label: 'Limpeza Fina + Pasta Térmica',     min: 100, max: 150 },
     { id: 'upgrade',    label: 'Upgrade SSD/RAM (Mão de Obra)',    min: 80,  max: 120 },
-    { id: 'visita',     label: 'Visita Técnica / Diagnóstico',     min: 80,  max: 120 },
+    { id: 'visita',     label: 'Visita Técnica / Diagnóstico',     min: 60,  max: 120 },
     { id: 'rede',       label: 'Configuração de Rede Wi-Fi',       min: 120, max: 180 },
   ],
   'custom-pc': [
