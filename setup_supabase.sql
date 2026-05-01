@@ -68,7 +68,7 @@ create table if not exists public.wiki (
 -- Por enquanto, as chaves anon/service_role são usadas conforme config.js
 
 -- Função para busca semântica na Wiki (usada pelo admin.js futuramente)
-create or replace function match_wiki (
+create or replace function match_wiki_articles (
   query_embedding vector(384),
   match_threshold float,
   match_count int
@@ -90,4 +90,14 @@ as $$
   where 1 - (wiki.embedding <=> query_embedding) > match_threshold
   order by similarity desc
   limit match_count;
+$$;
+
+-- Função para reforço positivo da IA (RLHF)
+create or replace function increment_wiki_score (wiki_ids uuid[])
+returns void
+language sql
+as $$
+  update wiki
+  set success_score = success_score + 1
+  where id = any(wiki_ids);
 $$;

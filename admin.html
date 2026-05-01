@@ -373,9 +373,18 @@
                         <p>Preencha os dados técnicos do equipamento.</p>
                     </div>
                     <form id="os-form">
-                        <div class="form-group">
-                            <label>Modelo do Aparelho</label>
-                            <input type="text" id="os-model" placeholder="Ex: iPhone 13 Pro / Dell G15" required>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Cliente Proprietário</label>
+                                <select id="os-customer" required>
+                                    <option value="" disabled selected>Selecione um cliente...</option>
+                                    <!-- Preenchido via JS -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Modelo do Aparelho</label>
+                                <input type="text" id="os-model" placeholder="Ex: iPhone 13 Pro / Dell G15" required>
+                            </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
@@ -437,6 +446,7 @@
                         <p>Adicione itens ao seu estoque técnico.</p>
                     </div>
                     <form id="product-form">
+                        <input type="hidden" id="prod-id">
                         <div class="form-group">
                             <label>Nome do Produto</label>
                             <input type="text" id="prod-name" placeholder="Ex: SSD 480GB Sata" required>

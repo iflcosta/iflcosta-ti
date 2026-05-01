@@ -257,7 +257,18 @@ async function fetchRecentActivity() {
 // ==========================================
 // Módulo de Reparos (O.S.) — com paginação
 // ==========================================
-function openOSModal() { document.getElementById('os-modal').style.display = 'flex'; }
+async function openOSModal() { 
+  document.getElementById('os-modal').style.display = 'flex'; 
+  const customerSelect = document.getElementById('os-customer');
+  customerSelect.innerHTML = '<option value="" disabled selected>Carregando clientes...</option>';
+  
+  const { data: customers } = await iccClient.from('customers').select('id, name, whatsapp').order('name');
+  if (customers) {
+    customerSelect.innerHTML = '<option value="" disabled selected>Selecione um cliente...</option>' + 
+      customers.map(c => `<option value="${c.id}">${escapeHtml(c.name)} (${c.whatsapp})</option>`).join('');
+  }
+}
+
 function closeOSModal() { document.getElementById('os-modal').style.display = 'none'; }
 
 async function fetchRepairs(page = 0) {
@@ -316,6 +327,7 @@ if (osForm) {
   osForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const payload = {
+      customer_id: document.getElementById('os-customer').value,
       device_model: document.getElementById('os-model').value,
       price: parseFloat(document.getElementById('os-price').value),
       part_cost: parseFloat(document.getElementById('os-cost').value),
@@ -352,7 +364,11 @@ async function deleteOS(id) {
 // ==========================================
 // Módulo de Inventário — com paginação
 // ==========================================
-function openProductModal() { document.getElementById('product-modal').style.display = 'flex'; }
+function openProductModal() { 
+  document.getElementById('product-modal').style.display = 'flex'; 
+  document.getElementById('product-form').reset();
+  document.getElementById('prod-id').value = '';
+}
 function closeProductModal() { document.getElementById('product-modal').style.display = 'none'; }
 
 async function fetchProducts(page = 0) {
@@ -411,6 +427,7 @@ const productForm = document.getElementById('product-form');
 if (productForm) {
   productForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const prodId = document.getElementById('prod-id').value;
     const payload = {
       name: document.getElementById('prod-name').value,
       category: document.getElementById('prod-category').value,
@@ -419,14 +436,21 @@ if (productForm) {
       price: parseFloat(document.getElementById('prod-price').value),
       is_active: true,
     };
-    const { error } = await iccClient.from('products').insert([payload]);
+    
+    let error;
+    if (prodId) {
+      ({ error } = await iccClient.from('products').update(payload).eq('id', prodId));
+    } else {
+      ({ error } = await iccClient.from('products').insert([payload]));
+    }
+    
     if (error) {
       alert('Erro ao salvar produto: ' + error.message);
     } else {
       closeProductModal();
       productForm.reset();
       fetchProducts(productsPage);
-      alert('Produto cadastrado com sucesso!');
+      alert('Produto salvo com sucesso!');
     }
   });
 }
@@ -438,7 +462,15 @@ async function deleteProduct(id) {
 }
 
 async function editProduct(id) {
-  alert('Edição rápida de produto será implementada na próxima versão.');
+  const { data: p } = await iccClient.from('products').select('*').eq('id', id).single();
+  if (!p) return;
+  openProductModal();
+  document.getElementById('prod-id').value = p.id;
+  document.getElementById('prod-name').value = p.name;
+  document.getElementById('prod-category').value = p.category;
+  document.getElementById('prod-stock').value = p.stock_quantity;
+  document.getElementById('prod-cost').value = p.cost_price;
+  document.getElementById('prod-price').value = p.price;
 }
 
 // ==========================================
