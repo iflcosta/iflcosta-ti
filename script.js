@@ -94,16 +94,43 @@ function updateCalcResult() {
     return;
   }
 
-  const totalMin = chosen.reduce((acc, s) => acc + s.min, 0);
-  const totalMax = chosen.reduce((acc, s) => acc + s.max, 0);
+  let totalMin = 0;
+  let totalMax = 0;
+  let hasCombo = false;
+
+  if (chosen.length > 1) {
+    hasCombo = true;
+    // Ordena do mais caro para o mais barato (baseado no valor máximo)
+    const sorted = [...chosen].sort((a, b) => b.max - a.max);
+    
+    // O mais caro é cobrado 100%
+    totalMin += sorted[0].min;
+    totalMax += sorted[0].max;
+
+    // Os adicionais têm 50% de desconto na mão de obra
+    for (let i = 1; i < sorted.length; i++) {
+      totalMin += Math.round(sorted[i].min * 0.5);
+      totalMax += Math.round(sorted[i].max * 0.5);
+    }
+  } else {
+    totalMin = chosen[0].min;
+    totalMax = chosen[0].max;
+  }
+
   const rangeText = totalMin === totalMax ? `R$ ${totalMin}` : `R$ ${totalMin} – ${totalMax}`;
 
-  resultEl.textContent = rangeText;
+  // Se tiver combo, injeta um badge visual informando o desconto
+  if (hasCombo) {
+    resultEl.innerHTML = `${rangeText} <br><span style="font-size: 0.8rem; background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid var(--success); padding: 2px 8px; border-radius: 6px; display: inline-block; margin-top: 8px;"><i class="ph-fill ph-tag"></i> Combo: 50% OFF em serviços adicionais</span>`;
+  } else {
+    resultEl.textContent = rangeText;
+  }
+  
   resultEl.classList.add('has-value');
 
   if (waBtn) {
-    const labels = chosen.map(s => s.label).join(', ');
-    const msg = encodeURIComponent(`Olá, Iago! Quero um orçamento para: ${labels}. Estimativa: ${rangeText}.`);
+    const labels = chosen.map(s => s.label).join(' + ');
+    const msg = encodeURIComponent(`Olá, Iago! Fiz uma simulação para: ${labels}. Estimativa Mão de Obra: ${rangeText}.`);
     waBtn.href = `https://wa.me/${waPhone}?text=${msg}`;
     waBtn.style.display = 'inline-flex';
   }
