@@ -159,7 +159,7 @@ async function initDashboard() {
 // ==========================================
 // Módulo de Leads — com paginação
 // ==========================================
-async function fetchLeads(filter = 'Novo', page = 0) {
+async function fetchLeads(filter = 'Novo', page = 0, search = '') {
   leadsPage = page;
   const tableBody = document.getElementById('leads-table-body');
   if (!tableBody) return;
@@ -169,10 +169,14 @@ async function fetchLeads(filter = 'Novo', page = 0) {
   const from = page * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  let query = iccClient.from('leads').select('*', { count: 'exact' })
-    .order('created_at', { ascending: false })
-    .range(from, to);
+  let query = iccClient.from('leads').select('*', { count: 'exact' });
 
+  // Busca por nome ou whatsapp
+  if (search) {
+    query = query.or(`name.ilike.%${search}%,whatsapp.ilike.%${search}%`);
+  }
+
+  query = query.order('created_at', { ascending: false }).range(from, to);
   query = filter === 'Novo' ? query.neq('status', 'Arquivado') : query.eq('status', 'Arquivado');
 
   const { data: leads, error, count } = await query;
@@ -208,7 +212,7 @@ async function fetchLeads(filter = 'Novo', page = 0) {
     </tr>
   `).join('');
 
-  renderPagination('leads-pagination', page, count, (p) => fetchLeads(filter, p));
+  renderPagination('leads-pagination', page, count, (p) => fetchLeads(filter, p, document.getElementById('lead-search')?.value || ''));
 }
 
 async function archiveLead(id) {

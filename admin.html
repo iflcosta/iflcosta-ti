@@ -160,11 +160,15 @@
                 <div class="page-header">
                     <h2>Triagem de Leads</h2>
                     <div class="header-actions">
+                        <div style="position:relative;">
+                            <i class="ph ph-magnifying-glass" style="position:absolute;left:0.8rem;top:50%;transform:translateY(-50%);color:var(--text-dim);"></i>
+                            <input type="text" id="lead-search" placeholder="Buscar por nome ou whats..." oninput="fetchLeads(document.getElementById('lead-filter').value, 0, this.value)" style="padding:0.6rem 1rem 0.6rem 2.4rem;background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;color:white;width:240px;">
+                        </div>
                         <select id="lead-filter" class="btn-secondary" onchange="fetchLeads(this.value)">
                             <option value="Novo">Leads Ativos</option>
                             <option value="Arquivado">Arquivados</option>
                         </select>
-                        <button class="btn-secondary" onclick="fetchLeads(document.getElementById('lead-filter').value)"><i class="ph ph-arrows-clockwise"></i> Atualizar</button>
+                        <button class="btn-secondary" onclick="fetchLeads(document.getElementById('lead-filter').value, 0, document.getElementById('lead-search').value)"><i class="ph ph-arrows-clockwise"></i> Atualizar</button>
                     </div>
                 </div>
                 <div class="data-card">
