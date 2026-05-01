@@ -830,7 +830,23 @@ if (wikiForm) {
 let chatConversationHistory = [];
 
 const chatForm = document.getElementById('chat-form');
-if (chatForm) {
+const chatInput = document.getElementById('chat-input');
+
+if (chatForm && chatInput) {
+  // Enviar com Enter (sem Shift)
+  chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      chatForm.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
+  });
+  
+  // Auto-resize do textarea
+  chatInput.addEventListener('input', function() {
+    this.style.height = '45px';
+    this.style.height = (this.scrollHeight) + 'px';
+  });
+
   chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = document.getElementById('chat-input');
@@ -841,10 +857,12 @@ if (chatForm) {
     history.innerHTML += `
       <div style="margin-bottom:1.5rem; text-align:right;">
         <strong style="color:var(--text-main);">Você:</strong>
-        <p style="color:var(--text-dim);">${escapeHtml(query)}</p>
+        <p style="color:var(--text-dim); margin-top:0.5rem; line-height: 1.5;">${escapeHtml(query).replace(/\n/g, '<br>')}</p>
       </div>
     `;
     input.value = '';
+    // Reseta a altura do textarea
+    input.style.height = '45px';
 
     const typingId = 'typing-' + Date.now();
     history.innerHTML += `

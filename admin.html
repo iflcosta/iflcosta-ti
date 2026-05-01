@@ -503,9 +503,9 @@
                         </div>
                     </div>
                     
-                    <form id="chat-form" style="display: flex; gap: 1rem; margin-top: auto; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
-                        <input type="text" id="chat-input" placeholder="Ex: Placa do Dell G15 em curto e não liga a tela..." required style="flex: 1;">
-                        <button type="submit" class="btn-primary" id="chat-btn"><i class="ph ph-paper-plane-right"></i> Perguntar</button>
+                    <form id="chat-form" style="display: flex; gap: 1rem; margin-top: auto; border-top: 1px solid var(--glass-border); padding-top: 1.5rem; align-items: flex-end;">
+                        <textarea id="chat-input" placeholder="Descreva o problema ou cole os logs de erro (Use Shift+Enter para quebrar linha)..." required style="flex: 1; min-height: 45px; max-height: 200px; resize: vertical; padding: 0.8rem 1rem; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 10px; color: white; font-family: inherit; font-size: 1rem; line-height: 1.4;"></textarea>
+                        <button type="submit" class="btn-primary" id="chat-btn" style="height: 45px; white-space: nowrap;"><i class="ph ph-paper-plane-right"></i> Perguntar</button>
                     </form>
                 </div>
             </div>
