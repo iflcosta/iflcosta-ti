@@ -987,3 +987,13 @@ if (chatForm && chatInput) {
 
       contentBox.innerHTML = prefixHTML + renderMarkdown(finalAnswer) + feedbackBtns;
       history.scrollTop = history.scrollHeight;
+
+    } catch (e) {
+      console.error('Erro no Copilot:', e);
+      document.getElementById('content-' + typingId).innerHTML = '<span style="color:var(--danger);">Erro de comunicação com a IA. Verifique as credenciais da API.</span>';
+    } finally {
+      document.getElementById('chat-btn').disabled = false;
+      document.getElementById('chat-btn').innerHTML = '<i class="ph ph-paper-plane-right"></i> Perguntar';
+    }
+  });
+}
