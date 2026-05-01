@@ -27,7 +27,9 @@ const CALC_DATA = {
   'custom-pc': [
     { id: 'basico', label: 'Montagem PC Office/Básico',           min: 150, max: 200 },
     { id: 'gamer',  label: 'Montagem PC Gamer/Alta Performance',  min: 300, max: 450 },
-    { id: 'hora',   label: 'Hora Técnica (Empresas)',             min: 150, max: 150, note: '/hora' },
+    { id: 'hora',   label: 'Hora Técnica / Consultoria TI',       min: 150, max: 150, note: '/hora' },
+    { id: 'rede_b2b', label: 'Projetos de Rede & Wi-Fi',          min: 0,   max: 0,   note: 'Sob consulta' },
+    { id: 'seguranca', label: 'Backup & Segurança Mensal',         min: 0,   max: 0,   note: 'Sob consulta' },
   ],
 };
 
