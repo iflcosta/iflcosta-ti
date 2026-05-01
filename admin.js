@@ -120,7 +120,7 @@ async function initDashboard() {
   const lastMonthStr = mo === 1 ? (yr - 1) + '-12' : yr + '-' + String(mo - 1).padStart(2, '0');
 
   const { data: deliveredRepairs } = await iccClient
-    .from('repairs').select('price').eq('status', 'Entregue');
+    .from('repairs').select('*').eq('status', 'Entregue');
 
   let currentRevenue = 0; let lastRevenue = 0; let currentCost = 0;
 
