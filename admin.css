@@ -642,3 +642,23 @@ button { font-family: 'Inter', sans-serif; }
     .session-list { display: flex; flex-direction: row; gap: 0.5rem; padding: 0.5rem; overflow-x: auto; overflow-y: hidden; }
     .session-item { min-width: 160px; }
 }
+
+/* =========================================
+   Modais — Overlay (login-overlay)
+   ========================================= */
+.login-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 480px;
+}
