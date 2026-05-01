@@ -75,6 +75,10 @@ function showPage(pageId) {
 // Dashboard
 async function initDashboard() {
   if (!iccClient) return;
+  
+  // Pre-load da Inteligência Artificial em background (PWA Performance)
+  getEmbedder().then(() => console.log('Copilot AI Brain: Carregado na memória e pronto para uso instantâneo.')).catch(e => console.error('Erro pre-load IA:', e));
+
   fetchLeads();
   fetchRepairs();
   fetchProducts();

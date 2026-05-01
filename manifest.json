@@ -1,0 +1,21 @@
+{
+  "name": "Iago Command Center",
+  "short_name": "ICC v2.0",
+  "description": "Sistema de Gestão, CRM e IA para Iago Costa IT",
+  "start_url": "/admin.html",
+  "display": "standalone",
+  "background_color": "#0a0f1e",
+  "theme_color": "#b14aff",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
