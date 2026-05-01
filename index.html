@@ -17,7 +17,10 @@
     <link rel="stylesheet" href="style.css">
 
     <!-- SEO & Social Media -->
+    <meta name="theme-color" content="#0f172a">
     <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Iago Costa IT">
+    <meta property="og:locale" content="pt_BR">
     <meta property="og:url" content="https://iflcosta-ti.vercel.app/">
     <meta property="og:title" content="Iago Costa | Conserto de Celular e Suporte de TI em Bragança Paulista">
     <meta property="og:description" content="Conserto de celulares, manutenção de notebooks e montagem de Custom PCs em Bragança Paulista. Atendimento direto, garantia no serviço.">
@@ -28,6 +31,7 @@
 
     <link rel="canonical" href="https://iflcosta-ti.vercel.app/" />
     <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="preload" href="hero-image.webp" as="image">
 
     <!-- Local Business Schema — Enhanced -->
     <script type="application/ld+json">
@@ -111,6 +115,7 @@
         </div>
     </header>
 
+    <main role="main">
     <!-- Hero Section -->
     <section id="hero" class="hero">
         <div class="container hero-container">
@@ -134,7 +139,7 @@
             </div>
             <div class="hero-image-wrapper">
                 <div class="image-placeholder">
-                    <img src="hero-image.webp" alt="Especialista em hardware montando computador em Bragança Paulista" class="hero-graphic" loading="eager" style="width: 100%; height: 100%; object-fit: cover; border-radius: 28px;">
+                    <img src="hero-image.webp" alt="Especialista em hardware montando computador em Bragança Paulista" class="hero-graphic" loading="eager" width="600" height="600" style="width: 100%; height: 100%; object-fit: cover; border-radius: 28px;">
                 </div>
                 <!-- Card Superior Esquerdo -->
                 <div class="glass-card stat-card stat-1">
@@ -591,7 +596,7 @@
                     </form>
                     
                     <!-- Success Message (Hidden by default) -->
-                    <div id="form-success" class="form-feedback success-feedback" style="display: none;">
+                    <div id="form-success" class="form-feedback success-feedback" style="display: none;" role="alert" aria-live="polite">
                         <i class="ph-fill ph-check-circle"></i>
                         <h3>Solicitação Enviada!</h3>
                         <p>Obrigado pelo contato. Em breve responderei no seu WhatsApp.</p>
@@ -620,6 +625,7 @@
             <p class="areas-note">Também atendo condomínios e empresas em <strong>Atibaia</strong> e <strong>Itatiba</strong> sob agendamento prévio.</p>
         </div>
     </section>
+    </main>
 
     <!-- Footer -->
     <footer class="footer" id="contact">

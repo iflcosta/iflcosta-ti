@@ -245,6 +245,8 @@ function showFormError(message) {
   if (!errorEl) {
     errorEl = document.createElement('div');
     errorEl.id = 'form-error';
+    errorEl.setAttribute('role', 'alert');
+    errorEl.setAttribute('aria-live', 'assertive');
     errorEl.style.cssText = 'background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;padding:0.8rem 1rem;border-radius:10px;margin-bottom:1rem;font-size:0.9rem;';
     const form = document.getElementById('budget-form');
     form.insertBefore(errorEl, form.firstChild);
