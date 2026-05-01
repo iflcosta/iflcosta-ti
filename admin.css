@@ -241,3 +241,103 @@ button {
     font-size: 0.85rem;
     font-weight: 600;
 }
+
+/* =========================================
+   Markdown Styling (Copilot Responses)
+   ========================================= */
+.markdown-body {
+    line-height: 1.6;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.markdown-body p {
+    margin-bottom: 1.2rem;
+}
+
+.markdown-body h1, .markdown-body h2, .markdown-body h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--purple-vibrant);
+    font-weight: 700;
+}
+
+.markdown-body h1 { font-size: 1.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.5rem; }
+.markdown-body h2 { font-size: 1.3rem; }
+.markdown-body h3 { font-size: 1.1rem; }
+
+.markdown-body ul, .markdown-body ol {
+    margin-bottom: 1.2rem;
+    padding-left: 1.5rem;
+}
+
+.markdown-body li {
+    margin-bottom: 0.5rem;
+}
+
+.markdown-body li > ul, .markdown-body li > ol {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.markdown-body strong {
+    color: white;
+    font-weight: 700;
+}
+
+.markdown-body code {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9em;
+}
+
+.markdown-body pre {
+    background: #000000;
+    padding: 1rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    margin-bottom: 1.2rem;
+    border: 1px solid var(--glass-border);
+}
+
+.markdown-body pre code {
+    background: transparent;
+    padding: 0;
+    display: block;
+    color: #e6e6e6;
+}
+
+.markdown-body blockquote {
+    border-left: 4px solid var(--purple-vibrant);
+    padding-left: 1rem;
+    margin-left: 0;
+    margin-bottom: 1.2rem;
+    font-style: italic;
+    color: var(--text-dim);
+}
+
+.markdown-body hr {
+    border: 0;
+    border-top: 1px solid var(--glass-border);
+    margin: 2rem 0;
+}
+
+.markdown-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.2rem;
+    font-size: 0.9rem;
+}
+
+.markdown-body th, .markdown-body td {
+    padding: 0.8rem;
+    border: 1px solid var(--glass-border);
+    text-align: left;
+}
+
+.markdown-body th {
+    background: rgba(255, 255, 255, 0.05);
+    font-weight: 700;
+}
