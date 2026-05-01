@@ -107,7 +107,7 @@ async function initDashboard() {
   fetchProducts();
 
   const { data: leadsCount } = await iccClient
-    .from('leads').select('*, customers(name)', { count: 'exact' }).eq('status', 'Novo');
+    .from('leads').select('*', { count: 'exact' }).eq('status', 'Novo');
   const { data: repairsCount } = await iccClient
     .from('repairs').select('*, customers(name)', { count: 'exact' }).neq('status', 'Entregue');
 
@@ -169,7 +169,7 @@ async function fetchLeads(filter = 'Novo', page = 0) {
   const from = page * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  let query = iccClient.from('leads').select('*, customers(name)', { count: 'exact' })
+  let query = iccClient.from('leads').select('*', { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -490,7 +490,7 @@ async function fetchProducts(page = 0) {
   const to = from + PAGE_SIZE - 1;
 
   const { data: products, error, count } = await iccClient
-    .from('products').select('*, customers(name)', { count: 'exact' })
+    .from('products').select('*', { count: 'exact' })
     .eq('is_active', true)
     .order('name', { ascending: true })
     .range(from, to);
