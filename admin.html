@@ -491,7 +491,10 @@
             <div id="page-wiki" style="display:none;">
                 <div class="page-header">
                     <h2>Wiki IA Copilot 🧠</h2>
-                    <button class="btn-primary" onclick="openWikiModal()"><i class="ph ph-plus-circle"></i> Novo Artigo Técnico</button>
+                    <div class="header-actions">
+                        <button class="btn-secondary" onclick="clearCopilotHistory()" title="Apagar histórico do chat"><i class="ph ph-broom"></i> Limpar Conversa</button>
+                        <button class="btn-primary" onclick="openWikiModal()"><i class="ph ph-plus-circle"></i> Novo Artigo Técnico</button>
+                    </div>
                 </div>
 
                 <!-- Interface do Chat -->

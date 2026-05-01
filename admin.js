@@ -70,6 +70,7 @@ function showPage(pageId) {
   if (pageId === 'leads')     fetchLeads(document.getElementById('lead-filter')?.value || 'Novo', 0);
   if (pageId === 'repairs')   fetchRepairs(0);
   if (pageId === 'inventory') fetchProducts(0);
+  if (pageId === 'copilot')   restoreCopilotUI();
 }
 
 // Dashboard
@@ -98,7 +99,7 @@ async function initDashboard() {
     : `${now.getFullYear()}-${String(now.getMonth()).padStart(2, '0')}`;
 
   const { data: deliveredRepairs } = await iccClient
-    .from('repairs').select('price_total, exit_date').eq('status', 'Entregue');
+    .from('repairs').select('price, part_cost, exit_date').eq('status', 'Entregue');
 
   let currentRevenue = 0;
   let lastRevenue = 0;
@@ -107,7 +108,7 @@ async function initDashboard() {
   if (deliveredRepairs) {
     deliveredRepairs.forEach(r => {
       if (!r.exit_date) return;
-      const val = parseFloat(r.price_total) || 0;
+      const val = parseFloat(r.price) || 0;
       const cost = parseFloat(r.part_cost) || 0;
       if (r.exit_date.startsWith(currentMonthStr)) {
         currentRevenue += val;
@@ -350,13 +351,43 @@ if (osForm) {
   });
 }
 
-async function updateOSStatus(id) {
-  const newStatus = prompt('Digite o novo status (Em Análise, Aguardando Peça, Pronto, Entregue):');
-  if (!newStatus) return;
+function updateOSStatus(id) {
+  // Remove modal anterior se existir
+  const old = document.getElementById('os-status-modal');
+  if (old) old.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'os-status-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:9999;';
+  modal.innerHTML = `
+    <div class="glass-card" style="max-width:360px;width:90%;padding:2rem;">
+      <h3 style="margin-bottom:1.5rem;font-size:1.1rem;"><i class="ph ph-git-branch"></i> Atualizar Status da O.S.</h3>
+      <div class="form-group">
+        <label>Novo Status</label>
+        <select id="os-new-status">
+          <option value="Em Análise">Em Análise</option>
+          <option value="Aguardando Peça">Aguardando Peça</option>
+          <option value="Pronto">Pronto para Retirada</option>
+          <option value="Entregue">Entregue ao Cliente ✓</option>
+        </select>
+      </div>
+      <div class="login-actions">
+        <button class="btn-secondary" onclick="document.getElementById('os-status-modal').remove()">Cancelar</button>
+        <button class="btn-primary" onclick="confirmOSStatus('${id}')">Salvar Status</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+async function confirmOSStatus(id) {
+  const newStatus = document.getElementById('os-new-status').value;
   const payload = { status: newStatus };
   if (newStatus === 'Entregue') payload.exit_date = new Date().toISOString().split('T')[0];
   const { error } = await iccClient.from('repairs').update(payload).eq('id', id);
+  document.getElementById('os-status-modal').remove();
   if (!error) fetchRepairs(repairsPage);
+  else alert('Erro ao atualizar status: ' + error.message);
 }
 
 async function deleteOS(id) {
@@ -826,8 +857,29 @@ if (wikiForm) {
   });
 }
 
-// Variável global para manter a memória da conversa atual (Multi-turn chat)
-let chatConversationHistory = [];
+// Variável global para manter a memória da conversa — persistida no localStorage
+const CHAT_HISTORY_KEY = 'icc_copilot_history';
+const CHAT_UI_KEY = 'icc_copilot_ui';
+let chatConversationHistory = JSON.parse(localStorage.getItem(CHAT_HISTORY_KEY) || '[]');
+
+// Função para limpar o histórico do Copilot
+function clearCopilotHistory() {
+  chatConversationHistory = [];
+  localStorage.removeItem(CHAT_HISTORY_KEY);
+  localStorage.removeItem(CHAT_UI_KEY);
+  const history = document.getElementById('chat-history');
+  if (history) history.innerHTML = `<div style="text-align:center;color:var(--text-dim);padding:2rem;"><i class="ph ph-trash"></i> Histórico apagado. Comece uma nova conversa!</div>`;
+}
+
+// Restaura a UI do chat ao navegar de volta para o Copilot
+function restoreCopilotUI() {
+  const savedUI = localStorage.getItem(CHAT_UI_KEY);
+  const history = document.getElementById('chat-history');
+  if (savedUI && history && history.innerHTML.trim() === '') {
+    history.innerHTML = savedUI;
+    history.scrollTop = history.scrollHeight;
+  }
+}
 
 const chatForm = document.getElementById('chat-form');
 const chatInput = document.getElementById('chat-input');
@@ -969,6 +1021,8 @@ if (chatForm && chatInput) {
       chatConversationHistory.push({ role: 'assistant', content: finalAnswer });
       // Mantém apenas o histórico recente para economizar tokens
       if (chatConversationHistory.length > 10) chatConversationHistory = chatConversationHistory.slice(-10);
+      // Persiste o histórico no localStorage para sobreviver a navegação entre páginas
+      localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatConversationHistory));
 
       const matchedIds = matches ? matches.map(m => m.id) : [];
       const encodedIds = encodeURIComponent(JSON.stringify(matchedIds));
@@ -990,6 +1044,9 @@ if (chatForm && chatInput) {
 
       contentBox.innerHTML = prefixHTML + renderMarkdown(finalAnswer) + feedbackBtns;
       history.scrollTop = history.scrollHeight;
+
+      // Salva o HTML renderizado da conversa no localStorage
+      localStorage.setItem(CHAT_UI_KEY, history.innerHTML);
 
     } catch (e) {
       console.error('Erro no Copilot:', e);

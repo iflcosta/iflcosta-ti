@@ -1,0 +1,25 @@
+{
+  "functions": {
+    "api/groq.js": {
+      "maxDuration": 30
+    }
+  },
+  "headers": [
+    {
+      "source": "/api/groq",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/groq",
+      "methods": ["POST"],
+      "dest": "/api/groq"
+    }
+  ]
+}

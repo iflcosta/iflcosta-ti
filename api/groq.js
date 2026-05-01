@@ -1,9 +1,31 @@
 // Proxy seguro para a API da Groq rodando na Edge Network (Vercel) para suportar Streaming em tempo real.
 export const config = { runtime: 'edge' };
 
+// Defesa Nível 0: Rate Limiting no Servidor (Máx. 10 req/min por IP)
+const rateLimitMap = new Map();
+function isRateLimited(ip) {
+  const now = Date.now();
+  const windowMs = 60 * 1000; // 1 minuto
+  const maxRequests = 10;
+  const entry = rateLimitMap.get(ip) || { count: 0, start: now };
+  if (now - entry.start > windowMs) {
+    rateLimitMap.set(ip, { count: 1, start: now });
+    return false;
+  }
+  if (entry.count >= maxRequests) return true;
+  rateLimitMap.set(ip, { count: entry.count + 1, start: entry.start });
+  return false;
+}
+
 export default async function handler(req) {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
+  }
+
+  // Verifica Rate Limit pelo IP do cliente
+  const clientIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+  if (isRateLimited(clientIp)) {
+    return new Response(JSON.stringify({ error: 'Muitas requisições. Aguarde 1 minuto e tente novamente.' }), { status: 429 });
   }
 
   // Tentativa de ler a chave de diferentes formas (Padrão Vercel Edge)
