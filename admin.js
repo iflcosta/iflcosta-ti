@@ -120,7 +120,7 @@ async function initDashboard() {
   const lastMonthStr = mo === 1 ? (yr - 1) + '-12' : yr + '-' + String(mo - 1).padStart(2, '0');
 
   const { data: deliveredRepairs } = await iccClient
-    .from('repairs').select('price, part_cost, exit_date').eq('status', 'Entregue');
+    .from('repairs').select('price').eq('status', 'Entregue');
 
   let currentRevenue = 0; let lastRevenue = 0; let currentCost = 0;
 
@@ -307,7 +307,7 @@ async function fetchRepairs(page = 0) {
   const to = from + PAGE_SIZE - 1;
 
   const { data: repairs, error, count } = await iccClient
-    .from('repairs').select('*, customers(name)', { count: 'exact' })
+    .from('repairs').select('*', { count: 'exact' })
     .neq('status', 'Entregue')
     .range(from, to);
 
