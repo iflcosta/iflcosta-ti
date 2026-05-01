@@ -64,8 +64,24 @@ create table if not exists public.wiki (
     success_score integer default 0
 );
 
--- Habilitar RLS (Row Level Security) - Opcional, mas recomendado
--- Por enquanto, as chaves anon/service_role são usadas conforme config.js
+-- Habilitar RLS (Row Level Security) - Proteção Bancária
+alter table public.leads enable row level security;
+alter table public.customers enable row level security;
+alter table public.repairs enable row level security;
+alter table public.products enable row level security;
+alter table public.wiki enable row level security;
+
+-- Políticas para a Tabela LEADS (Padrão Caixa de Correio)
+-- Qualquer um (anon) pode inserir dados, mas só o admin (authenticated) pode ler/modificar
+create policy "Anônimos podem inserir leads" on public.leads for insert to anon with check (true);
+create policy "Admins têm controle total de leads" on public.leads for all to authenticated using (true) with check (true);
+
+-- Políticas para CUSTOMERS, REPAIRS, PRODUCTS, WIKI (Trancadas a Sete Chaves)
+-- Somente o admin (authenticated) tem acesso
+create policy "Admins têm controle total de customers" on public.customers for all to authenticated using (true) with check (true);
+create policy "Admins têm controle total de repairs" on public.repairs for all to authenticated using (true) with check (true);
+create policy "Admins têm controle total de products" on public.products for all to authenticated using (true) with check (true);
+create policy "Admins têm controle total de wiki" on public.wiki for all to authenticated using (true) with check (true);
 
 -- Função para busca semântica na Wiki (usada pelo admin.js futuramente)
 create or replace function match_wiki_articles (

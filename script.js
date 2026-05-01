@@ -115,6 +115,12 @@ document.addEventListener('DOMContentLoaded', () => {
     link.href = link.href.replace(/wa\.me\/\d+/, 'wa.me/' + waPhone);
   });
 
+  // Atualiza o texto visual do WhatsApp
+  document.querySelectorAll('.wa-text').forEach(el => {
+    const formattedPhone = `(${waPhone.substring(2,4)}) ${waPhone.substring(4,9)}-${waPhone.substring(9)}`;
+    el.innerHTML = el.innerHTML.replace(/\(\d{2}\)\s\d{4,5}-\d{4}/, formattedPhone);
+  });
+
   // Mobile Menu Toggle
   const menuBtn = document.querySelector('.mobile-menu-btn');
   const navMenu = document.querySelector('.nav-menu');
