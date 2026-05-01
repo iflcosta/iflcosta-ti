@@ -6,9 +6,14 @@ export default async function handler(req) {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
   }
 
-  const GROQ_API_KEY = process.env.GROQ_API_KEY;
-  if (!GROQ_API_KEY) {
-    return new Response(JSON.stringify({ error: 'Groq API key não configurada.' }), { status: 503 });
+  // Tentativa de ler a chave de diferentes formas (Padrão Vercel Edge)
+  const GROQ_API_KEY = process.env.GROQ_API_KEY || process.env.GROQ_KEY || '';
+  
+  if (!GROQ_API_KEY || GROQ_API_KEY.length < 10) {
+    return new Response(JSON.stringify({ 
+      error: 'Groq API key não configurada ou inválida na Vercel.',
+      debug: 'Verifique se o nome da variável é exatamente GROQ_API_KEY nas configurações do projeto.'
+    }), { status: 503 });
   }
 
   // Defesa Nível 1: Verificação de Origem (CORS Restrito)
