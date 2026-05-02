@@ -1119,8 +1119,9 @@ header.scrolled {
         grid-template-columns: 1fr 1fr;
     }
 
-    .stat-1 { top: 10%; left: 10%; }
-    .stat-2 { bottom: 10%; right: 10%; }
+    .stat-card {
+        display: none;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1193,7 +1194,8 @@ header.scrolled {
     }
 
     .hv-card {
-        width: 90%;
+        width: 85%;
+        max-width: 480px;
     }
 
     .floating-wa {
