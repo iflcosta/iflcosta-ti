@@ -32,7 +32,7 @@
     <link rel="canonical" href="https://iflcosta-ti.vercel.app/" />
     <link rel="icon" href="favicon.png" type="image/png">
     <link rel="preload" href="hero-image.webp" as="image">
-    
+
     <!-- PWA Config -->
     <link rel="manifest" href="manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
@@ -108,11 +108,10 @@
             </div>
             <nav class="nav-menu" id="nav-menu" aria-label="Menu principal">
                 <a href="#hero">Início</a>
-                <a href="#services">Especialidades</a>
-                <a href="#pricing">Preços</a>
-                <a href="#calculator">Calculadora</a>
-                <a href="#process">Como Funciona</a>
-                <a href="#quote">Orçamento</a>
+                <a href="#services">Serviços</a>
+                <a href="#social-proof">Avaliações</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contact">Contato</a>
                 <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20solicitar%20um%20orçamento." target="_blank" rel="noopener noreferrer" class="btn btn-outline"><i class="ph ph-whatsapp-logo"></i> Falar Direto Comigo</a>
             </nav>
             <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Abrir menu" aria-expanded="false" aria-controls="nav-menu">
@@ -122,6 +121,7 @@
     </header>
 
     <main role="main">
+
     <!-- Hero Section -->
     <section id="hero" class="hero">
         <div class="container hero-container">
@@ -218,285 +218,262 @@
         </div>
     </section>
 
-    <!-- Highlight: IT Support -->
-    <section id="it-support" class="it-support">
-        <div class="container">
-            <div class="section-header">
-                <h2>Suporte em TI: <span class="highlight">Sua Estrutura Funcional</span></h2>
-                <p>Atendimento focado em residências, clínicas e pequenos escritórios que precisam de estabilidade — sem contratos amarrados.</p>
-            </div>
-            <div class="support-grid">
-                <div class="glass-card feature-card animate-on-scroll">
-                    <div class="icon-box"><i class="ph ph-wifi-high"></i></div>
-                    <h3>Redes & Conectividade</h3>
-                    <p>Otimização de Wi-Fi, configuração de roteadores e eliminação de pontos cegos. Conexão estável e rápida onde você mais precisa.</p>
-                </div>
-                <div class="glass-card feature-card animate-on-scroll">
-                    <div class="icon-box"><i class="ph ph-hard-drives"></i></div>
-                    <h3>Manutenção Preventiva</h3>
-                    <p>Limpeza física detalhada, troca de pasta térmica de alta condutividade e formatação com backup seguro dos seus dados essenciais.</p>
-                </div>
-                <div class="glass-card feature-card animate-on-scroll">
-                    <div class="icon-box"><i class="ph ph-rocket-launch"></i></div>
-                    <h3>Upgrades Estratégicos</h3>
-                    <p>Consultoria técnica para melhorar o desempenho do seu setup atual sem precisar comprar uma máquina totalmente nova.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Other Services Grid -->
-    <section id="services" class="services">
+    <!-- Serviços & Preços -->
+    <section id="services" class="services-pricing">
         <div class="container">
             <div class="section-header text-center">
-                <h2>Hardware de Ponta & <span class="highlight">Reparos Especializados</span></h2>
-                <p>Domínio técnico sobre o coração dos seus equipamentos — em Bragança Paulista e região.</p>
+                <h2>Serviços & <span class="highlight">Preços</span></h2>
+                <p>Transparência total — veja o que faço e os valores de referência antes mesmo de entrar em contato.</p>
             </div>
-            <div class="services-wrapper">
-                <div class="glass-card service-card animate-on-scroll" id="service-smartphones">
-                    <div class="service-image">
-                        <i class="ph ph-device-mobile"></i>
-                    </div>
-                    <div class="service-content">
-                        <h3>Reparo de Smartphones</h3>
-                        <p>Substituição de telas (Incell/OLED), baterias, conectores de carga e botões. Conserto rápido com componentes rigorosamente selecionados para durabilidade.</p>
+
+            <!-- Tabs -->
+            <div class="sp-tabs" role="tablist">
+                <button class="sp-tab active" role="tab" aria-selected="true" data-tab="smartphone">
+                    <i class="ph ph-device-mobile"></i><span>Celular / Tablet</span>
+                </button>
+                <button class="sp-tab" role="tab" aria-selected="false" data-tab="notebook">
+                    <i class="ph ph-laptop"></i><span>Notebook / PC</span>
+                </button>
+                <button class="sp-tab" role="tab" aria-selected="false" data-tab="custom-pc">
+                    <i class="ph ph-cpu"></i><span>Custom PC</span>
+                </button>
+                <button class="sp-tab" role="tab" aria-selected="false" data-tab="ti">
+                    <i class="ph ph-wifi-high"></i><span>Suporte TI</span>
+                </button>
+            </div>
+
+            <!-- Painel Celular -->
+            <div class="sp-panel glass-card active" id="panel-smartphone" role="tabpanel">
+                <div class="sp-panel-inner">
+                    <div class="sp-info">
+                        <div class="sp-icon">
+                            <i class="ph ph-device-mobile"></i>
+                        </div>
+                        <h3>Reparo de Smartphones & Tablets</h3>
+                        <p>Substituição de telas Incell/OLED, baterias, conectores e botões. Conserto rápido com componentes rigorosamente selecionados para durabilidade máxima.</p>
                         <ul class="check-list">
-                            <li><i class="ph ph-check"></i> Diagnóstico Exato</li>
-                            <li><i class="ph ph-check"></i> Peças Testadas com Garantia</li>
+                            <li><i class="ph ph-check"></i> Diagnóstico exato antes de qualquer serviço</li>
+                            <li><i class="ph ph-check"></i> Peças testadas com garantia inclusa</li>
+                            <li><i class="ph ph-check"></i> Atualização por WhatsApp em tempo real</li>
                         </ul>
-                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Preciso%20consertar%20meu%20celular." target="_blank" rel="noopener noreferrer" class="btn btn-service">Orçar Reparo <i class="ph ph-arrow-right"></i></a>
+                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Preciso%20consertar%20meu%20celular." target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="ph-fill ph-whatsapp-logo"></i> Solicitar Orçamento</a>
+                        <span class="sp-guarantee"><i class="ph-fill ph-shield-check"></i> 90 dias de garantia em todos os reparos</span>
+                    </div>
+                    <div class="sp-pricing-box">
+                        <h4>Valores de mão de obra <span>(peças à parte)</span></h4>
+                        <ul class="pricing-list">
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Troca de Tela (Android/iPhone)</span>
+                                <span class="pricing-item-value">R$ 120 – 180<span class="pricing-note"> + peça</span></span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Troca de Bateria</span>
+                                <span class="pricing-item-value">R$ 80 – 120<span class="pricing-note"> + peça</span></span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Conector de Carga / Câmera</span>
+                                <span class="pricing-item-value">R$ 80 – 150<span class="pricing-note"> + peça</span></span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Software / Restauração</span>
+                                <span class="pricing-item-value">R$ 80 – 120</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Reparo de Placa / Microsolda</span>
+                                <span class="pricing-item-value">R$ 150 – 250<span class="pricing-note"> + peça</span></span>
+                            </li>
+                        </ul>
+                        <p class="pricing-note-small"><i class="ph ph-info"></i> Peças e componentes são orçados separadamente com total transparência antes da aprovação.</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="glass-card service-card animate-on-scroll" id="service-notebooks">
-                    <div class="service-image">
-                        <i class="ph ph-laptop"></i>
-                    </div>
-                    <div class="service-content">
-                        <h3>Manutenção de Notebooks</h3>
-                        <p>PC lento ou aquecendo? Realizo upgrades de SSD e RAM, reparo de carcaça, dobradiças e resfriamento para reviver sua máquina com eficiência.</p>
+            <!-- Painel Notebook -->
+            <div class="sp-panel glass-card" id="panel-notebook" role="tabpanel">
+                <div class="sp-panel-inner">
+                    <div class="sp-info">
+                        <div class="sp-icon">
+                            <i class="ph ph-laptop"></i>
+                        </div>
+                        <h3>Manutenção de Notebooks & PCs</h3>
+                        <p>PC lento ou aquecendo? Realizo upgrades de SSD e RAM, reparo de carcaça, dobradiças e resfriamento para reviver sua máquina com eficiência máxima.</p>
                         <ul class="check-list">
-                            <li><i class="ph ph-check"></i> Mais Velocidade</li>
-                            <li><i class="ph ph-check"></i> Mais Vida Útil</li>
+                            <li><i class="ph ph-check"></i> Mais velocidade e vida útil</li>
+                            <li><i class="ph ph-check"></i> Formatação com backup seguro</li>
+                            <li><i class="ph ph-check"></i> Visita técnica disponível na região</li>
                         </ul>
-                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20fazer%20manutenção%20no%20meu%20notebook." target="_blank" rel="noopener noreferrer" class="btn btn-service">Orçar Manutenção <i class="ph ph-arrow-right"></i></a>
+                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20fazer%20manutenção%20no%20meu%20notebook." target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="ph-fill ph-whatsapp-logo"></i> Solicitar Orçamento</a>
+                        <span class="sp-guarantee"><i class="ph-fill ph-shield-check"></i> 90 dias de garantia em todos os reparos</span>
+                    </div>
+                    <div class="sp-pricing-box">
+                        <h4>Valores de mão de obra</h4>
+                        <ul class="pricing-list">
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Formatação Premium (c/ Backup)</span>
+                                <span class="pricing-item-value">R$ 150 – 200</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Limpeza + Pasta Térmica</span>
+                                <span class="pricing-item-value">R$ 100 – 150</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Upgrade SSD/RAM (Mão de Obra)</span>
+                                <span class="pricing-item-value">R$ 80 – 120</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Visita Técnica / Diagnóstico</span>
+                                <span class="pricing-item-value">R$ 60 – 120</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Configuração de Rede Wi-Fi</span>
+                                <span class="pricing-item-value">R$ 120 – 180</span>
+                            </li>
+                        </ul>
+                        <p class="pricing-note-small"><i class="ph ph-info"></i> Peças e componentes são orçados separadamente com total transparência antes da aprovação.</p>
                     </div>
                 </div>
+            </div>
 
-                <div class="glass-card service-card highlight-card animate-on-scroll" id="service-custom-pc">
-                    <div class="service-image">
-                        <i class="ph ph-cpu"></i>
-                    </div>
-                    <div class="service-content">
+            <!-- Painel Custom PC -->
+            <div class="sp-panel glass-card" id="panel-custom-pc" role="tabpanel">
+                <div class="sp-panel-inner">
+                    <div class="sp-info">
+                        <div class="sp-icon sp-icon-purple">
+                            <i class="ph ph-cpu"></i>
+                        </div>
                         <h3>Custom PCs & Workstations</h3>
-                        <p>Montagem de computadores sob medida. Seja para extrair o máximo de FPS ou renderizar projetos complexos — sem gargalos, com cable management perfeito.</p>
+                        <p>Montagem de computadores sob medida — do office ao PC Gamer de alta performance. Sem gargalos, cable management perfeito e teste de estresse incluído.</p>
                         <ul class="check-list">
-                            <li><i class="ph ph-check"></i> Cable Management Perfeito</li>
-                            <li><i class="ph ph-check"></i> Setup Balanceado (Zero Gargalo)</li>
+                            <li><i class="ph ph-check"></i> Cable management profissional</li>
+                            <li><i class="ph ph-check"></i> Setup balanceado (zero gargalo)</li>
+                            <li><i class="ph ph-check"></i> Teste de estresse completo na entrega</li>
                         </ul>
-                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20montar%20um%20Custom%20PC." target="_blank" rel="noopener noreferrer" class="btn btn-service-highlight">Montar meu PC <i class="ph ph-arrow-right"></i></a>
+                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20montar%20um%20Custom%20PC." target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="ph-fill ph-whatsapp-logo"></i> Solicitar Orçamento</a>
+                        <span class="sp-guarantee"><i class="ph-fill ph-shield-check"></i> Teste de estresse incluído na entrega</span>
+                    </div>
+                    <div class="sp-pricing-box">
+                        <h4>Valores de mão de obra</h4>
+                        <ul class="pricing-list">
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Montagem PC Office/Básico</span>
+                                <span class="pricing-item-value">R$ 150 – 200</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Montagem PC Gamer/Alta Perf.</span>
+                                <span class="pricing-item-value">R$ 300 – 450</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Hora Técnica / Consultoria TI</span>
+                                <span class="pricing-item-value">R$ 150/hora</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Projetos de Rede & Wi-Fi</span>
+                                <span class="pricing-item-value">Sob consulta</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Backup & Segurança Mensal</span>
+                                <span class="pricing-item-value">Sob consulta</span>
+                            </li>
+                        </ul>
+                        <p class="pricing-note-small"><i class="ph ph-info"></i> Componentes orçados separadamente com transparência total antes da aprovação.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel Suporte TI -->
+            <div class="sp-panel glass-card" id="panel-ti" role="tabpanel">
+                <div class="sp-panel-inner">
+                    <div class="sp-info">
+                        <div class="sp-icon">
+                            <i class="ph ph-wifi-high"></i>
+                        </div>
+                        <h3>Suporte em TI: Sua Estrutura Funcional</h3>
+                        <p>Atendimento focado em residências, clínicas e pequenos escritórios que precisam de estabilidade — redes, conectividade e manutenção preventiva sem contratos amarrados.</p>
+                        <ul class="check-list">
+                            <li><i class="ph ph-check"></i> Otimização de Wi-Fi e roteadores</li>
+                            <li><i class="ph ph-check"></i> Configuração de redes e segurança</li>
+                            <li><i class="ph ph-check"></i> Visita técnica em Bragança e região</li>
+                        </ul>
+                        <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Preciso%20de%20suporte%20em%20TI." target="_blank" rel="noopener noreferrer" class="btn btn-primary"><i class="ph-fill ph-whatsapp-logo"></i> Solicitar Orçamento</a>
+                        <span class="sp-guarantee"><i class="ph-fill ph-shield-check"></i> Atendimento direto, sem intermediários</span>
+                    </div>
+                    <div class="sp-pricing-box">
+                        <h4>Valores de referência</h4>
+                        <ul class="pricing-list">
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Visita Técnica / Diagnóstico</span>
+                                <span class="pricing-item-value">R$ 60 – 120</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Configuração Wi-Fi / Roteador</span>
+                                <span class="pricing-item-value">R$ 120 – 180</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Hora Técnica</span>
+                                <span class="pricing-item-value">R$ 150/hora</span>
+                            </li>
+                            <li>
+                                <span class="pricing-item-name"><i class="ph ph-check"></i> Suporte Mensal Fixo</span>
+                                <span class="pricing-item-value">Sob consulta</span>
+                            </li>
+                        </ul>
+                        <p class="pricing-note-small"><i class="ph ph-info"></i> Orçamento final aprovado por você antes de qualquer serviço iniciar.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Process Strip -->
+    <div class="process-strip">
+        <div class="container">
+            <div class="ps-inner">
+                <div class="ps-step">
+                    <span class="ps-num">01</span>
+                    <div class="ps-text">
+                        <strong>Contato Direto</strong>
+                        <span>WhatsApp — sem formulário</span>
+                    </div>
+                </div>
+                <i class="ph ph-arrow-right ps-arrow"></i>
+                <div class="ps-step">
+                    <span class="ps-num">02</span>
+                    <div class="ps-text">
+                        <strong>Diagnóstico & Orçamento</strong>
+                        <span>Você aprova antes de tudo</span>
+                    </div>
+                </div>
+                <i class="ph ph-arrow-right ps-arrow"></i>
+                <div class="ps-step">
+                    <span class="ps-num">03</span>
+                    <div class="ps-text">
+                        <strong>Entrega com Garantia</strong>
+                        <span>Testado e com 90 dias</span>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Pricing Section -->
-    <section id="pricing" class="pricing">
+    <!-- Prova Social -->
+    <section id="social-proof" class="social-proof-section">
         <div class="container">
-            <div class="section-header text-center">
-                <h2>Transparência nos <span class="highlight">Preços</span></h2>
-                <p>Sem surpresas. Veja os valores de referência — o orçamento final é aprovado por você antes de qualquer serviço começar.</p>
+
+            <!-- Trust Badges em linha -->
+            <div class="trust-badges-row">
+                <span class="trust-badge-item"><i class="ph ph-user-circle"></i> Atendimento Direto</span>
+                <span class="trust-badge-item"><i class="ph-fill ph-shield-check"></i> 90 Dias de Garantia</span>
+                <span class="trust-badge-item"><i class="ph ph-receipt"></i> Orçamento Transparente</span>
+                <span class="trust-badge-item"><i class="ph ph-wrench"></i> Peças de Qualidade</span>
+                <span class="trust-badge-item"><i class="ph ph-buildings"></i> Lab Credenciado</span>
             </div>
-            <div class="pricing-grid">
 
-                <div class="glass-card pricing-card animate-on-scroll" id="pricing-mobile">
-                    <div class="pricing-card-header">
-                        <div class="pricing-icon"><i class="ph ph-device-mobile"></i></div>
-                        <h3>Smartphones & Tablets</h3>
-                        <p>Reparo de Hardware & Software</p>
-                    </div>
-                    <ul class="pricing-list">
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Troca de Tela (Android/iPhone)</span>
-                            <span class="pricing-item-value">R$ 120 – 180<span class="pricing-note"> + peça</span></span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Troca de Bateria</span>
-                            <span class="pricing-item-value">R$ 80 – 120<span class="pricing-note"> + peça</span></span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Conector de Carga / Câmera</span>
-                            <span class="pricing-item-value">R$ 80 – 150<span class="pricing-note"> + peça</span></span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Software / Restauração</span>
-                            <span class="pricing-item-value">R$ 80 – 120</span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Reparo de Placa / Microsolda</span>
-                            <span class="pricing-item-value">R$ 150 – 250<span class="pricing-note"> + peça</span></span>
-                        </li>
-                    </ul>
-                    <div class="pricing-footer">
-                        <span class="pricing-guarantee"><i class="ph-fill ph-shield-check"></i> 90 dias de garantia</span>
-                        <a href="https://wa.me/5511919691542?text=Olá, Iago! 👋%0A%0ATenho interesse em manutenção de *Smartphones ou Tablets*." target="_blank" rel="noopener noreferrer" class="btn btn-pricing">Orçar no WhatsApp</a>
-                    </div>
-                </div>
-
-                <div class="glass-card pricing-card pricing-card-featured animate-on-scroll" id="pricing-hardware">
-                    <div class="pricing-badge-featured">Mais Procurado</div>
-                    <div class="pricing-card-header">
-                        <div class="pricing-icon featured"><i class="ph ph-laptop"></i></div>
-                        <h3>Computadores & Notebooks</h3>
-                        <p>Laptops, Desktops & MacBooks</p>
-                    </div>
-                    <ul class="pricing-list">
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Formatação Premium (c/ Backup)</span>
-                            <span class="pricing-item-value">R$ 150 – 200</span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Limpeza + Pasta Térmica</span>
-                            <span class="pricing-item-value">R$ 100 – 150</span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Upgrade SSD/RAM (Mão de Obra)</span>
-                            <span class="pricing-item-value">R$ 80 – 120</span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Visita Técnica / Diagnóstico</span>
-                            <span class="pricing-item-value">R$ 60 – 120</span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Configuração de Rede Wi-Fi</span>
-                            <span class="pricing-item-value">R$ 120 – 180</span>
-                        </li>
-                    </ul>
-                    <div class="pricing-footer">
-                        <span class="pricing-guarantee"><i class="ph-fill ph-shield-check"></i> 90 dias de garantia</span>
-                        <a href="https://wa.me/5511919691542?text=Olá, Iago! 👋%0A%0ATenho interesse em serviços para *Computadores ou Notebooks*." target="_blank" rel="noopener noreferrer" class="btn btn-pricing-featured">Orçar no WhatsApp</a>
-                    </div>
-                </div>
-
-                <div class="glass-card pricing-card animate-on-scroll" id="pricing-custom-pc">
-                    <div class="pricing-card-header">
-                        <div class="pricing-icon"><i class="ph ph-cpu"></i></div>
-                        <h3>Custom PCs & B2B</h3>
-                        <p>Montagem & Suporte Corporativo</p>
-                    </div>
-                    <ul class="pricing-list">
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Montagem PC Office/Básico</span>
-                            <span class="pricing-item-value">R$ 150 – 200</span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Montagem PC Gamer/Alta Perf.</span>
-                            <span class="pricing-item-value">R$ 300 – 450</span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Hora Técnica / Consultoria TI</span>
-                            <span class="pricing-item-value">R$ 150/hora</span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Projetos de Rede & Wi-Fi</span>
-                            <span class="pricing-item-value">Sob consulta</span>
-                        </li>
-                        <li>
-                            <span class="pricing-item-name"><i class="ph ph-check"></i> Backup & Segurança Mensal</span>
-                            <span class="pricing-item-value">Sob consulta</span>
-                        </li>
-                    </ul>
-                    <div class="pricing-footer">
-                        <span class="pricing-guarantee"><i class="ph-fill ph-shield-check"></i> Teste de estresse incluído</span>
-                        <a href="https://wa.me/5511919691542?text=Olá, Iago! 👋%0A%0AGostaria de falar sobre *Custom PCs ou Suporte B2B* para minha empresa." target="_blank" rel="noopener noreferrer" class="btn btn-pricing">Orçar no WhatsApp</a>
-                    </div>
-                </div>
-
-            </div>
-            <p class="pricing-disclaimer"><i class="ph ph-info"></i> Os valores acima são de mão de obra. Peças e componentes são orçados separadamente com total transparência antes da aprovação.</p>
-        </div>
-    </section>
-
-    <!-- Budget Calculator -->
-    <section id="calculator" class="calculator-section">
-        <div class="container">
-            <div class="section-header text-center">
-                <h2>Simule seu <span class="highlight">Orçamento</span></h2>
-                <p>Selecione os serviços e veja uma estimativa de mão de obra. Valores finais são confirmados após diagnóstico.</p>
-            </div>
-            <div class="calc-card">
-                <div class="calc-category-selector" id="calc-categories">
-                    <button class="calc-cat-btn active" data-cat="smartphone"><i class="ph ph-device-mobile"></i> Celular / Tablet</button>
-                    <button class="calc-cat-btn" data-cat="notebook"><i class="ph ph-laptop"></i> Notebook / PC</button>
-                    <button class="calc-cat-btn" data-cat="custom-pc"><i class="ph ph-cpu"></i> Custom PC</button>
-                </div>
-                <!-- Hint Proativo de Limpeza Grátis -->
-                <div id="free-cleaning-hint" class="free-hint" style="display: none;" onclick="toggleCalcService('limpeza')">
-                    <div class="hint-content">
-                        <i class="ph-fill ph-gift"></i>
-                        <span><strong>Presente VIP:</strong> Você ganhou uma Limpeza + Pasta Térmica grátis! Clique para adicionar.</span>
-                    </div>
-                    <i class="ph ph-plus-circle"></i>
-                </div>
-
-                <div class="calc-services" id="calc-services"></div>
-                <div class="calc-result">
-                    <div>
-                        <div class="calc-result-label">Estimativa de Mão de Obra</div>
-                        <div class="calc-result-value" id="calc-result-value">Selecione um serviço</div>
-                    </div>
-                    <a href="#" id="calc-wa-btn" class="btn btn-primary" style="display:none"><i class="ph-fill ph-whatsapp-logo"></i> Solicitar Orçamento</a>
-                </div>
-                <p class="calc-disclaimer"><i class="ph ph-info"></i> Estimativa de mão de obra. Peças e componentes são orçados à parte com total transparência.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Trust & Guarantee Section -->
-    <section id="trust" class="trust-section">
-        <div class="container">
-            <div class="section-header text-center">
-                <h2>Por que escolher um <span class="highlight">Especialista Autônomo?</span></h2>
-                <p>Sem passar por balcão, sem estagiário, sem achismo. Seu problema é resolvido com responsabilidade total.</p>
-            </div>
-            <div class="trust-grid">
-                <div class="glass-card trust-card animate-on-scroll">
-                    <div class="trust-icon"><i class="ph ph-user-circle"></i></div>
-                    <h3>Atendimento Direto</h3>
-                    <p>Você fala diretamente comigo, do primeiro contato até a entrega. Zero intermediários, respostas rápidas e responsabilidade total pelo serviço.</p>
-                </div>
-                <div class="glass-card trust-card animate-on-scroll">
-                    <div class="trust-icon"><i class="ph-fill ph-shield-check"></i></div>
-                    <h3>90 Dias de Garantia</h3>
-                    <p>Todo serviço executado vem com 90 dias de garantia técnica. Se algo não ficou certo, eu resolvo. Simples assim.</p>
-                </div>
-                <div class="glass-card trust-card animate-on-scroll">
-                    <div class="trust-icon"><i class="ph ph-receipt"></i></div>
-                    <h3>Orçamento Transparente</h3>
-                    <p>Você aprova o valor antes de qualquer peça ser comprada ou parafuso ser removido. Sem surpresas na conta final.</p>
-                </div>
-                <div class="glass-card trust-card animate-on-scroll">
-                    <div class="trust-icon"><i class="ph ph-wrench"></i></div>
-                    <h3>Peças de Qualidade</h3>
-                    <p>Trabalho apenas com componentes testados e de procedência. Nada de peça "paralela" que dura 30 dias e te faz voltar ao técnico.</p>
-                </div>
-                <div class="glass-card trust-card animate-on-scroll">
-                    <div class="trust-icon"><i class="ph ph-buildings"></i></div>
-                    <h3>Infraestrutura Laboratorial</h3>
-                    <p>Para bancada industrial — microsolda BGA, recuperação de placa-mãe — conto com laboratório técnico credenciado em Bragança Paulista. Responsabilidade sempre minha.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section id="testimonials" class="testimonials-section">
-        <div class="container">
-            <div class="section-header text-center">
+            <div class="section-header text-center" style="margin-top: 3rem;">
                 <h2>O que dizem os <span class="highlight">Clientes</span></h2>
                 <p>Avaliações reais no Google. Resultados reais.</p>
             </div>
+
             <div class="testimonials-grid">
                 <div class="glass-card testimonial-card animate-on-scroll">
                     <div class="testimonial-top">
@@ -541,11 +518,13 @@
                     </div>
                 </div>
             </div>
+
             <div class="testimonials-cta">
                 <a href="https://g.page/r/COLE_SEU_LINK_GOOGLE/review" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
                     <i class="ph ph-google-logo"></i> Ver todas as avaliações no Google
                 </a>
             </div>
+
         </div>
     </section>
 
@@ -585,148 +564,29 @@
         </div>
     </section>
 
-    <!-- How it works -->
-    <section id="process" class="process">
+    <!-- CTA Final + Contato -->
+    <section id="contact" class="cta-section">
         <div class="container">
-            <div class="section-header">
-                <h2>Resolvendo seu Problema em <span class="highlight">3 Passos</span></h2>
-                <p>Sem burocracia. O processo é desenhado para economizar o seu tempo.</p>
-            </div>
-            <div class="process-steps">
-                <div class="step">
-                    <div class="step-number">01</div>
-                    <div class="glass-card step-content">
-                        <h3>Contato Direto</h3>
-                        <p>Me mande uma mensagem no WhatsApp detalhando o que aconteceu. Vou te responder pessoalmente o mais rápido possível.</p>
-                    </div>
-                </div>
-                <div class="step-connector"></div>
-                <div class="step">
-                    <div class="step-number">02</div>
-                    <div class="glass-card step-content">
-                        <h3>Avaliação e Orçamento</h3>
-                        <p>Faço a avaliação da situação e apresento um orçamento claro e sem surpresas. Você tem total controle antes de aprovar.</p>
-                    </div>
-                </div>
-                <div class="step-connector"></div>
-                <div class="step">
-                    <div class="step-number">03</div>
-                    <div class="glass-card step-content">
-                        <h3>Solução Entregue</h3>
-                        <p>Executo o reparo ou montagem com ferramentas adequadas, testo o equipamento em estresse e entrego funcionando com garantia.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="process-cta">
-                <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20solicitar%20um%20orçamento." target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large" id="process-cta-whatsapp">
-                    <i class="ph-fill ph-whatsapp-logo"></i> Iniciar Atendimento Agora
+            <div class="cta-inner">
+                <div class="badge">Atendimento Rápido</div>
+                <h2>Pronto para <span class="highlight">Resolver?</span></h2>
+                <p>Sem formulário, sem fila. Me manda uma mensagem agora e resolvo seu problema direto.</p>
+                <a href="https://wa.me/5511919691542?text=Olá%2C%20Iago!%20Quero%20solicitar%20um%20orçamento." target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-large" id="contact-cta-whatsapp">
+                    <i class="ph-fill ph-whatsapp-logo"></i> Falar no WhatsApp Agora
                 </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Quote / Contact Section -->
-    <section id="quote" class="quote-section">
-        <div class="container">
-            <div class="quote-grid">
-                <div class="quote-info">
-                    <div class="badge"><i class="ph ph-note-pencil"></i> Orçamento Sem Compromisso</div>
-                    <h2>Pronto para <span class="highlight">Resolver seu Problema?</span></h2>
-                    <p>Preencha os detalhes técnicos abaixo. Analiso seu caso e respondo com uma estimativa inicial de prazos e valores.</p>
-                    
-
-                    <div class="quote-benefits">
-                        <div class="benefit-item">
-                            <i class="ph ph-clock-counter-clockwise"></i>
-                            <div>
-                                <strong>Resposta em até 2h</strong>
-                                <span>(Dentro do horário comercial)</span>
-                            </div>
-                        </div>
-                        <div class="benefit-item">
-                            <i class="ph ph-shield-check"></i>
-                            <div>
-                                <strong>Análise Especializada</strong>
-                                <span>Sem passar por atendentes</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="glass-card quote-form-container">
-                    <form id="budget-form">
-                        <div class="form-group">
-                            <label for="name">Nome Completo</label>
-                            <input type="text" id="name" name="name" placeholder="Ex: João Silva" required>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="whatsapp">WhatsApp</label>
-                                <input type="tel" id="whatsapp" name="whatsapp" placeholder="(11) 99999-9999" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="service">Categoria do Serviço</label>
-                                <select id="service" name="service" required>
-                                    <option value="" disabled selected>Selecione...</option>
-                                    <option value="smartphone">Reparo de Smartphone</option>
-                                    <option value="notebook">Manutenção de Notebook</option>
-                                    <option value="custom-pc">Custom PC / Gamer</option>
-                                    <option value="ti-support">Suporte de TI / Redes</option>
-                                    <option value="outro">Outros Serviços</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="message">Detalhes do Aparelho ou Problema</label>
-                            <textarea id="message" name="message" rows="4" placeholder="Descreva o modelo do aparelho e o que está acontecendo..." required></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary btn-full" id="submit-btn">
-                            <span class="btn-text">Enviar Solicitação</span>
-                            <i class="ph ph-paper-plane-right"></i>
-                        </button>
-                        
-                        <p class="form-privacy">
-                            <i class="ph ph-lock"></i> Seus dados estão seguros e serão usados apenas para este orçamento.
-                        </p>
-                    </form>
-                    
-                    <!-- Success Message (Hidden by default) -->
-                    <div id="form-success" class="form-feedback success-feedback" style="display: none;" role="alert" aria-live="polite">
-                        <i class="ph-fill ph-check-circle"></i>
-                        <h3>Solicitação Enviada!</h3>
-                        <p>Obrigado pelo contato. Em breve responderei no seu WhatsApp.</p>
-                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Enviar outra</button>
-                    </div>
+                <div class="cta-contacts">
+                    <span><i class="ph ph-phone"></i> (11) 91969-1542</span>
+                    <span><i class="ph ph-instagram-logo"></i> @iflcosta</span>
+                    <span><i class="ph ph-map-pin"></i> Bragança Paulista - SP</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Service Areas (SEO Hyperlocal) -->
-    <section id="areas" class="areas-section">
-        <div class="container">
-            <div class="section-header text-center">
-                <h2>Atendimento <span class="highlight">Especializado em sua Região</span></h2>
-                <p>Presença técnica rápida nos principais bairros e condomínios de Bragança Paulista.</p>
-            </div>
-            <div class="areas-grid">
-                <div class="area-item"><span><i class="ph ph-map-pin"></i> Jardim América</span></div>
-                <div class="area-item"><span><i class="ph ph-map-pin"></i> Jardim Europa</span></div>
-                <div class="area-item"><span><i class="ph ph-map-pin"></i> Euroville (I e II)</span></div>
-                <div class="area-item"><span><i class="ph ph-map-pin"></i> Jardim São Lourenço</span></div>
-                <div class="area-item"><span><i class="ph ph-map-pin"></i> Residencial das Ilhas</span></div>
-                <div class="area-item"><span><i class="ph ph-map-pin"></i> Matadouro & Centro</span></div>
-            </div>
-            <p class="areas-note">Também atendo condomínios e empresas em <strong>Atibaia</strong> e <strong>Itatiba</strong> sob agendamento prévio.</p>
-        </div>
-    </section>
     </main>
 
     <!-- Footer -->
-    <footer class="footer" id="contact">
+    <footer class="footer">
         <div class="container footer-content">
             <div class="footer-brand">
                 <div class="logo">
@@ -735,20 +595,16 @@
                 </div>
                 <p>Especialista em conserto de celulares, manutenção de notebooks e Custom PCs na região de Bragança Paulista. Atendimento direto, sem intermediários.</p>
             </div>
-            <div class="footer-services">
-                <h4>Serviços</h4>
-                <ul>
-                    <li><a href="#services">Reparo de Smartphones</a></li>
-                    <li><a href="#services">Manutenção de Notebooks</a></li>
-                    <li><a href="#services">Custom PCs & Workstations</a></li>
-                    <li><a href="#it-support">Suporte de TI e Redes</a></li>
-                </ul>
-            </div>
             <div class="footer-contact">
                 <h4>Fale Comigo</h4>
                 <a href="https://wa.me/5511919691542" target="_blank" rel="noopener noreferrer" class="wa-text"><i class="ph ph-whatsapp-logo"></i> (11) 91969-1542</a>
                 <a href="https://instagram.com/iflcosta" target="_blank" rel="noopener noreferrer"><i class="ph ph-instagram-logo"></i> @iflcosta</a>
                 <span><i class="ph ph-map-pin"></i> Bragança Paulista - SP</span>
+            </div>
+        </div>
+        <div class="footer-areas-bar">
+            <div class="container">
+                <p>📍 Bragança Paulista: Jardim América · Jardim Europa · Euroville · São Lourenço · Residencial das Ilhas · Centro · e região (Atibaia, Itatiba)</p>
             </div>
         </div>
         <div class="footer-bottom">

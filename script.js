@@ -1,7 +1,7 @@
 const { supabaseUrl, supabaseKey, waPhone } = ICC_CONFIG;
 
 const RATE_LIMIT_KEY = 'icc_last_submit';
-const RATE_LIMIT_MS = 10 * 60 * 1000; // 10 minutos entre envios
+const RATE_LIMIT_MS = 1 * 60 * 1000; // Reduzido para 1 minuto para facilitar testes
 
 const iccLeadClient = typeof supabase !== 'undefined'
   ? supabase.createClient(supabaseUrl, supabaseKey)
@@ -198,10 +198,38 @@ function updateCalcResult() {
   }
 }
 
+function initServiceTabs() {
+  const tabs = document.querySelectorAll('.sp-tab');
+  const panels = document.querySelectorAll('.sp-panel');
+  if (!tabs.length) return;
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      const panel = document.getElementById('panel-' + tab.dataset.tab);
+      if (panel) panel.classList.add('active');
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // Atualiza todos os links do WhatsApp usando o número central do config.js
   document.querySelectorAll('a[href*="wa.me/"]').forEach(link => {
     link.href = link.href.replace(/wa\.me\/\d+/, 'wa.me/' + waPhone);
+    
+    // NOVO: Log de cliques para estatística
+    link.addEventListener('click', () => {
+      const btnName = link.innerText.trim() || link.getAttribute('aria-label') || 'Botão Flutuante';
+      if (iccLeadClient) {
+        iccLeadClient.from('site_clicks').insert([{ 
+          button_name: btnName,
+          service_category: link.closest('section')?.id || 'Geral'
+        }]).then();
+      }
+    });
   });
 
   // Atualiza o texto visual do WhatsApp
@@ -232,6 +260,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (target) target.scrollIntoView({ behavior: 'smooth' });
     });
   });
+
+  // Service Tabs
+  initServiceTabs();
 
   // Budget Calculator
   initCalculator();
@@ -298,10 +329,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-          fetch('http://143.20.0.198:5678/webhook/lead-capture', {
+          fetch('http://143.20.0.198:5678/webhook/1fe48d75-2a00-4cc9-a098-eae56f413e50', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(leadData)
+            body: JSON.stringify({ ...leadData, source: 'website_form' })
           });
         } catch (e) {
           console.error('Erro n8n:', e);
