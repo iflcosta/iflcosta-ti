@@ -443,7 +443,12 @@ header.scrolled {
 }
 
 .stat-card {
-    display: none;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    z-index: 2;
 }
 
 .stat-card i {
@@ -1114,9 +1119,10 @@ header.scrolled {
         grid-template-columns: 1fr 1fr;
     }
 
-    .stat-card {
-        display: none;
-    }
+    .stat-1 { top: 8%;  left: 2%; }
+    .stat-2 { bottom: 8%; right: 2%; }
+    .stat-3 { top: 28%; right: 0; }
+    .stat-4 { bottom: 28%; left: 0; }
 }
 
 @media (max-width: 768px) {
@@ -1815,10 +1821,46 @@ header.scrolled {
    Hero Visual — CSS Mockup Card
    ========================================= */
 .hero-visual {
+    position: relative;
     width: 100%;
+    height: 560px;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.hero-photo {
+    width: 78%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    position: relative;
+    z-index: 1;
+    display: block;
+}
+
+.hero-photo-placeholder {
+    width: 78%;
+    height: 82%;
+    border-radius: 24px;
+    border: 2px dashed rgba(255,255,255,0.1);
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, #1a2233 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    z-index: 1;
+    position: relative;
+}
+
+.hero-photo-placeholder i {
+    font-size: 3rem;
+    opacity: 0.3;
 }
 
 .hv-card {
