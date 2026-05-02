@@ -443,12 +443,7 @@ header.scrolled {
 }
 
 .stat-card {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
-    z-index: 2;
+    display: none;
 }
 
 .stat-card i {
@@ -1820,17 +1815,15 @@ header.scrolled {
    Hero Visual — CSS Mockup Card
    ========================================= */
 .hero-visual {
-    position: relative;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 560px;
 }
 
 .hv-card {
-    width: 72%;
-    max-width: 400px;
+    width: 88%;
+    max-width: 440px;
     background: linear-gradient(145deg, #121822 0%, #1a2233 100%);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 20px;
