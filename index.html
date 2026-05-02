@@ -143,41 +143,76 @@
                     <span><i class="ph-fill ph-currency-circle-dollar"></i> Preço Justo e Transparente</span>
                 </div>
             </div>
-            <div class="hero-image-wrapper">
-                <div class="image-placeholder">
-                    <img src="hero-image.webp" alt="Especialista em hardware montando computador em Bragança Paulista" class="hero-graphic" loading="eager" width="600" height="600" style="width: 100%; height: 100%; object-fit: cover; border-radius: 28px;">
+            <div class="hero-visual">
+                <!-- Mockup do sistema de acompanhamento de reparo -->
+                <div class="hv-card">
+                    <div class="hv-header">
+                        <div class="hv-dots"><span></span><span></span><span></span></div>
+                        <span class="hv-title"><i class="ph ph-device-mobile"></i> Acompanhe seu Reparo</span>
+                    </div>
+                    <div class="hv-items">
+                        <div class="hv-item">
+                            <i class="ph-fill ph-check-circle" style="color:#10b981;font-size:1.3rem;flex-shrink:0;"></i>
+                            <div class="hv-item-info">
+                                <strong>iPhone 13 — Tela Trocada</strong>
+                                <span>Pronto para retirada · Hoje, 14h32</span>
+                            </div>
+                            <span class="hv-badge hv-badge-done">✓ Pronto</span>
+                        </div>
+                        <div class="hv-item">
+                            <i class="ph ph-wrench" style="color:#fbbf24;font-size:1.3rem;flex-shrink:0;"></i>
+                            <div class="hv-item-info">
+                                <strong>Notebook Dell — Formatação</strong>
+                                <span>Em andamento · ~2h estimadas</span>
+                            </div>
+                            <span class="hv-badge hv-badge-progress">⚡ Em reparo</span>
+                        </div>
+                        <div class="hv-item">
+                            <i class="ph ph-hourglass" style="color:#a78bfa;font-size:1.3rem;flex-shrink:0;"></i>
+                            <div class="hv-item-info">
+                                <strong>Samsung S22 — Bateria</strong>
+                                <span>Peça chegando · Notificação ativa</span>
+                            </div>
+                            <span class="hv-badge hv-badge-wait">⏳ Peça</span>
+                        </div>
+                    </div>
+                    <div class="hv-footer">
+                        <div class="hv-stat">
+                            <strong>&lt; 24h</strong>
+                            <span>Diagnóstico</span>
+                        </div>
+                        <div class="hv-vline"></div>
+                        <div class="hv-stat">
+                            <strong>90 dias</strong>
+                            <span>Garantia</span>
+                        </div>
+                        <div class="hv-vline"></div>
+                        <div class="hv-stat">
+                            <strong>★ 5.0</strong>
+                            <span>Google</span>
+                        </div>
+                    </div>
+                    <div class="hv-wa-note">
+                        <i class="ph-fill ph-whatsapp-logo" style="color:#25d366;"></i>
+                        Atualizações automáticas pelo WhatsApp
+                    </div>
                 </div>
-                <!-- Card Superior Esquerdo -->
+                <!-- Badges flutuantes -->
                 <div class="glass-card stat-card stat-1">
                     <i class="ph-fill ph-lightning"></i>
-                    <div>
-                        <strong>Rápido</strong>
-                        <span>Diagnóstico Preciso</span>
-                    </div>
+                    <div><strong>Rápido</strong><span>Diagnóstico Preciso</span></div>
                 </div>
-                <!-- Card Superior Direito -->
                 <div class="glass-card stat-card stat-3">
                     <i class="ph-fill ph-cpu"></i>
-                    <div>
-                        <strong>Peças Premium</strong>
-                        <span>Originalidade</span>
-                    </div>
+                    <div><strong>Peças Premium</strong><span>Originalidade</span></div>
                 </div>
-                <!-- Card Inferior Esquerdo -->
                 <div class="glass-card stat-card stat-4">
                     <i class="ph-fill ph-user-gear"></i>
-                    <div>
-                        <strong>Suporte VIP</strong>
-                        <span>Direto com Técnico</span>
-                    </div>
+                    <div><strong>Suporte VIP</strong><span>Direto com Técnico</span></div>
                 </div>
-                <!-- Card Inferior Direito -->
                 <div class="glass-card stat-card stat-2">
                     <i class="ph-fill ph-shield-check"></i>
-                    <div>
-                        <strong>90 Dias</strong>
-                        <span>Garantia Total</span>
-                    </div>
+                    <div><strong>90 Dias</strong><span>Garantia Total</span></div>
                 </div>
             </div>
         </div>
@@ -460,14 +495,17 @@
         <div class="container">
             <div class="section-header text-center">
                 <h2>O que dizem os <span class="highlight">Clientes</span></h2>
-                <p>Atendimentos reais. Resultados reais.</p>
+                <p>Avaliações reais no Google. Resultados reais.</p>
             </div>
             <div class="testimonials-grid">
                 <div class="glass-card testimonial-card animate-on-scroll">
-                    <div class="testimonial-stars">★★★★★</div>
+                    <div class="testimonial-top">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <div class="testimonial-source"><i class="ph ph-google-logo"></i> Google</div>
+                    </div>
                     <p class="testimonial-text">"Levei meu notebook que não ligava mais. O Iago identificou o problema em menos de 1 hora, foi super transparente no orçamento e resolveu no mesmo dia. Recomendo demais!"</p>
                     <div class="testimonial-author">
-                        <div class="testimonial-avatar">M</div>
+                        <div class="testimonial-avatar avatar-purple">M</div>
                         <div class="testimonial-author-info">
                             <strong>Mariana S.</strong>
                             <span>Manutenção de Notebook · Bragança Paulista</span>
@@ -475,10 +513,13 @@
                     </div>
                 </div>
                 <div class="glass-card testimonial-card animate-on-scroll">
-                    <div class="testimonial-stars">★★★★★</div>
+                    <div class="testimonial-top">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <div class="testimonial-source"><i class="ph ph-google-logo"></i> Google</div>
+                    </div>
                     <p class="testimonial-text">"Montou meu PC gamer do zero, explicou cada peça e por que escolheu cada uma. O gabinete ficou show, cable management perfeito. Performance melhorou muito!"</p>
                     <div class="testimonial-author">
-                        <div class="testimonial-avatar">R</div>
+                        <div class="testimonial-avatar avatar-blue">R</div>
                         <div class="testimonial-author-info">
                             <strong>Rafael T.</strong>
                             <span>Custom PC Gamer · Atibaia</span>
@@ -486,16 +527,60 @@
                     </div>
                 </div>
                 <div class="glass-card testimonial-card animate-on-scroll">
-                    <div class="testimonial-stars">★★★★★</div>
+                    <div class="testimonial-top">
+                        <div class="testimonial-stars">★★★★★</div>
+                        <div class="testimonial-source"><i class="ph ph-google-logo"></i> Google</div>
+                    </div>
                     <p class="testimonial-text">"Trocou a tela do meu iPhone rapidamente, com peça de qualidade. Preço justo, garantia de 90 dias. Já indiquei para vários amigos que também ficaram satisfeitos."</p>
                     <div class="testimonial-author">
-                        <div class="testimonial-avatar">A</div>
+                        <div class="testimonial-avatar avatar-green">A</div>
                         <div class="testimonial-author-info">
                             <strong>Ana L.</strong>
                             <span>Conserto de iPhone · Bragança Paulista</span>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="testimonials-cta">
+                <a href="https://g.page/r/COLE_SEU_LINK_GOOGLE/review" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                    <i class="ph ph-google-logo"></i> Ver todas as avaliações no Google
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="faq-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Perguntas <span class="highlight">Frequentes</span></h2>
+                <p>Respostas rápidas para as dúvidas mais comuns antes do contato.</p>
+            </div>
+            <div class="faq-grid">
+                <details class="glass-card faq-item animate-on-scroll">
+                    <summary><i class="ph ph-clock"></i> Quanto tempo demora o conserto?</summary>
+                    <p>Celulares na maioria dos casos ficam prontos em 24–48h. Notebooks entre 24–72h dependendo da peça necessária. Para urgências, consulte disponibilidade diretamente pelo WhatsApp.</p>
+                </details>
+                <details class="glass-card faq-item animate-on-scroll">
+                    <summary><i class="ph ph-x-circle"></i> E se não tiver conserto?</summary>
+                    <p>Se o diagnóstico concluir que o reparo não é viável economicamente, você não paga nada pela avaliação inicial — exceto se combinado previamente para diagnóstico pago.</p>
+                </details>
+                <details class="glass-card faq-item animate-on-scroll">
+                    <summary><i class="ph ph-map-pin"></i> Precisa levar pessoalmente?</summary>
+                    <p>Para a maioria dos consertos de celular sim. Para notebooks e suporte de TI, faço visita técnica em Bragança Paulista e região. Consulte condições e disponibilidade pelo WhatsApp.</p>
+                </details>
+                <details class="glass-card faq-item animate-on-scroll">
+                    <summary><i class="ph ph-shield-check"></i> Como funciona a garantia de 90 dias?</summary>
+                    <p>Cobre o serviço executado e a peça instalada por 90 dias corridos. Se algo falhar por causa do reparo nesse período, resolvo sem custo adicional. Simples assim.</p>
+                </details>
+                <details class="glass-card faq-item animate-on-scroll">
+                    <summary><i class="ph ph-credit-card"></i> Quais formas de pagamento aceita?</summary>
+                    <p>Aceito Pix (à vista com desconto), transferência bancária e dinheiro. Informe na hora do orçamento para combinarmos a melhor opção.</p>
+                </details>
+                <details class="glass-card faq-item animate-on-scroll">
+                    <summary><i class="ph ph-database"></i> Meus dados ficam seguros?</summary>
+                    <p>Sim. Trabalho com ética total — nunca acesso arquivos pessoais sem sua autorização. Para formatações, faço backup completo antes de qualquer procedimento, sem exceção.</p>
+                </details>
             </div>
         </div>
     </section>

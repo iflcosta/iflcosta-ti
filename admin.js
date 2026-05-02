@@ -75,6 +75,7 @@ function showPage(pageId, el) {
   if (pageId === 'repairs')   fetchRepairs(0);
   if (pageId === 'inventory') fetchProducts(0);
   if (pageId === 'wiki')      initCopilotSidebar();
+  if (pageId === 'settings')  loadConfig();
 }
 
 function toggleMobileMenu() {
@@ -86,12 +87,10 @@ function toggleMobileMenu() {
 async function initDashboard() {
   if (!iccClient) return;
 
-  // Garante que o Dashboard fica visivel e ativo
   document.getElementById('page-dashboard').style.display = 'block';
   const firstNav = document.querySelector('.nav-link');
   if (firstNav) firstNav.classList.add('active');
 
-  // Preenche a badge de data
   const now = new Date();
   const dateEl = document.getElementById('current-date');
   if (dateEl) {
@@ -99,61 +98,133 @@ async function initDashboard() {
       .replace(/^./, s => s.toUpperCase());
   }
 
-  // Pre-load da IA em background
   getEmbedder().then(() => console.log('Copilot AI Brain: Pronto.')).catch(e => console.error('Erro pre-load IA:', e));
-
-  fetchLeads();
-  fetchRepairs();
-  fetchProducts();
-
-  const { data: leadsCount } = await iccClient
-    .from('leads').select('*', { count: 'exact' }).eq('status', 'Novo');
-  const { data: repairsCount } = await iccClient
-    .from('repairs').select('*, customers(name)', { count: 'exact' }).neq('status', 'Entregue');
-
-  document.getElementById('stat-leads').innerText = leadsCount ? leadsCount.length : 0;
-  document.getElementById('stat-repairs').innerText = repairsCount ? repairsCount.length : 0;
 
   const yr = now.getFullYear();
   const mo = now.getMonth() + 1;
   const currentMonthStr = yr + '-' + String(mo).padStart(2, '0');
   const lastMonthStr = mo === 1 ? (yr - 1) + '-12' : yr + '-' + String(mo - 1).padStart(2, '0');
 
-  const { data: deliveredRepairs } = await iccClient
-    .from('repairs').select('*').eq('status', 'Entregue');
+  const [
+    { data: leadsAberto },
+    { data: repairsAtivos },
+    { data: deliveredRepairs },
+    { data: pendingRepairs },
+    { count: totalLeads },
+    { count: totalCustomers },
+  ] = await Promise.all([
+    iccClient.from('leads').select('id').neq('status', 'Arquivado'),
+    iccClient.from('repairs').select('id').neq('status', 'Entregue'),
+    iccClient.from('repairs').select('price, part_cost, exit_date').eq('status', 'Entregue'),
+    iccClient.from('repairs').select('price').eq('status', 'Pronto'),
+    iccClient.from('leads').select('*', { count: 'exact', head: true }).neq('status', 'Arquivado'),
+    iccClient.from('customers').select('*', { count: 'exact', head: true }),
+  ]);
 
-  let currentRevenue = 0; let lastRevenue = 0; let currentCost = 0;
+  document.getElementById('stat-leads').innerText = leadsAberto ? leadsAberto.length : 0;
+  document.getElementById('stat-repairs').innerText = repairsAtivos ? repairsAtivos.length : 0;
 
-  if (deliveredRepairs) {
-    deliveredRepairs.forEach(r => {
-      if (!r.exit_date) return;
-      const val = parseFloat(r.price) || 0;
-      const cost = parseFloat(r.part_cost) || 0;
-      if (r.exit_date.startsWith(currentMonthStr)) { currentRevenue += val; currentCost += cost; }
-      else if (r.exit_date.startsWith(lastMonthStr)) { lastRevenue += val; }
-    });
-  }
+  let currentRevenue = 0, lastRevenue = 0, currentCost = 0, deliveredThisMonth = 0;
+
+  (deliveredRepairs || []).forEach(r => {
+    if (!r.exit_date) return;
+    const val = parseFloat(r.price) || 0;
+    const cost = parseFloat(r.part_cost) || 0;
+    if (r.exit_date.startsWith(currentMonthStr)) {
+      currentRevenue += val; currentCost += cost; deliveredThisMonth++;
+    } else if (r.exit_date.startsWith(lastMonthStr)) {
+      lastRevenue += val;
+    }
+  });
 
   document.getElementById('stat-revenue').innerText =
     currentRevenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   const profitEl = document.getElementById('stat-profit');
-  if (profitEl) {
-    profitEl.innerText = (currentRevenue - currentCost)
-      .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  }
+  if (profitEl) profitEl.innerText =
+    (currentRevenue - currentCost).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   const trendEl = document.getElementById('stat-revenue-trend');
-  if (lastRevenue === 0) {
-    trendEl.innerText = currentRevenue > 0 ? '+100% vs mes anterior' : 'Sem dados do mes anterior';
-    trendEl.style.color = currentRevenue > 0 ? 'var(--success)' : 'var(--text-dim)';
-  } else {
-    const diff = ((currentRevenue - lastRevenue) / lastRevenue) * 100;
-    trendEl.innerText = (diff >= 0 ? '+' : '') + diff.toFixed(1) + '% vs mes anterior';
-    trendEl.style.color = diff >= 0 ? 'var(--success)' : 'var(--danger)';
+  if (trendEl) {
+    if (lastRevenue === 0) {
+      trendEl.innerText = currentRevenue > 0 ? '+100% vs mês anterior' : 'Sem dados do mês anterior';
+      trendEl.style.color = currentRevenue > 0 ? 'var(--success)' : 'var(--text-dim)';
+    } else {
+      const diff = ((currentRevenue - lastRevenue) / lastRevenue) * 100;
+      trendEl.innerText = (diff >= 0 ? '+' : '') + diff.toFixed(1) + '% vs mês anterior';
+      trendEl.style.color = diff >= 0 ? 'var(--success)' : 'var(--danger)';
+    }
+  }
+
+  // Ticket médio
+  const ticketEl = document.getElementById('stat-ticket');
+  if (ticketEl) {
+    const avg = deliveredThisMonth > 0 ? currentRevenue / deliveredThisMonth : 0;
+    ticketEl.innerText = avg.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  // Receita pendente (reparos prontos para retirada)
+  const pendingEl = document.getElementById('stat-pending');
+  if (pendingEl) {
+    const total = (pendingRepairs || []).reduce((s, r) => s + (parseFloat(r.price) || 0), 0);
+    pendingEl.innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  }
+
+  // Taxa de conversão
+  const convEl = document.getElementById('stat-conversion');
+  if (convEl) {
+    const rate = totalLeads > 0 ? Math.round(((totalCustomers || 0) / totalLeads) * 100) : 0;
+    convEl.innerText = rate + '%';
   }
 
   fetchRecentActivity();
+  fetchTodaysFocus();
+}
+
+async function fetchTodaysFocus() {
+  const focusEl = document.getElementById('focus-items');
+  if (!focusEl) return;
+
+  const today = new Date().toISOString().split('T')[0];
+  const cutoff48h = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+
+  const [
+    { count: urgentCount },
+    { count: dueTodayCount },
+    { count: staleCount },
+  ] = await Promise.all([
+    iccClient.from('repairs').select('*', { count: 'exact', head: true })
+      .eq('priority', 'Urgente').neq('status', 'Entregue'),
+    iccClient.from('repairs').select('*', { count: 'exact', head: true })
+      .eq('deadline_date', today).neq('status', 'Entregue'),
+    iccClient.from('leads').select('*', { count: 'exact', head: true })
+      .eq('status', 'Novo').lt('created_at', cutoff48h),
+  ]);
+
+  const items = [
+    { count: urgentCount || 0, label: 'urgente(s) na bancada',     icon: 'ph-warning',          color: 'var(--danger)',   page: 'repairs' },
+    { count: dueTodayCount || 0, label: 'com prazo hoje',           icon: 'ph-calendar-check',   color: '#fbbf24',         page: 'repairs' },
+    { count: staleCount || 0,    label: 'lead(s) sem contato 48h+', icon: 'ph-clock',            color: '#a78bfa',         page: 'leads'   },
+  ];
+
+  const ativos = items.filter(i => i.count > 0);
+
+  if (ativos.length === 0) {
+    focusEl.innerHTML = '<span style="color:var(--success);font-size:0.9rem;"><i class="ph ph-check-circle"></i> Tudo em dia! Nenhuma pendência crítica.</span>';
+    return;
+  }
+
+  focusEl.innerHTML = ativos.map(i => `
+    <div onclick="showPage('${i.page}', document.querySelector('.nav-link[onclick*=\\'${i.page}\\']'))"
+         style="background:rgba(0,0,0,0.2);border:1px solid var(--glass-border);border-left:3px solid ${i.color};border-radius:10px;padding:0.75rem 1.2rem;cursor:pointer;display:flex;align-items:center;gap:0.75rem;transition:background 0.2s;"
+         onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='rgba(0,0,0,0.2)'">
+      <i class="ph ${i.icon}" style="color:${i.color};font-size:1.4rem;"></i>
+      <div>
+        <span style="font-size:1.6rem;font-weight:800;color:${i.color};">${i.count}</span>
+        <span style="color:var(--text-dim);margin-left:0.4rem;font-size:0.88rem;">${i.label}</span>
+      </div>
+    </div>
+  `).join('');
 }
 
 // ==========================================
@@ -192,7 +263,12 @@ async function fetchLeads(filter = 'Novo', page = 0, search = '') {
     return;
   }
 
-  tableBody.innerHTML = leads.map(l => `
+  tableBody.innerHTML = leads.map(l => {
+    const isBot = l.source === 'WhatsApp Bot';
+    const srcStyle = isBot
+      ? 'background:rgba(37,211,102,0.15);color:#25d366;border-color:rgba(37,211,102,0.3);'
+      : 'background:rgba(255,255,255,0.05);color:var(--text-dim);border-color:var(--glass-border);';
+    return `
     <tr>
       <td>${new Date(l.created_at).toLocaleDateString('pt-BR')}</td>
       <td>
@@ -200,6 +276,7 @@ async function fetchLeads(filter = 'Novo', page = 0, search = '') {
         <div style="font-size:0.8rem; color:var(--text-dim);">${l.client_type || 'Pessoa Física'}</div>
       </td>
       <td>${escapeHtml(l.service_category)}</td>
+      <td><span class="badge" style="${srcStyle}">${escapeHtml(l.source || 'Manual')}</span></td>
       <td><span class="badge badge-urgency-${(l.urgency || 'media').toLowerCase()}">${l.urgency || 'Média'}</span></td>
       <td>${l.status}</td>
       <td>
@@ -210,7 +287,7 @@ async function fetchLeads(filter = 'Novo', page = 0, search = '') {
         </div>
       </td>
     </tr>
-  `).join('');
+  `}).join('');
 
   renderPagination('leads-pagination', page, count, (p) => fetchLeads(filter, p, document.getElementById('lead-search')?.value || ''));
 }
@@ -251,27 +328,63 @@ async function fetchRecentActivity() {
   const feed = document.getElementById('activity-feed');
   if (!feed) return;
 
-  const { data: leads, error } = await iccClient
-    .from('leads').select('*').order('created_at', { ascending: false }).limit(5);
+  const [
+    { data: leads },
+    { data: repairs },
+  ] = await Promise.all([
+    iccClient.from('leads').select('name, service_category, source, created_at')
+      .order('created_at', { ascending: false }).limit(8),
+    iccClient.from('repairs').select('device_model, status, updated_at, customers(name)')
+      .not('status', 'eq', 'Em Análise')
+      .order('updated_at', { ascending: false }).limit(8),
+  ]);
 
-  if (error) {
-    feed.innerHTML = '<p style="padding:1rem;">Erro ao carregar atividades.</p>';
+  const STATUS_META = {
+    'Pronto':          { icon: 'ph-check-circle',  color: 'var(--success)' },
+    'Em Reparo':       { icon: 'ph-wrench',         color: '#fbbf24' },
+    'Entregue':        { icon: 'ph-package',        color: 'var(--text-dim)' },
+    'Aguardando Peça': { icon: 'ph-hourglass',      color: '#a78bfa' },
+  };
+
+  const events = [];
+
+  (leads || []).forEach(l => events.push({
+    date: new Date(l.created_at),
+    icon: 'ph-user-plus',
+    color: 'var(--purple-vibrant)',
+    text: `<strong>Novo lead:</strong> ${escapeHtml(l.name)} › ${escapeHtml(l.service_category)}`,
+    sub: l.source || 'Manual',
+  }));
+
+  (repairs || []).forEach(r => {
+    if (!r.updated_at) return;
+    const m = STATUS_META[r.status] || { icon: 'ph-wrench', color: 'var(--text-dim)' };
+    events.push({
+      date: new Date(r.updated_at),
+      icon: m.icon,
+      color: m.color,
+      text: `<strong>${escapeHtml(r.device_model)}</strong> → <span style="color:${m.color}">${r.status}</span>`,
+      sub: r.customers?.name || '—',
+    });
+  });
+
+  events.sort((a, b) => b.date - a.date);
+  const top = events.slice(0, 10);
+
+  if (top.length === 0) {
+    feed.innerHTML = '<p style="padding:1rem;color:var(--text-dim);">Nenhuma atividade recente.</p>';
     return;
   }
 
-  if (leads && leads.length > 0) {
-    feed.innerHTML = leads.map(l => `
-      <div class="activity-item">
-        <div class="activity-icon"><i class="ph ph-user-plus"></i></div>
-        <div class="activity-info">
-          <p><strong>Novo Lead:</strong> ${escapeHtml(l.name)} solicitou orçamento para ${escapeHtml(l.service_category)}</p>
-          <span style="font-size:0.7rem; color:var(--text-dim);">${new Date(l.created_at).toLocaleTimeString('pt-BR')}</span>
-        </div>
+  feed.innerHTML = top.map(ev => `
+    <div class="activity-item">
+      <div class="activity-icon" style="color:${ev.color};"><i class="ph ${ev.icon}"></i></div>
+      <div class="activity-info">
+        <p>${ev.text}</p>
+        <span style="font-size:0.72rem;color:var(--text-dim);">${escapeHtml(ev.sub)} · ${ev.date.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' })}</span>
       </div>
-    `).join('');
-  } else {
-    feed.innerHTML = '<p style="padding:1rem;">Nenhuma atividade recente.</p>';
-  }
+    </div>
+  `).join('');
 }
 
 // ==========================================
@@ -660,7 +773,7 @@ async function fetchCustomers(page = 0) {
   const from = page * PAGE_SIZE;
   const to = from + PAGE_SIZE - 1;
 
-  let query = iccClient.from('customers').select('*, customers(name)', { count: 'exact' })
+  let query = iccClient.from('customers').select('*', { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
 
@@ -707,7 +820,7 @@ async function fetchCustomers(page = 0) {
             <i class="ph ph-whatsapp-logo"></i> ${c.whatsapp}
           </a>
         </td>
-        <td><span class="badge">${c.client_type || 'Pessoa Física'}</span></td>
+        <td><span class="badge">${c.customer_type || 'Pessoa Física'}</span></td>
         <td style="text-align:center; font-weight:600;">${totalOS}</td>
         <td>${lastOS}</td>
         <td>
@@ -740,7 +853,7 @@ async function viewCustomerHistory(customerId) {
 
   document.getElementById('history-customer-name').textContent = customer.name;
   document.getElementById('history-customer-info').textContent =
-    `${customer.whatsapp} · ${customer.client_type || 'Pessoa Física'} · Cliente desde ${new Date(customer.created_at).toLocaleDateString('pt-BR')}`;
+    `${customer.whatsapp} · ${customer.customer_type || 'Pessoa Física'} · Cliente desde ${new Date(customer.created_at).toLocaleDateString('pt-BR')}`;
 
   const { data: repairs } = await iccClient
     .from('repairs').select('*')
@@ -793,7 +906,7 @@ async function editCustomer(id) {
   openCustomerModal(id);
   document.getElementById('cust-name').value = c.name;
   document.getElementById('cust-whatsapp').value = c.whatsapp;
-  document.getElementById('cust-type').value = c.client_type || 'Pessoa Física';
+  document.getElementById('cust-type').value = c.customer_type || 'Pessoa Física';
   document.getElementById('cust-notes').value = c.notes || '';
 }
 
@@ -817,7 +930,7 @@ if (customerForm) {
     const payload = {
       name: document.getElementById('cust-name').value.trim(),
       whatsapp: document.getElementById('cust-whatsapp').value.replace(/\D/g, ''),
-      client_type: document.getElementById('cust-type').value,
+      customer_type: document.getElementById('cust-type').value,
       notes: document.getElementById('cust-notes').value.trim(),
     };
 
@@ -932,6 +1045,39 @@ if (wikiForm) {
       btn.disabled = false;
     }
   });
+}
+
+// ==========================================
+// Configurações Operacionais
+// ==========================================
+async function loadConfig() {
+  if (!iccClient) return;
+  const { data, error } = await iccClient.from('system_config').select('key, value');
+  if (error || !data) return;
+  const cfg = Object.fromEntries(data.map(r => [r.key, r.value]));
+
+  const webhookEl  = document.getElementById('cfg-webhook');
+  const evoEl      = document.getElementById('cfg-evo-instance');
+  const notifEl    = document.getElementById('cfg-notifications');
+  const hoursEl    = document.getElementById('cfg-hours');
+
+  if (webhookEl)  webhookEl.value   = cfg.n8n_webhook_url || '';
+  if (evoEl)      evoEl.value       = cfg.evo_instance    || '';
+  if (notifEl)    notifEl.checked   = cfg.notifications_enabled !== 'false';
+  if (hoursEl)    hoursEl.value     = cfg.business_hours  || 'Seg-Sex, 9h-18h';
+}
+
+async function saveConfig() {
+  if (!iccClient) return;
+  const rows = [
+    { key: 'n8n_webhook_url',       value: document.getElementById('cfg-webhook')?.value       || '' },
+    { key: 'evo_instance',          value: document.getElementById('cfg-evo-instance')?.value  || '' },
+    { key: 'notifications_enabled', value: String(document.getElementById('cfg-notifications')?.checked ?? true) },
+    { key: 'business_hours',        value: document.getElementById('cfg-hours')?.value         || 'Seg-Sex, 9h-18h' },
+  ];
+  const { error } = await iccClient.from('system_config').upsert(rows, { onConflict: 'key' });
+  if (error) alert('Erro ao salvar: ' + error.message);
+  else alert('Configurações salvas com sucesso!');
 }
 
 // ==========================================================

@@ -100,18 +100,42 @@
                         <span class="trend" id="stat-revenue-trend"></span>
                     </div>
                     <div class="stat-card">
+                        <span>Lucro Estimado</span>
+                        <h3 id="stat-profit" style="color:var(--success);">R$ 0,00</h3>
+                    </div>
+                    <div class="stat-card">
+                        <span>Receita Pendente</span>
+                        <h3 id="stat-pending" style="color:#fbbf24;">R$ 0,00</h3>
+                        <span style="font-size:0.72rem;color:var(--text-dim);">Prontos p/ retirada</span>
+                    </div>
+                    <div class="stat-card">
+                        <span>Ticket Médio</span>
+                        <h3 id="stat-ticket">R$ 0,00</h3>
+                        <span style="font-size:0.72rem;color:var(--text-dim);">por OS entregue no mês</span>
+                    </div>
+                    <div class="stat-card">
                         <span>Leads em Aberto</span>
                         <h3 id="stat-leads">0</h3>
+                    </div>
+                    <div class="stat-card">
+                        <span>Taxa de Conversão</span>
+                        <h3 id="stat-conversion">0%</h3>
+                        <span style="font-size:0.72rem;color:var(--text-dim);">leads → clientes</span>
                     </div>
                     <div class="stat-card">
                         <span>Reparos na Bancada</span>
                         <h3 id="stat-repairs">0</h3>
                     </div>
-                    <div class="stat-card">
-                        <span>Lucro Estimado</span>
-                        <h3 id="stat-profit" style="color:var(--success);">R$ 0,00</h3>
+                </div>
+
+                <!-- Foco de Hoje -->
+                <div class="data-card" style="margin-bottom:1.5rem;">
+                    <h4><i class="ph ph-target"></i> Foco de Hoje</h4>
+                    <div id="focus-items" style="display:flex;gap:0.75rem;flex-wrap:wrap;padding-top:0.75rem;">
+                        <span style="color:var(--text-dim);font-size:0.88rem;">Carregando...</span>
                     </div>
                 </div>
+
                 <div class="content-grid">
                     <div class="data-card">
                         <h4><i class="ph ph-clock-counter-clockwise"></i> Atividade Recente</h4>
@@ -174,7 +198,7 @@
                 <div class="data-card">
                     <div class="table-responsive">
                         <table class="icc-table">
-                            <thead><tr><th>Data</th><th>Cliente</th><th>Serviço</th><th>Urgência</th><th>Status</th><th>Ações</th></tr></thead>
+                            <thead><tr><th>Data</th><th>Cliente</th><th>Serviço</th><th>Origem</th><th>Urgência</th><th>Status</th><th>Ações</th></tr></thead>
                             <tbody id="leads-table-body"></tbody>
                         </table>
                     </div>
@@ -260,7 +284,34 @@
             <!-- ── Configurações ── -->
             <div id="page-settings" style="display:none;">
                 <div class="page-header"><h2>Configurações do Sistema</h2></div>
-                <div class="content-grid" style="grid-template-columns:1fr;max-width:600px;">
+                <div class="content-grid" style="grid-template-columns:1fr;max-width:640px;">
+
+                    <!-- Config Operacional -->
+                    <div class="data-card" style="margin-bottom:1.5rem;">
+                        <h4 style="margin-bottom:0.5rem;"><i class="ph ph-sliders"></i> Automação WhatsApp</h4>
+                        <p style="color:var(--text-dim);font-size:0.85rem;margin-bottom:1.2rem;">Parâmetros da automação. Salvos no banco de dados.</p>
+                        <div class="form-group">
+                            <label>URL Webhook n8n</label>
+                            <input type="url" id="cfg-webhook" placeholder="http://..." style="width:100%;padding:0.6rem 1rem;background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;color:white;">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Instância Evolution API</label>
+                                <input type="text" id="cfg-evo-instance" placeholder="test" style="padding:0.6rem 1rem;background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;color:white;width:100%;">
+                            </div>
+                            <div class="form-group">
+                                <label>Horário de Atendimento</label>
+                                <input type="text" id="cfg-hours" placeholder="Seg-Sex, 9h-18h" style="padding:0.6rem 1rem;background:var(--glass);border:1px solid var(--glass-border);border-radius:10px;color:white;width:100%;">
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.2rem;">
+                            <input type="checkbox" id="cfg-notifications" style="width:18px;height:18px;accent-color:var(--purple-vibrant);cursor:pointer;">
+                            <label style="margin:0;cursor:pointer;" for="cfg-notifications">Notificações automáticas de status ativas</label>
+                        </div>
+                        <button class="btn-primary" onclick="saveConfig()"><i class="ph ph-floppy-disk"></i> Salvar Configurações</button>
+                    </div>
+
+                    <!-- Config IA -->
                     <div class="data-card">
                         <h4 style="margin-bottom:0.5rem;"><i class="ph ph-cpu"></i> Inteligência Artificial (Groq)</h4>
                         <p style="color:var(--text-dim);font-size:0.85rem;margin-bottom:1rem;">

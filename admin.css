@@ -212,7 +212,7 @@ body {
    ========================================= */
 .stats-row {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2.5rem;
 }
@@ -373,6 +373,64 @@ button { font-family: 'Inter', sans-serif; }
 .badge-status-concluído, .badge-status-pronto, .badge-status-entregue { background: rgba(16,185,129,0.1); color: #34d399; border-color: rgba(16,185,129,0.2); }
 
 .action-btns { display: flex; gap: 0.5rem; }
+
+/* =========================================
+   Activity Feed
+   ========================================= */
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.9rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+.activity-info { flex: 1; min-width: 0; }
+.activity-info p { font-size: 0.88rem; line-height: 1.4; margin-bottom: 0.2rem; }
+.activity-info span { font-size: 0.72rem; color: var(--text-dim); }
+
+/* =========================================
+   Badges — Status de Reparo
+   ========================================= */
+.badge-status-em-análise, .badge-status-em-analise {
+    background: rgba(245,158,11,0.1); color: #fcd34d; border-color: rgba(245,158,11,0.2);
+}
+.badge-status-em-reparo {
+    background: rgba(59,130,246,0.1); color: #93c5fd; border-color: rgba(59,130,246,0.2);
+}
+.badge-status-aguardando-peça, .badge-status-aguardando-peca {
+    background: rgba(139,92,246,0.1); color: #c4b5fd; border-color: rgba(139,92,246,0.2);
+}
+.badge-status-pronto, .badge-status-pronto-para-retirada {
+    background: rgba(16,185,129,0.1); color: #34d399; border-color: rgba(16,185,129,0.2);
+}
+.badge-status-entregue {
+    background: rgba(160,171,184,0.08); color: var(--text-dim); border-color: rgba(160,171,184,0.15);
+}
+
+/* =========================================
+   Badges — Urgência de Lead
+   ========================================= */
+.badge-urgency-alta, .badge-urgency-urgente {
+    background: rgba(239,68,68,0.12); color: #f87171; border-color: rgba(239,68,68,0.25);
+}
+.badge-urgency-média, .badge-urgency-media {
+    background: rgba(245,158,11,0.12); color: #fbbf24; border-color: rgba(245,158,11,0.25);
+}
+.badge-urgency-baixa {
+    background: rgba(160,171,184,0.08); color: var(--text-dim); border-color: rgba(160,171,184,0.15);
+}
 
 .date-badge {
     background: rgba(177,74,255,0.1);
@@ -630,17 +688,29 @@ button { font-family: 'Inter', sans-serif; }
     .header-nav { display: none; }
     .hamburger-btn { display: flex; align-items: center; justify-content: center; }
     .main-content { padding: 1.2rem 1rem; }
-    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .stats-row { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
     .content-grid { grid-template-columns: 1fr; }
     .copilot-sidebar { width: 220px; }
+    .page-header { flex-wrap: wrap; gap: 0.75rem; }
+    .page-header h2 { font-size: 1.2rem; }
+    .header-actions { flex-wrap: wrap; }
+    /* Tabelas — esconde colunas menos críticas em mobile */
+    .icc-table th:nth-child(4),
+    .icc-table td:nth-child(4) { display: none; }
 }
 
 @media (max-width: 600px) {
-    .stats-row { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .stats-row { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .stat-card { padding: 1rem; }
+    .stat-card h3 { font-size: 1.2rem; }
     .copilot-layout { flex-direction: column; }
     .copilot-sidebar { width: 100%; height: 160px; border-right: none; border-bottom: 1px solid var(--glass-border); }
     .session-list { display: flex; flex-direction: row; gap: 0.5rem; padding: 0.5rem; overflow-x: auto; overflow-y: hidden; }
     .session-item { min-width: 160px; }
+    /* Botões de ação maiores para toque */
+    .btn-icon { width: 42px; height: 42px; border-radius: 12px; }
+    /* Modais — form-row empilha em mobile */
+    .form-row { flex-direction: column; }
 }
 
 /* =========================================
