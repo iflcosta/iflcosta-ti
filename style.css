@@ -283,9 +283,26 @@ header.scrolled {
 
 .mobile-menu-btn {
     display: none;
-    font-size: 1.5rem;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: var(--text-primary);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 0.4rem 0.875rem 0.4rem 0.65rem;
     cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.mobile-menu-btn i {
+    font-size: 1.1rem;
+}
+
+.mobile-menu-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.2);
 }
 
 /* =========================================
@@ -1149,7 +1166,7 @@ header.scrolled {
     }
 
     .mobile-menu-btn {
-        display: block;
+        display: inline-flex;
     }
 
     .hero-text h1 {
@@ -2510,5 +2527,89 @@ header.scrolled {
     text-align: center;
     font-size: 0.8rem;
     color: var(--text-secondary);
+}
+
+/* =========================================
+   Mobile Fixes
+   ========================================= */
+
+/* 1. Botão flutuante WhatsApp — só ícone no mobile */
+@media (max-width: 768px) {
+    .floating-wa {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        padding: 0;
+        justify-content: center;
+        font-size: 1.6rem;
+        bottom: 1.25rem;
+        right: 1.25rem;
+    }
+    .floating-wa-label {
+        display: none;
+    }
+}
+
+/* 2. Section headers menores no mobile */
+@media (max-width: 768px) {
+    .section-header {
+        margin-bottom: 2rem;
+    }
+    .section-header h2 {
+        font-size: 1.65rem;
+    }
+    .section-header p {
+        font-size: 1rem;
+    }
+}
+
+/* 3. Process strip (01/02/03) mais compacto no mobile */
+@media (max-width: 640px) {
+    .process-strip {
+        padding: 1.75rem 0;
+    }
+    .ps-num {
+        font-size: 1.1rem;
+        min-width: 32px;
+    }
+    .ps-text strong {
+        font-size: 0.875rem;
+    }
+    .ps-text span {
+        font-size: 0.75rem;
+    }
+}
+
+/* 4. Pricing list — layout compacto no mobile */
+@media (max-width: 600px) {
+    .pricing-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+        padding-bottom: 0.75rem;
+    }
+    .pricing-item-value {
+        white-space: normal;
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+    .pricing-item-name {
+        font-size: 0.82rem;
+    }
+    .sp-info h3 {
+        font-size: 1.25rem;
+    }
+}
+
+/* 5. Testimonials menores no mobile */
+@media (max-width: 768px) {
+    .testimonial-text {
+        font-size: 0.875rem;
+    }
+    .testimonials-section .section-header,
+    .social-proof-section .section-header {
+        margin-bottom: 1.5rem;
+    }
 }
 

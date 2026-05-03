@@ -111,6 +111,7 @@ async function initDashboard() {
     { data: deliveredRepairs },
     { data: pendingRepairs },
     { count: totalLeads },
+    { count: totalLeadsHistorico },
     { count: totalCustomers },
   ] = await Promise.all([
     iccClient.from('leads').select('id').neq('status', 'Arquivado'),
@@ -118,6 +119,7 @@ async function initDashboard() {
     iccClient.from('repairs').select('price, part_cost, exit_date').eq('status', 'Entregue'),
     iccClient.from('repairs').select('price').eq('status', 'Pronto'),
     iccClient.from('leads').select('*', { count: 'exact', head: true }).neq('status', 'Arquivado'),
+    iccClient.from('leads').select('*', { count: 'exact', head: true }),
     iccClient.from('customers').select('*', { count: 'exact', head: true }),
   ]);
 
@@ -170,10 +172,11 @@ async function initDashboard() {
     pendingEl.innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   }
 
-  // Taxa de conversão
+  // Taxa de conversão: clientes / total de leads já criados (histórico)
   const convEl = document.getElementById('stat-conversion');
   if (convEl) {
-    const rate = totalLeads > 0 ? Math.round(((totalCustomers || 0) / totalLeads) * 100) : 0;
+    const totalHist = totalLeadsHistorico || 0;
+    const rate = totalHist > 0 ? Math.round(((totalCustomers || 0) / totalHist) * 100) : 0;
     convEl.innerText = rate + '%';
   }
 
