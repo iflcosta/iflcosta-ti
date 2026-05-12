@@ -1779,6 +1779,7 @@ header.scrolled {
     transform: translateY(30px);
     transition: opacity 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+.animate-on-scroll.visible,
 .animate-on-scroll.is-visible {
     opacity: 1;
     transform: translateY(0);
@@ -1858,7 +1859,20 @@ header.scrolled {
 
 @media (max-width: 768px) {
     .testimonials-grid {
-        grid-template-columns: 1fr;
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 1.5rem;
+        padding: 0 1rem 1.5rem;
+        margin: 0 -1.5rem;
+        scrollbar-width: none;
+    }
+    .testimonials-grid::-webkit-scrollbar { display: none; }
+    .testimonial-card {
+        flex: 0 0 85%;
+        scroll-snap-align: center;
+        background: var(--bg-secondary);
+        border: 1px solid var(--glass-border);
     }
 }
 
@@ -1875,7 +1889,7 @@ header.scrolled {
 }
 
 .hero-photo {
-    width: 78%;
+    width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 24px;
@@ -2758,5 +2772,58 @@ body.menu-open {
     .calc-cat-btn {
         flex: 0 0 auto;
         white-space: nowrap;
+    }
+}
+
+
+/* Final Mobile Polish */
+@media (max-width: 768px) {
+    .hero-visual {
+        height: 300px;
+        margin-top: 2rem;
+    }
+    
+    .hero-photo {
+        width: 100%;
+        max-height: 280px;
+    }
+
+    .trust-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 1rem;
+        padding: 0 1rem 1rem;
+        margin: 0 -1rem;
+        scrollbar-width: none;
+    }
+    .trust-grid::-webkit-scrollbar { display: none; }
+    .trust-card {
+        flex: 0 0 75%;
+        scroll-snap-align: center;
+    }
+
+    section {
+        padding: 2rem 0;
+    }
+
+    .section-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Compact Tabs */
+    .sp-panel-inner {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .sp-info {
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    
+    .pricing-list li {
+        padding: 0.5rem 0;
+        font-size: 0.85rem;
     }
 }
