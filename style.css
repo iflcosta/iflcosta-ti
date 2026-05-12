@@ -2902,3 +2902,75 @@ body.menu-open {
         font-size: 0.65rem !important;
     }
 }
+
+
+/* =========================================
+   SENIOR UI REFINEMENT - APP-LIKE EXPERIENCE
+   ========================================= */
+
+/* 1. Segmented Control Tabs */
+.sp-tabs {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.4rem;
+    border-radius: 14px;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem !important;
+}
+
+.sp-tab {
+    flex: 1;
+    border-radius: 10px !important;
+    border: none !important;
+    padding: 0.6rem !important;
+    font-size: 1rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background: transparent !important;
+}
+
+.sp-tab.active {
+    background: var(--accent-secondary) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(177, 74, 255, 0.3);
+}
+
+/* 2. Content Transitions */
+.sp-panel {
+    animation: slideUpFade 0.4s ease-out forwards;
+}
+
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 3. Contrast & Readability */
+:root {
+    --text-secondary: #B0BCCB; /* Tom ligeiramente mais claro para melhor leitura */
+}
+
+.pricing-item-name {
+    color: #E2E8F0 !important;
+    font-weight: 400;
+}
+
+.pricing-item-value {
+    color: var(--text-primary) !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em;
+}
+
+/* 4. Horizontal Scroll Indicator */
+.testimonials-grid::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 40px;
+    background: linear-gradient(to left, var(--bg-main), transparent);
+    pointer-events: none;
+    z-index: 5;
+}
+
