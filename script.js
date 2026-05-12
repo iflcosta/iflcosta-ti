@@ -241,10 +241,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Mobile Menu Toggle
   const menuBtn = document.querySelector('.mobile-menu-btn');
   const navMenu = document.querySelector('.nav-menu');
+  const body = document.body;
 
   if (menuBtn) {
     menuBtn.addEventListener('click', () => {
       navMenu.classList.toggle('active');
+      body.classList.toggle('menu-open');
       const icon = menuBtn.querySelector('i');
       icon.classList.toggle('ph-list');
       icon.classList.toggle('ph-x');
@@ -256,8 +258,21 @@ document.addEventListener('DOMContentLoaded', () => {
     anchor.addEventListener('click', function (e) {
       e.preventDefault();
       navMenu.classList.remove('active');
+      body.classList.remove('menu-open');
+      const icon = menuBtn ? menuBtn.querySelector('i') : null;
+      if (icon) { icon.classList.add('ph-list'); icon.classList.remove('ph-x'); }
+      
       const target = document.querySelector(this.getAttribute('href'));
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
+      if (target) {
+        const headerOffset = 80;
+        const elementPosition = target.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: 'smooth'
+        });
+      }
     });
   });
 
@@ -359,19 +374,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // IntersectionObserver for scroll animations
   const observerOptions = {
     root: null,
-    rootMargin: '0px',
-    threshold: 0.15
+    rootMargin: '0px 0px -50px 0px',
+    threshold: 0.1
   };
 
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
+        entry.target.classList.add('visible');
         observer.unobserve(entry.target);
       }
     });
   }, observerOptions);
 
+  document.querySelectorAll('.fade-up').forEach((el) => {
+    observer.observe(el);
+  });
+  
+  // Also keep the old one for compatibility if needed, but updated to 'visible'
   document.querySelectorAll('.animate-on-scroll').forEach((el) => {
     observer.observe(el);
   });
