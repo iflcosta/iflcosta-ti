@@ -2887,3 +2887,18 @@ body.menu-open {
     .trust-text strong { font-size: 0.7rem; display: block; color: var(--text-primary); line-height: 1.1; }
     .trust-text span { font-size: 0.6rem; color: var(--text-secondary); display: block; }
 }
+
+
+/* Brand Visibility Update */
+.logo-tag {
+    color: #B14AFF !important; /* Roxo Neon Vibrante */
+    font-weight: 800 !important;
+    letter-spacing: 2px !important;
+    text-shadow: 0 0 10px rgba(177, 74, 255, 0.3);
+}
+
+@media (max-width: 768px) {
+    .logo-tag {
+        font-size: 0.65rem !important;
+    }
+}
