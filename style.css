@@ -2974,3 +2974,33 @@ body.menu-open {
     z-index: 5;
 }
 
+
+
+/* Unified Mobile CTA */
+.mbb-item-full {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.85rem;
+    border-radius: 12px;
+    background: var(--accent-primary);
+    width: 100%;
+    box-shadow: 0 4px 15px rgba(26, 50, 115, 0.4);
+    transition: all 0.3s ease;
+}
+
+.mbb-item-full:active {
+    transform: scale(0.97);
+    filter: brightness(1.1);
+}
+
+@media (max-width: 768px) {
+    .mobile-bottom-bar {
+        grid-template-columns: 1fr; /* Forçar uma coluna */
+    }
+}
